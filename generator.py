@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import random
-import ctypes
+import cmath
 
 # setting up the values for the grid
 ON = 255
@@ -39,11 +39,26 @@ def generate(grid):
     rooms = []
 
     for i in range(roomNumber):
-        room = Room(random.randrange(roomWidthMin, roomWidthMax), random.randrange(roomHeightMin, roomHeightMax))
-        randX = random.randrange(3, N-roomWidthMax-3)
-        randY = random.randrange(3, N-roomHeightMax-3)
+        print("DEBUG: Generating room", i)
+        successful = False
+        while successful == False:
+            room = Room(random.randrange(roomWidthMin, roomWidthMax), random.randrange(roomHeightMin, roomHeightMax))
+            randX = random.randrange(3, N-roomWidthMax-3)
+            randY = random.randrange(3, N-roomHeightMax-3)
+            room.center = [randX + round(room.roomHeight / 2), randY + round(room.roomWidth / 2)]
+            print("DEBUG: Room", i, "location found, initiate comparison")
+            for j in range(len(rooms)):
+                if pow(pow(rooms[j].center[0]-room.center[0], 2) + pow(rooms[j].center[1]-room.center[1], 2), .5) <= (roomWidthMax * 1.5):
+                    print("DEBUG: Room placement failed")
+                    successful = False
+                    break
+                else:
+                    successful = True
+            if i == 0:
+                successful = True
+        
+        print("DEBUG: Room", i, "success")
         grid[randX:randX + room.roomHeight, randY:randY + room.roomWidth] = room.getSpace()
-        room.center = [randX + round(room.roomHeight / 2), randY + round(room.roomWidth / 2)]
         grid[room.center[0], room.center[1]] = 200
         rooms.append(room)
     
@@ -55,8 +70,6 @@ def generate(grid):
         meY = rooms[i].center[1]
         themX = rooms[connectedRoom].center[0]
         themY = rooms[connectedRoom].center[1]
-        print(i, connectedRoom)
-        print(meX, meY, themX, themY)
 
         if meX <= themX:
             grid[meX:themX+round(hallwayWidth/2), meY-round(hallwayWidth/2):meY+round(hallwayWidth/2)] = 255
@@ -73,9 +86,6 @@ def generate(grid):
         
         rooms[i].connected = True
         rooms[connectedRoom].connected = True
-    
-    for i in range(len(rooms)):
-        print(i, rooms[i].connected)
 
 def update(frameNum, img, grid, N):
 
@@ -130,6 +140,7 @@ def main():
     grid = np.array([])
     grid = np.zeros(N*N).reshape(N, N)
 
+    print("DEBUG: Start generation")
     generate(grid)
 
     fig, ax = plt.subplots()
