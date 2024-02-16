@@ -11,66 +11,80 @@ TEST = 200
 OFF = 0
 random.seed()
 
-roomNumber = 7
-roomWidthMax = 30
-roomWidthMin = 10
-roomHeightMax = 30
-roomHeightMin = 10
-hallwayWidth = 5
-N = 200
+roomNumber = 30 # Number of rooms to be placed
+roomWidthMax = 30 # Maximum width of any room
+roomWidthMin = 10 # Minimum width of any room
+roomHeightMax = 30 # Maximum height of any room
+roomHeightMin = 10 # Minimum height of any room
+hallwayWidth = 5 # Width of hallways
+N = 200 # Size of grid
 
+# Object for storing individual room information
 class Room(object):
-    #roomSpace = [[]]
-    roomWidth = 1
-    roomHeight = 1
-    connected = False
-    center = [-10, -10]
+    roomWidth = 1 # Initialize roomWidth
+    roomHeight = 1 # Initialize roomHeight
+    connected = False # Is this room connected to another room in the grid?
+    center = [-10, -10] # Find the approximate center of the room
 
-    def __init__(self, roomWidth, roomHeight) -> None:
+    def __init__(self, roomWidth, roomHeight) -> None: # Initialize Room object
         self.roomWidth = roomWidth
         self.roomHeight = roomHeight
 
-        self.roomSpace = [[255]*self.roomWidth]*self.roomHeight
+        self.roomSpace = [[255]*self.roomWidth]*self.roomHeight # Create array of room space
 
-    def getSpace(self) -> None:
+    def getSpace(self) -> None: # Returns room space
         return self.roomSpace
 
-def generate(grid):
-    rooms = []
+# Generate rooms, hallways, and grid
+def generate(grid): 
+    rooms = [] # Initialize array of all rooms
 
-    for i in range(roomNumber):
+    for i in range(roomNumber): # Generate and place up to roomNumber rooms
         print("DEBUG: Generating room", i)
-        successful = False
-        while successful == False:
-            room = Room(random.randrange(roomWidthMin, roomWidthMax), random.randrange(roomHeightMin, roomHeightMax))
-            randX = random.randrange(3, N-roomWidthMax-3)
-            randY = random.randrange(3, N-roomHeightMax-3)
-            room.center = [randX + round(room.roomHeight / 2), randY + round(room.roomWidth / 2)]
+        successful = False # Was the room successfully placed
+        attempts = 0 # Total attempts to place room
+        # Repeat up to a set number of times to place room in a safe location
+        while successful == False: 
+            room = Room(random.randrange(roomWidthMin, roomWidthMax), random.randrange(roomHeightMin, roomHeightMax)) # Generate room of random size
+            randX = random.randrange(3, N-roomWidthMax-3) # Generate random top-left corner coordinate for room
+            randY = random.randrange(3, N-roomHeightMax-3) # Generate random top-left corner coordinate for room
+            room.center = [randX + round(room.roomHeight / 2), randY + round(room.roomWidth / 2)] # Calculate the approximate center of each room
             print("DEBUG: Room", i, "location found, initiate comparison")
+
+            # Begin placement test
             for j in range(len(rooms)):
-                if pow(pow(rooms[j].center[0]-room.center[0], 2) + pow(rooms[j].center[1]-room.center[1], 2), .5) <= (roomWidthMax * 1.5):
+                # Calculate distance from room center to room center
+                if pow(pow(rooms[j].center[0]-room.center[0], 2) + pow(rooms[j].center[1]-room.center[1], 2), .5) <= ((roomWidthMax+roomHeightMax) / 2 * 1.5):
                     print("DEBUG: Room placement failed")
                     successful = False
                     break
-                else:
+                else: # No rooms were too close, placement successful
                     successful = True
             if i == 0:
                 successful = True
+            attempts += 1
+            if attempts > 5: # If too many attempts were made, abort room placement
+                print("DEBUG: Attempt limit reached")
+                break
         
-        print("DEBUG: Room", i, "success")
-        grid[randX:randX + room.roomHeight, randY:randY + room.roomWidth] = room.getSpace()
-        grid[room.center[0], room.center[1]] = 200
-        rooms.append(room)
+        # If placement successful, add it grid and list
+        if successful == True:
+            print("DEBUG: Room", i, "success")
+            grid[randX:randX + room.roomHeight, randY:randY + room.roomWidth] = room.getSpace() # Place room at location
+            grid[room.center[0], room.center[1]] = 200 # Mark center of each room, debug feature
+            rooms.append(room) # Add room to list of rooms
     
+    # Add hallways between placed rooms
     for i in range(len(rooms)):
-        connectedRoom = (i + 1) % roomNumber
-        """ while connectedRoom == i:
+        connectedRoom = (i + 1) % len(rooms) # Connect to next room in list
+        """ while connectedRoom == i: # Connect to a random room
             connectedRoom = random.randrange(0, len(rooms)) """
-        meX = rooms[i].center[0]
-        meY = rooms[i].center[1]
-        themX = rooms[connectedRoom].center[0]
-        themY = rooms[connectedRoom].center[1]
+        meX = rooms[i].center[0] # Get i center X
+        meY = rooms[i].center[1] # Get i center Y
+        themX = rooms[connectedRoom].center[0] # Get connectedRoom center X
+        themY = rooms[connectedRoom].center[1] # Get connectedRoom center Y
 
+        # Determine relative location of each room and place a corresponding hallway
         if meX <= themX:
             grid[meX:themX+round(hallwayWidth/2), meY-round(hallwayWidth/2):meY+round(hallwayWidth/2)] = 255
             if meY <= themY:
@@ -84,48 +98,31 @@ def generate(grid):
             else:
                 grid[meX-round(hallwayWidth/2):meX+round(hallwayWidth/2), themY:meY+round(hallwayWidth/2)] = 255
         
+        # Set rooms as connected
         rooms[i].connected = True
         rooms[connectedRoom].connected = True
 
+# Update function, relic for animation, largely unused
 def update(frameNum, img, grid, N):
 
-	""" # copy grid since we require 8 neighbors
-	# for calculation and we go line by line
+	""" 
 	newGrid = grid.copy()
-	for i in range(N):
-		for j in range(N):
-
-			# compute 8-neighbor sum
-			# using toroidal boundary conditions - x and y wrap around
-			# so that the simulation takes place on a toroidal surface.
-			total = int((grid[i, (j-1)%N] + grid[i, (j+1)%N] +
-						grid[(i-1)%N, j] + grid[(i+1)%N, j] +
-						grid[(i-1)%N, (j-1)%N] + grid[(i-1)%N, (j+1)%N] +
-						grid[(i+1)%N, (j-1)%N] + grid[(i+1)%N, (j+1)%N])/255)
-
-			# apply Conway's rules
-			if grid[i, j] == ON:
-				if (total < 2) or (total > 3):
-					newGrid[i, j] = OFF
-			else:
-				if total == 3:
-					newGrid[i, j] = ON
-
+	
 	# update data
 	img.set_data(newGrid)
 	grid[:] = newGrid[:] """
 	return img,
 
 def main():
+    # Parser arguments may be used 
+
     #parser = argparse.ArgumentParser(description="DunGen Generator")
 
     #parser.add_argument('--grid-size', dest='N', required=False)
     #parser.add_argument('--mov-file', dest='movfile', required=False)
-    #parser.add_argument('--interval', dest='interval', required=False)
-    #parser.add_argument('--word', dest='word', required=False)
     #args = parser.parse_args()
 
-    if N < 10:
+    if N < 10: # Minimum grid size, end if too small
         return
 
     """ if args.N and int(args.N) > 8:
@@ -137,7 +134,7 @@ def main():
         updateInterval = int(args.interval) """
     updateInterval = 10
 
-    grid = np.array([])
+    grid = np.array([]) # Create grid
     grid = np.zeros(N*N).reshape(N, N)
 
     print("DEBUG: Start generation")
@@ -150,8 +147,8 @@ def main():
 								interval=updateInterval,
 								save_count=10)
 
-    plt.axis('off')
-    plt.savefig("output/dungeon.png", bbox_inches='tight')
-    plt.show()
+    plt.axis('off') # Remove grid axes
+    plt.savefig("output/dungeon.png", bbox_inches='tight') # Output PNG of generated dungeon
+    plt.show() # Display generated dungeon for Debug purposes
      
 main()
