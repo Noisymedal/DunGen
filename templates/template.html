@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dungeon Generator</title>
+    <style>
+        h2 {
+            background-color: white;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            text-align: center;
+        }
+        .container {
+            width: 60%;
+            background-color: lightgray;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Dungeon Generator</h2>
+        <img src="{{ url_for('static', filename='dungeon.png') }}" alt="Generated Dungeon">
+    </div>
+</body>
+</html>
