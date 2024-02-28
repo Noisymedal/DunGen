@@ -15,7 +15,7 @@ def generateSnappoints():
     file1.close()
 
 id=1
-generateID():
+def generateID():
     id=id+1
     return str(id)
 
@@ -29,9 +29,9 @@ def generateDungeonBricks(points):
         output+="\n\t\t\"posX\": "+points[i[0]]*spaceSize+","
         output+="\n\t\t\"posY\": 1.33155191,"
         output+="\n\t\t\"posZ\": "+points[i[1]]*spaceSize+","
-        output+="\n\t\t\"rotX\": 0.0,
-        output+="\n\t\t\"rotY\": 0.0,
-        output+="\n\t\t\"rotZ\": 0.0,
+        output+="\n\t\t\"rotX\": 0.0,"
+        output+="\n\t\t\"rotY\": 0.0,"
+        output+="\n\t\t\"rotZ\": 0.0,"
         output+="\n\t\t\"scaleX\": 0.173,"
         output+="\n\t\t\"scaleY\": 0.173,"
         output+="\n\t\t\"scaleZ\": 0.173,"
