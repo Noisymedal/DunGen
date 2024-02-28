@@ -1,27 +1,45 @@
-
+#number of spaces across on the board, note that we start counting from 0
 boardSize=39
+#the size of each space on the board
 spaceSize=0.019*2.5
+#this is the top left space coordinates
 zeroZero = [-0.95,-0.95]
 
+#this generates the snap points tht will be used for the main board
 def generateSnappoints():
+    #output variable that we will be writing to the file
     output=""
+    #for every space x
     for i in range(0,boardSize):
         xval = zeroZero[0]+(i*spaceSize)
+        #create a column of spaces y
         for j in range(0,boardSize):
             yval = zeroZero[1]+(j*spaceSize)
+            #and append them to the string
             output+=("\n{\n\t\"Position\": {\n\t \"x\": "+str(xval)+",\n\t \"y\": 0.0,\n\t \"z\": "+str(yval)+"\n\t }\n}," )
+    #once all the strings are made write them to an output file
     file1 = open('snappoints.txt', 'w')
     file1.write(output)
     file1.close()
 
+
+#every object we make will need a unique ID
+#the board is ID 0 so our object IDs will start at 1 and iterate up from there
 id=1
 def generateID():
+    #write the output to string
+    output=str(id)
+    #make the ID one bigger
     id=id+1
+    #return the string
     return str(id)
 
+#generate the dungeon bricks that will tile our walls
 def generateDungeonBricks(points):
+    #create the output string
     output=""
 
+    #Append EVERY SINGLE LINE for making an object to the string, for every object we need
     for i in range(0,len(points)):
         output+="{\n\t\"GUID\": "+generateID()+","
         output+="\n\t\"Name\": \"DungeonBrick\","
@@ -78,12 +96,15 @@ def generateDungeonBricks(points):
         output+="\n\"LuaScriptState\": \"\","
         output+="\n\"XmlUI\": \"\""
         output+="\n\"}"
+        #if the object is NOT the last one, add a comma, for formatting purposes
         if(i!=len(points)):
             output+=",\n"
+    #write the output to a file
     file2 = open('dungeonBricks.txt', 'w')
     file2.write(output)
     file2.close()
 
+#identical to dungeonBricks but for the grey Dungeon tiles above our bricks to obwscure the unexplored dungeon
 def generateDungeonHats(points):
     output=""
 
