@@ -21,6 +21,7 @@ def generateSnappoints():
     file1 = open('snappoints.txt', 'w')
     file1.write(output)
     file1.close()
+    return output
 
 
 #every object we make will need a unique ID
@@ -103,6 +104,7 @@ def generateDungeonBricks(points):
     file2 = open('dungeonBricks.txt', 'w')
     file2.write(output)
     file2.close()
+    return output
 
 #identical to dungeonBricks but for the grey Dungeon tiles above our bricks to obwscure the unexplored dungeon
 def generateDungeonHats(points):
@@ -169,8 +171,151 @@ def generateDungeonHats(points):
     file3 = open('dungeonHats.txt', 'w')
     file3.write(output)
     file3.close()
+    return output
 
-        
+def generateTabstates():
+    output=""
+    colorArray=[["Grey",0.5,0.5,0.5],["White",1.0,1.0,1.0],["Brown",0.443,0.231,0.09],["Red",0.856,0.1,0.094],["Orange",0.956,0.392,0.113],["Yellow",0.905,0.898,0.172],["Green",0.192,0.701,0.168],["Blue",0.118,0.53,1.0],["Teal",0.129,0.694,0.607],["Purple",0.627,0.125,0.941],["Pink",0.96,0.439,0.807],["Black",0.25,0.25,0.25]]
+    for i in range(len(colorArray)):
+        output+="\n\t\t\"0\": {"
+        if(i==0):
+            output+="\n\t\t\t\"title\": \"Rules\","
+        else:
+            output+="\n\t\t\t\"title\": "+colorArray[i[0]]+","
+        output+="\n\t\t\t\"body\": \"\","
+        output+="\n\t\t\t\"color\": "+colorArray[i[0]]+","
+        output+="\n\t\t\t\"visibleColor\": {"
+        output+="\n\t\t\"r\": "+colorArray[i[1]]+","
+        output+="\n\t\t\"g\": "+colorArray[i[2]]+","
+        output+="\n\t\t\"b\": "+colorArray[i[3]]
+        output+="\n\t\t},"
+        output+="\n\t\t\"id\": "+i
+        output+="\n}"
+        if(i!=len(colorArray)):
+            output+=",\n"
+    return output
 
+def generateHandtrigger():
+    output=""
+    handTriggerArray=[["Red",    -15.11,4.81,-20.11,  0.0,0.0,0.0,   11.77,9.17,4.87,  0.86,0.10,0.09,0.0],
+                      ["Yellow", -30.22,4.81,10.17,   0.0,0.90,0.0,  11.66,9.17,4.82,  0.91,0.9,0.17,0.0],
+                      ["Purple", 30.25,4.81,9.59,     0.0,270.0,0.0, 11.66,9.17,4.91,  0.63,0.13,0.94,0.0],
+                      ["Blue",   15.47,4.81,19.83,    0.0,180.0,0.0, 11.77,9.17,4.87,  0.18,0.53,1.0,0.0],
+                      ["White",  15.2,4.81,-20.14,    0.0,0.0,0.0,   11.77,9.17,4.87,  1.0,1.0,1.0,0.0],
+                      ["Green",  -15.19,4.81,19.79,   0.0,180.0,0.0, 11.77,9.17,4.87,  0.19,0.70,0.17,0.0],
+                      ["Pink",   30.1,4.81,-8.45,     0.0,270.0,0.0, 11.66,9.17,4.92,  0.96,0.44,0.81,0.0],
+                      ["Orange", -30.24,4.81,-8.82,   0.0,90.0,0.0,  11.66,9.17,4.92,  0.96,0.39,0.11,0.0],
+                      ["Teal",   0.0,4.81,19.8,       0.0,180.0,0.0, 11.77,19.17,4.87, 0.13,0.69,0.61,0.0],
+                      ["Brown",  0.0,4.81,-20.0,      0.0,180.0,0.0, 11.77,9.17,4.87,  0.44,0.23,0.09,0.0]]
+    for i in range(len(handTriggerArray)):
+        output+="\n\t{"
+        output+="\n\t\t\"GUID\": \"b58fbf\","
+        output+="\n\t\t\"Name\": \"HandTrigger\","
+        output+="\n\t\t\"Transform\": {"
+        output+="\n\t\t\t\"posX\": "+handTriggerArray[i[1]]+","
+        output+="\n\t\t\t\"posY\": "+handTriggerArray[i[2]]+"4.81034231,"
+        output+="\n\t\t\t\"posZ\": "+handTriggerArray[i[3]]+"-20.1076221,"
+        output+="\n\t\t\t\"rotX\": "+handTriggerArray[i[4]]+"0.0,"
+        output+="\n\t\t\t\"rotY\": "+handTriggerArray[i[5]]+"0.0,"
+        output+="\n\t\t\t\"rotZ\": "+handTriggerArray[i[6]]+"0.0,"
+        output+="\n\t\t\t\"scaleX\": "+handTriggerArray[i[7]]+","
+        output+="\n\t\t\t\"scaleY\": "+handTriggerArray[i[8]]+","
+        output+="\n\t\t\t\"scaleZ\": "+handTriggerArray[i[9]]+""
+        output+="\n\t\t},"
+        output+="\n\t\t\"Nickname\": \"\","
+        output+="\n\t\t\"Description\": \"\","
+        output+="\n\t\t\"GMNotes\": \"\","
+        output+="\n\t\t\"AltLookAngle\": {"
+        output+="\n\t\t\t\"x\": 0.0,"
+        output+="\n\t\t\t\"y\": 0.0,"
+        output+="\n\t\t\t\"z\": 0.0"
+        output+="\n\t\t},"
+        output+="\n\t\t\"ColorDiffuse\": {"
+        output+="\n\t\t\t\"r\": "+handTriggerArray[i[10]]+","
+        output+="\n\t\t\t\"g\": "+handTriggerArray[i[11]]+","
+        output+="\n\t\t\t\"b\": "+handTriggerArray[i[12]]+","
+        output+="\n\t\t\t\"a\": "+handTriggerArray[i[13]]+""
+        output+="\n\t\t},"
+        output+="\n\t\t\"LayoutGroupSortIndex\": 0,"
+        output+="\n\t\t\"Value\": 0,"
+        output+="\n\t\t\"Locked\": true,"
+        output+="\n\t\t\"Grid\": false,"
+        output+="\n\t\t\"Snap\": true,"
+        output+="\n\t\t\"IgnoreFoW\": false,"
+        output+="\n\t\t\"MeasureMovement\": false,"
+        output+="\n\t\t\"DragSelectable\": true,"
+        output+="\n\t\t\"Autoraise\": true,"
+        output+="\n\t\t\"Sticky\": true,"
+        output+="\n\t\t\"Tooltip\": true,"
+        output+="\n\t\t\"GridProjection\": false,"
+        output+="\n\t\t\"HideWhenFaceDown\": false,"
+        output+="\n\t\t\"Hands\": false,"
+        output+="\n\t\t\"FogColor\": "+handTriggerArray[i[0]]+","
+        output+="\n\t\t\"LuaScript\": \"\","
+        output+="\n\t\t\"LuaScriptState\": \"\","
+        output+="\n\t\t\"XmlUI\": \"\""
+        output+="\n\t}"
+        if(i!=len(handTriggerArray)):
+            output+=",\n"
+        return output
 
-
+def generateBoard():
+    output=""
+    output+="\n\t{"
+    output+="\n\t\t\"GUID\": \"0\","
+    output+="\n\t\t\"Name\": \"Custom_Tile\","
+    output+="\n\t\t\"Transform\": {"
+    output+="\n\t\t\t\"posX\": -1.259222,"
+    output+="\n\t\t\t\"posY\": 0.9591922,"
+    output+="\n\t\t\t\"posZ\": -0.0529934131,"
+    output+="\n\t\t\t\"rotX\": 0.0,"
+    output+="\n\t\t\t\"rotY\": 180,"
+    output+="\n\t\t\t\"rotZ\": 0.0,"
+    output+="\n\t\t\t\"scaleX\": 18.2097855,"
+    output+="\n\t\t\t\"scaleY\": 1.0,"
+    output+="\n\t\t\t\"scaleZ\": 18.2097855"
+    output+="\n\t\t},"
+    output+="\n\t\t\"Nickname\": \"\","
+    output+="\n\t\t\"Description\": \"\","
+    output+="\n\t\t\"GMNotes\": \"\","
+    output+="\n\t\t\"AltLookAngle\": {"
+    output+="\n\t\t\t\"x\": 0.0,"
+    output+="\n\t\t\t\"y\": 0.0,"
+    output+="\n\t\t\t\"z\": 0.0"
+    output+="\n\t\t},"
+    output+="\n\t\t\"ColorDiffuse\": {"
+    output+="\n\t\t\t\"r\": 1.0,"
+    output+="\n\t\t\t\"g\": 1.0,"
+    output+="\n\t\t\t\"b\": 1.0"
+    output+="\n\t\t},"
+    output+="\n\t\t\"LayoutGroupSortIndex\": 0,"
+    output+="\n\t\t\"Value\": 0,"
+    output+="\n\t\t\"Locked\": true,"
+    output+="\n\t\t\"Grid\": true,"
+    output+="\n\t\t\"Snap\": true,"
+    output+="\n\t\t\"IgnoreFoW\": false,"
+    output+="\n\t\t\"MeasureMovement\": false,"
+    output+="\n\t\t\"DragSelectable\": true,"
+    output+="\n\t\t\"Autoraise\": true,"
+    output+="\n\t\t\"Sticky\": true,"
+    output+="\n\t\t\"Tooltip\": true,"
+    output+="\n\t\t\"GridProjection\": false,"
+    output+="\n\t\t\"HideWhenFaceDown\": false,"
+    output+="\n\t\t\"Hands\": false,"
+    output+="\n\t\t\"CustomImage\": {"
+    output+="\n\t\t\t\"ImageURL\": \"http://cloud-3.steamusercontent.com/ugc/2494500993995213259/ADE4209F83FFE01D33D4E0C7A3EAA71C665FC901/\","
+    output+="\n\t\t\t\"ImageSecondaryURL\": \"http://cloud-3.steamusercontent.com/ugc/2494500993995213259/ADE4209F83FFE01D33D4E0C7A3EAA71C665FC901/\","
+    output+="\n\t\t\t\"ImageScalar\": 1.0,"
+    output+="\n\t\t\t\"WidthScale\": 0.0,"
+    output+="\n\t\t\t\"CustomTile\": {"
+    output+="\n\t\t\t\t\"Type\": 0,"
+    output+="\n\t\t\t\t\"Thickness\": 0.2,"
+    output+="\n\t\t\t\t\"Stackable\": false,"
+    output+="\n\t\t\t\t\"Stretch\": true"
+    output+="\n\t\t\t}"
+    output+="\n\t\t},"
+    output+="\n\t\t\"LuaScript\": \"\","
+    output+="\n\t\t\"LuaScriptState\": \"\","
+    output+="\n\t\t\"XmlUI\": \"\","
+    #call the generateSnappoints() function
+    
