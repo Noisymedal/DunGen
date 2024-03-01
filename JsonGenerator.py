@@ -1,3 +1,10 @@
+import snappointStringGenerator as gen0
+import csv
+with open('output/walls.csv', newline='') as f:
+    reader = csv.reader(f)
+    data = list(reader)
+
+
 output=""
 output+="{"
 output+="\n\"SaveName\": \"Dun-Gen Tool Testing\","
@@ -14,7 +21,7 @@ output+="\n\"Table\": \"Table_RPG\","
 output+="\n\"Sky\": \"Sky_Museum\","
 output+="\n\"Note\": \"\","
 output+="\n\"TabStates\": {"
-#Use the genreateTabstates() function here
+output+=gen0.generateTabstates()
 output+="},"
 output+="\t\"Grid\": {"
 output+="\t\"Type\": 0,"
@@ -88,7 +95,7 @@ output+="\"LuaScript\": \"--[[ Lua code. See documentation: https://api.tabletop
 output+="\"LuaScriptState\": \"\","
 output+="\"XmlUI\": \"<!-- Xml UI. See documentation: https://api.tabletopsimulator.com/ui/introUI/ -->\","
 output+="\"ObjectStates\": ["
-#Use the generateHandtrigger() function here
-#Call the generateBoard() function here
-#call the genertedungeonbricks() function here
-#call the generatedungeonhats() function here
+output+=gen0.generateHandtrigger()
+output+=gen0.generateBoard()
+output+=gen0.genertedungeonbricks(data)
+output+=gen0.generatedungeonhats(data)
