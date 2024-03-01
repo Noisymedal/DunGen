@@ -6,6 +6,7 @@
 
 import argparse
 import numpy as np
+import numpy.ma as ma
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import random
@@ -26,13 +27,15 @@ roomHeightMax = 4 # Maximum height of any room
 roomHeightMin = 2 # Minimum height of any room
 hallwayWidth = 1 # Width of hallways
 N = 200 # Size of grid
-image = Image.open("output/CobblestoneTexture.png")
+image = plt.imread("output/CobblestoneTexture.png")
 image_array = np.array(image)
 
 imagex = 0.784
 imagey = 0.86
 imagewidth = 1/N
 imageheight = 1/N
+
+rooms = []
 
 # Object for storing individual room information
 class Room(object):
@@ -67,7 +70,7 @@ def testOverlap(hallway1, hallway2):
 
 # Generate rooms, hallways, and grid
 def generate(grid): 
-    rooms = [] # Initialize array of all rooms
+     # Initialize array of all rooms
     hallways = [] # Initialize array of all hallways
 
     for i in range(roomNumber): # Generate and place up to roomNumber rooms
@@ -85,7 +88,7 @@ def generate(grid):
             # Begin placement test
             for j in range(len(rooms)):
                 # Calculate distance from room center to room center
-                if pow(pow(rooms[j].center[0]-room.center[0], 2) + pow(rooms[j].center[1]-room.center[1], 2), .5) <= ((roomWidthMax+roomHeightMax) / 2 * 1.5):
+                if pow(pow(rooms[j].center[0]-room.center[0], 2) + pow(rooms[j].center[1]-room.center[1], 2), .5) <= ((roomWidthMax*5+roomHeightMax*5) / 2 * 1.5):
                     print("DEBUG: Room placement failed")
                     successful = False
                     break
@@ -102,7 +105,6 @@ def generate(grid):
         if successful == True:
             print("DEBUG: Room", i, "success")
             grid[randX:randX + (room.roomHeight*5), randY:randY + (room.roomWidth*5)] = room.getSpace() # Place room at location
-            grid[room.center[0], room.center[1]] = 200 # Mark center of each room, debug feature
             rooms.append(room) # Add room to list of rooms
     
     # Add hallways between placed rooms
@@ -140,8 +142,6 @@ def generate(grid):
         # Set rooms as connected
         rooms[i].connected = True
         rooms[connectedRoom].connected = True
-    for i in range(len(hallways)):
-        grid[hallways[i].corner[0], hallways[i].corner[1]] = 100
 
 # Update function, relic for animation, largely unused
 def update(frameNum, img, grid, N):
@@ -174,6 +174,8 @@ def main():
     if args.interval:
         updateInterval = int(args.interval) """
     updateInterval = 10
+
+    #plt.rcParams['grid.color'] = (0.5, 0.5, 0.5, 0.1)
 
     grid = np.array([]) # Create grid
     grid = np.zeros(N*N).reshape(N, N)
@@ -209,31 +211,35 @@ def main():
         write.writerows(res)
 
     fig, ax = plt.subplots()
-    img = ax.imshow(grid, interpolation='nearest')
+    alphas = ((grid/255) + 1) % 2
+    
+    #ax.set_alpha(1.0)
+    img = ax.imshow(grid, interpolation='nearest', zorder=1, alpha=alphas)
+    
     ani = animation.FuncAnimation(fig, update, fargs=(img, grid, N),
 								frames = 10,
 								interval=updateInterval,
 								save_count=10)
     
+    plt.axis('off') # Remove grid axes
+    """ ax_image = fig.add_axes([imagex,
+                         imagey,
+                         imagewidth,
+                         imageheight]
+                       ) """
+    
     """ for i in range(N):
         for j in range(N):
             if (grid[i,j] == 255):
-                ax_image = fig.add_axes([i,
-                         j,
+                ax_image = fig.add_axes([i/N,
+                         j/N,
                          imagewidth,
                          imageheight]
                        )
     
                 ax_image.imshow(image, interpolation="nearest") """
     
-    plt.axis('off') # Remove grid axes
-    ax_image = fig.add_axes([imagex,
-                         imagey,
-                         imagewidth,
-                         imageheight]
-                       )
-    
-    ax_image.imshow(image, interpolation="nearest")
+    ax.imshow(image, extent=[0, 200, 0, 200], zorder=0)
 
     plt.axis('off') # Remove grid axes
     plt.savefig("output/dungeon.png", bbox_inches='tight') # Output PNG of generated dungeon
