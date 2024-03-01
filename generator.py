@@ -206,7 +206,7 @@ def main():
     
     res = [i for n, i in enumerate(walls) if i not in walls[:n]]
 
-    with open("output/walls.csv", "w") as f:
+    with open("output/walls.csv", "w", newline='') as f:
         write = csv.writer(f)
         write.writerows(res)
 
