@@ -317,5 +317,5 @@ def generateBoard():
     output+="\n\t\t\"LuaScript\": \"\","
     output+="\n\t\t\"LuaScriptState\": \"\","
     output+="\n\t\t\"XmlUI\": \"\","
-    #call the generateSnappoints() function
-    
+    output+=generateSnappoints()
+    return output
