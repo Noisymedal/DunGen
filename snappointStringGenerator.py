@@ -28,6 +28,7 @@ def generateSnappoints():
 #the board is ID 0 so our object IDs will start at 1 and iterate up from there
 id=1
 def generateID():
+    global id
     #write the output to string
     output=str(id)
     #make the ID one bigger
@@ -45,9 +46,9 @@ def generateDungeonBricks(points):
         output+="{\n\t\"GUID\": "+generateID()+","
         output+="\n\t\"Name\": \"DungeonBrick\","
         output+="\n\t\"Transform\": {"
-        output+="\n\t\t\"posX\": "+points[i[0]]*spaceSize+","
+        output+="\n\t\t\"posX\": "+str(float(points[i][0])*spaceSize)+","
         output+="\n\t\t\"posY\": 1.33155191,"
-        output+="\n\t\t\"posZ\": "+points[i[1]]*spaceSize+","
+        output+="\n\t\t\"posZ\": "+str(float(points[i][1])*spaceSize)+","
         output+="\n\t\t\"rotX\": 0.0,"
         output+="\n\t\t\"rotY\": 0.0,"
         output+="\n\t\t\"rotZ\": 0.0,"
@@ -114,9 +115,9 @@ def generateDungeonHats(points):
         output+="{\n\t\"GUID\": "+generateID()+","
         output+="\n\t\"Name\": \"DungeonHat\","
         output+="\n\t\"Transform\": {"
-        output+="\n\t\t\"posX\": "+points[i[0]]*spaceSize+","
+        output+="\n\t\t\"posX\": "+str(float(points[i][0])*spaceSize)+","
         output+="\n\t\t\"posY\": 1.33155191,"
-        output+="\n\t\t\"posZ\": "+points[i[1]]*spaceSize+","
+        output+="\n\t\t\"posZ\": "+str(float(points[i][1])*spaceSize)+","
         output+="\n\t\t\"rotX\": 0.0,"
         output+="\n\t\t\"rotY\": 0.0,"
         output+="\n\t\t\"rotZ\": 0.0,"
@@ -175,23 +176,24 @@ def generateDungeonHats(points):
 
 def generateTabstates():
     output=""
-    colorArray=[["Grey",0.5,0.5,0.5],["White",1.0,1.0,1.0],["Brown",0.443,0.231,0.09],["Red",0.856,0.1,0.094],["Orange",0.956,0.392,0.113],["Yellow",0.905,0.898,0.172],["Green",0.192,0.701,0.168],["Blue",0.118,0.53,1.0],["Teal",0.129,0.694,0.607],["Purple",0.627,0.125,0.941],["Pink",0.96,0.439,0.807],["Black",0.25,0.25,0.25]]
-    for i in range(len(colorArray)):
+    colorNameArray=["Grey","White","Brown","Red","Orange","Yellow","Green","Blue","Teal","Purple","Pink","Black"]
+    colorDataArray=[[0.5,0.5,0.5],[1.0,1.0,1.0],[0.443,0.231,0.09],[0.856,0.1,0.094],[0.956,0.392,0.113],[0.905,0.898,0.172],[0.192,0.701,0.168],[0.118,0.53,1.0],[0.129,0.694,0.607],[0.627,0.125,0.941],[0.96,0.439,0.807],[0.25,0.25,0.25]]
+    for i in range(len(colorNameArray)):
         output+="\n\t\t\"0\": {"
         if(i==0):
             output+="\n\t\t\t\"title\": \"Rules\","
         else:
-            output+="\n\t\t\t\"title\": "+colorArray[i[0]]+","
+            output+="\n\t\t\t\"title\": "+str(colorNameArray[i][0])+","
         output+="\n\t\t\t\"body\": \"\","
-        output+="\n\t\t\t\"color\": "+colorArray[i[0]]+","
+        output+="\n\t\t\t\"color\": "+str(colorNameArray[i][0])+","
         output+="\n\t\t\t\"visibleColor\": {"
-        output+="\n\t\t\"r\": "+colorArray[i[1]]+","
-        output+="\n\t\t\"g\": "+colorArray[i[2]]+","
-        output+="\n\t\t\"b\": "+colorArray[i[3]]
+        output+="\n\t\t\"r\": "+str(colorDataArray[i][0])+","
+        output+="\n\t\t\"g\": "+str(colorDataArray[i][1])+","
+        output+="\n\t\t\"b\": "+str(colorDataArray[i][2])
         output+="\n\t\t},"
-        output+="\n\t\t\"id\": "+i
+        output+="\n\t\t\"id\": "+str(i)
         output+="\n}"
-        if(i!=len(colorArray)):
+        if(i!=len(colorNameArray)):
             output+=",\n"
     return output
 
@@ -212,15 +214,15 @@ def generateHandtrigger():
         output+="\n\t\t\"GUID\": \"b58fbf\","
         output+="\n\t\t\"Name\": \"HandTrigger\","
         output+="\n\t\t\"Transform\": {"
-        output+="\n\t\t\t\"posX\": "+handTriggerArray[i[1]]+","
-        output+="\n\t\t\t\"posY\": "+handTriggerArray[i[2]]+"4.81034231,"
-        output+="\n\t\t\t\"posZ\": "+handTriggerArray[i[3]]+"-20.1076221,"
-        output+="\n\t\t\t\"rotX\": "+handTriggerArray[i[4]]+"0.0,"
-        output+="\n\t\t\t\"rotY\": "+handTriggerArray[i[5]]+"0.0,"
-        output+="\n\t\t\t\"rotZ\": "+handTriggerArray[i[6]]+"0.0,"
-        output+="\n\t\t\t\"scaleX\": "+handTriggerArray[i[7]]+","
-        output+="\n\t\t\t\"scaleY\": "+handTriggerArray[i[8]]+","
-        output+="\n\t\t\t\"scaleZ\": "+handTriggerArray[i[9]]+""
+        output+="\n\t\t\t\"posX\": "+str(handTriggerArray[i][1])+","
+        output+="\n\t\t\t\"posY\": "+str(handTriggerArray[i][2])+","
+        output+="\n\t\t\t\"posZ\": "+str(handTriggerArray[i][3])+","
+        output+="\n\t\t\t\"rotX\": "+str(handTriggerArray[i][4])+","
+        output+="\n\t\t\t\"rotY\": "+str(handTriggerArray[i][5])+","
+        output+="\n\t\t\t\"rotZ\": "+str(handTriggerArray[i][6])+","
+        output+="\n\t\t\t\"scaleX\": "+str(handTriggerArray[i][7])+","
+        output+="\n\t\t\t\"scaleY\": "+str(handTriggerArray[i][8])+","
+        output+="\n\t\t\t\"scaleZ\": "+str(handTriggerArray[i][9])+""
         output+="\n\t\t},"
         output+="\n\t\t\"Nickname\": \"\","
         output+="\n\t\t\"Description\": \"\","
@@ -231,10 +233,10 @@ def generateHandtrigger():
         output+="\n\t\t\t\"z\": 0.0"
         output+="\n\t\t},"
         output+="\n\t\t\"ColorDiffuse\": {"
-        output+="\n\t\t\t\"r\": "+handTriggerArray[i[10]]+","
-        output+="\n\t\t\t\"g\": "+handTriggerArray[i[11]]+","
-        output+="\n\t\t\t\"b\": "+handTriggerArray[i[12]]+","
-        output+="\n\t\t\t\"a\": "+handTriggerArray[i[13]]+""
+        output+="\n\t\t\t\"r\": "+str(handTriggerArray[i][10])+","
+        output+="\n\t\t\t\"g\": "+str(handTriggerArray[i][11])+","
+        output+="\n\t\t\t\"b\": "+str(handTriggerArray[i][12])+","
+        output+="\n\t\t\t\"a\": "+str(handTriggerArray[i][13])+""
         output+="\n\t\t},"
         output+="\n\t\t\"LayoutGroupSortIndex\": 0,"
         output+="\n\t\t\"Value\": 0,"
@@ -250,7 +252,7 @@ def generateHandtrigger():
         output+="\n\t\t\"GridProjection\": false,"
         output+="\n\t\t\"HideWhenFaceDown\": false,"
         output+="\n\t\t\"Hands\": false,"
-        output+="\n\t\t\"FogColor\": "+handTriggerArray[i[0]]+","
+        output+="\n\t\t\"FogColor\": "+str(handTriggerArray[i][0])+","
         output+="\n\t\t\"LuaScript\": \"\","
         output+="\n\t\t\"LuaScriptState\": \"\","
         output+="\n\t\t\"XmlUI\": \"\""

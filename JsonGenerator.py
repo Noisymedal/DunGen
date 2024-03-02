@@ -97,5 +97,8 @@ output+="\"XmlUI\": \"<!-- Xml UI. See documentation: https://api.tabletopsimula
 output+="\"ObjectStates\": ["
 output+=gen0.generateHandtrigger()
 output+=gen0.generateBoard()
-output+=gen0.genertedungeonbricks(data)
-output+=gen0.generatedungeonhats(data)
+output+=gen0.generateDungeonBricks(data)
+output+=gen0.generateDungeonHats(data)
+file1 = open('TS_Save_7.json', 'w')
+file1.write(output)
+file1.close()
