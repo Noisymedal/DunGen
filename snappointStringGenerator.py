@@ -16,8 +16,12 @@ def generateSnappoints():
         for j in range(0,boardSize):
             yval = zeroZero[1]+(j*spaceSize)
             #and append them to the string
-            output+=("\n{\n\t\"Position\": {\n\t \"x\": "+str(xval)+",\n\t \"y\": 0.0,\n\t \"z\": "+str(yval)+"\n\t }\n}," )
+            output+=("\n{\n\t\"Position\": {\n\t \"x\": "+str(xval)+",\n\t \"y\": 0.0,\n\t \"z\": "+str(yval)+"\n\t }\n}" )
+            if(not(i==boardSize-1 and j==boardSize-1)):
+                output+=",\n"
+
     #once all the strings are made write them to an output file
+    output+="]},\n"
     file1 = open('snappoints.txt', 'w')
     file1.write(output)
     file1.close()

@@ -99,6 +99,7 @@ output+=gen0.generateHandtrigger()
 output+=gen0.generateBoard()
 output+=gen0.generateDungeonBricks(data)
 output+=gen0.generateDungeonHats(data)
+output+="\n]\n}"
 file1 = open('TS_Save_7.json', 'w')
 file1.write(output)
 file1.close()
