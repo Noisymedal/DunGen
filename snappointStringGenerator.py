@@ -261,7 +261,7 @@ def generateHandtrigger():
         output+="\n\t}"
         if(i!=len(handTriggerArray)):
             output+=",\n"
-        return output
+    return output
 
 def generateBoard():
     output=""
