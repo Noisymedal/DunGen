@@ -48,7 +48,7 @@ def generateDungeonBricks(points):
     #Append EVERY SINGLE LINE for making an object to the string, for every object we need
     for i in range(0,len(points)):
         output+="{\n\t\"GUID\": "+generateID()+","
-        output+="\n\t\"Name\": \"DungeonBrick\","
+        output+="\n\t\"Name\": \"Custom_Model\","
         output+="\n\t\"Transform\": {"
         output+="\n\t\t\"posX\": "+str(float(points[i][0])*spaceSize)+","
         output+="\n\t\t\"posY\": 1.33155191,"
@@ -116,7 +116,7 @@ def generateDungeonHats(points):
 
     for i in range(0,len(points)):
         output+="{\n\t\"GUID\": "+generateID()+","
-        output+="\n\t\"Name\": \"DungeonHat\","
+        output+="\n\t\"Name\": \"Custom_Model\","
         output+="\n\t\"Transform\": {"
         output+="\n\t\t\"posX\": "+str(float(points[i][0])*spaceSize)+","
         output+="\n\t\t\"posY\": 1.33155191,"
