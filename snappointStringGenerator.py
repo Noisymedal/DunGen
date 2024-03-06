@@ -1,19 +1,22 @@
 #number of spaces across on the board, note that we start counting from 0
-boardSize=39
+boardSize=40
 #the size of each space on the board
 spaceSize=0.019*2.5
-#this is the top left space coordinates
-zeroZero = [-0.95,-0.95]
+#this is the top left space coordinates for the snappoints
+zeroZero = [-0.925,-0.933]
+#This is the top-left space coordinates for the object generation
+wallOffsets=[-19,-14]
+wallSpaceSize=spaceSize*2
 
 #this generates the snap points tht will be used for the main board
 def generateSnappoints():
     #output variable that we will be writing to the file
     output=""
     #for every space x
-    for i in range(0,boardSize):
+    for i in range(boardSize):
         xval = zeroZero[0]+(i*spaceSize)
         #create a column of spaces y
-        for j in range(0,boardSize):
+        for j in range(boardSize):
             yval = zeroZero[1]+(j*spaceSize)
             #and append them to the string
             output+=("\n{\n\t\"Position\": {\n\t \"x\": "+str(xval)+",\n\t \"y\": 0.0,\n\t \"z\": "+str(yval)+"\n\t }\n}" )
@@ -50,9 +53,9 @@ def generateDungeonBricks(points):
         output+="{\n\t\"GUID\": "+generateID()+","
         output+="\n\t\"Name\": \"Custom_Model\","
         output+="\n\t\"Transform\": {"
-        output+="\n\t\t\"posX\": "+str(float(points[i][0])*spaceSize)+","
+        output+="\n\t\t\"posX\": "+str(float(points[i][0])*wallSpaceSize*10+zeroZero[0]+wallOffsets[0])+","
         output+="\n\t\t\"posY\": 1.33155191,"
-        output+="\n\t\t\"posZ\": "+str(float(points[i][1])*spaceSize)+","
+        output+="\n\t\t\"posZ\": "+str(float(points[i][1])*wallSpaceSize*10+zeroZero[1]+wallOffsets[1])+","
         output+="\n\t\t\"rotX\": 0.0,"
         output+="\n\t\t\"rotY\": 0.0,"
         output+="\n\t\t\"rotZ\": 0.0,"
@@ -118,9 +121,9 @@ def generateDungeonHats(points):
         output+="{\n\t\"GUID\": "+generateID()+","
         output+="\n\t\"Name\": \"Custom_Model\","
         output+="\n\t\"Transform\": {"
-        output+="\n\t\t\"posX\": "+str(float(points[i][0])*spaceSize)+","
-        output+="\n\t\t\"posY\": 1.33155191,"
-        output+="\n\t\t\"posZ\": "+str(float(points[i][1])*spaceSize)+","
+        output+="\n\t\t\"posX\": "+str(float(points[i][0])*wallSpaceSize*10+zeroZero[0]+wallOffsets[0])+","
+        output+="\n\t\t\"posY\": 1.6,"
+        output+="\n\t\t\"posZ\": "+str(float(points[i][1])*wallSpaceSize*10+zeroZero[1]+wallOffsets[1])+","
         output+="\n\t\t\"rotX\": 0.0,"
         output+="\n\t\t\"rotY\": 0.0,"
         output+="\n\t\t\"rotZ\": 0.0,"
