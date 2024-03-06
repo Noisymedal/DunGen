@@ -4,9 +4,11 @@ boardSize=40
 spaceSize=0.019*2.5
 #this is the top left space coordinates for the snappoints
 zeroZero = [-0.925,-0.933]
+
 #This is the top-left space coordinates for the object generation
-wallOffsets=[-19,-14]
-wallSpaceSize=spaceSize*2
+wallOffsets=[-17,-16]
+#This si the scalar for object positioning, it includes spaceSize for tweaking mu,tiple things at once, in the future once everything is nice and synced up
+wallSpaceSize=spaceSize*1.8
 
 #this generates the snap points tht will be used for the main board
 def generateSnappoints():
@@ -59,9 +61,9 @@ def generateDungeonBricks(points):
         output+="\n\t\t\"rotX\": 0.0,"
         output+="\n\t\t\"rotY\": 0.0,"
         output+="\n\t\t\"rotZ\": 0.0,"
-        output+="\n\t\t\"scaleX\": 0.173,"
+        output+="\n\t\t\"scaleX\": 0.3501,"
         output+="\n\t\t\"scaleY\": 0.173,"
-        output+="\n\t\t\"scaleZ\": 0.173"
+        output+="\n\t\t\"scaleZ\": 0.3501"
         output+="\n\t},"
         output+="\n\t\"Nickname\": \"\","
         output+="\n\t\"Description\": \"\","
@@ -113,10 +115,12 @@ def generateDungeonBricks(points):
     file2.close()
     return output
 
-#identical to dungeonBricks but for the grey Dungeon tiles above our bricks to obwscure the unexplored dungeon
+#identical to dungeonBricks but for the grey Dungeon tiles above our bricks to obscure the unexplored dungeon
 def generateDungeonHats(points):
     output=""
 
+
+    #Append EVERY SINGLE LINE for making an object to the string, for every object we need
     for i in range(0,len(points)):
         output+="{\n\t\"GUID\": "+generateID()+","
         output+="\n\t\"Name\": \"Custom_Model\","
@@ -127,9 +131,9 @@ def generateDungeonHats(points):
         output+="\n\t\t\"rotX\": 0.0,"
         output+="\n\t\t\"rotY\": 0.0,"
         output+="\n\t\t\"rotZ\": 0.0,"
-        output+="\n\t\t\"scaleX\": 0.173,"
+        output+="\n\t\t\"scaleX\": 0.3501,"
         output+="\n\t\t\"scaleY\": 0.02,"
-        output+="\n\t\t\"scaleZ\": 0.173"
+        output+="\n\t\t\"scaleZ\": 0.3501"
         output+="\n\t},"
         output+="\n\t\"Nickname\": \"\","
         output+="\n\t\"Description\": \"\","
@@ -179,6 +183,7 @@ def generateDungeonHats(points):
     file3.close()
     return output
 
+#I don't exactly know what tabstates are, but the .json files in TTS have them, and the generation works so I don't want to delete them
 def generateTabstates():
     output=""
     colorNameArray=["\"Grey\"","\"White\"","\"Brown\"","\"Red\"","\"Orange\"","\"Yellow\"","\"Green\"","\"Blue\"","\"Teal\"","\"Purple\"","\"Pink\"","\"Black\""]
@@ -202,6 +207,7 @@ def generateTabstates():
             output+=",\n"
     return output
 
+#I'm pretty sure these are the player hand zones
 def generateHandtrigger():
     output=""
     handTriggerArray=[["\"Red\"",    -15.11,4.81,-20.11,  0.0,0.0,0.0,   11.77,9.17,4.87,  0.86,0.10,0.09,0.0],
@@ -310,8 +316,8 @@ def generateBoard():
     output+="\n\t\t\"HideWhenFaceDown\": false,"
     output+="\n\t\t\"Hands\": false,"
     output+="\n\t\t\"CustomImage\": {"
-    output+="\n\t\t\t\"ImageURL\": \"http://cloud-3.steamusercontent.com/ugc/2494500993995213259/ADE4209F83FFE01D33D4E0C7A3EAA71C665FC901/\","
-    output+="\n\t\t\t\"ImageSecondaryURL\": \"http://cloud-3.steamusercontent.com/ugc/2494500993995213259/ADE4209F83FFE01D33D4E0C7A3EAA71C665FC901/\","
+    output+="\n\t\t\t\"ImageURL\": \"file:///C:\\\\Users\\\\BrownIan\\\\OneDrive - University of Wisconsin-Stout\\\\Documents\\\\GitHub\\\\DunGen\\\\output\\\\dungeon.png\","
+    output+="\n\t\t\t\"ImageSecondaryURL\": \"file:///C:\\\\Users\\\\BrownIan\\\\OneDrive - University of Wisconsin-Stout\\\\Documents\\\\GitHub\\\\DunGen\\\\output\\\\dungeon.png\","
     output+="\n\t\t\t\"ImageScalar\": 1.0,"
     output+="\n\t\t\t\"WidthScale\": 0.0,"
     output+="\n\t\t\t\"CustomTile\": {"
