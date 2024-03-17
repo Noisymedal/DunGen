@@ -1,18 +1,115 @@
 ## SETUP: run the following command in the terminal to install dependencies (flask and matplotlib specifically):
 ## -m pip install -r requirements.txt
 ## run the web app by typing the following command in the terminal:
-## python -m flask --app app run
-## the terminal will output the localhost address it is running on
+## python app.py
+## the web app should then run on http://localhost:5000
 
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect, url_for, request, session, flash
+from flask_mysqldb import MySQL
+import MySQLdb.cursors, re, hashlib
 import generator
 
 app = Flask(__name__)
+
+app.secret_key = "holy moly"
+
+app.config['MYSQL_HOST'] = 'dgn.c34mk48scuxa.us-east-2.rds.amazonaws.com'
+app.config['MYSQL_USER'] = 'dgnadmin'
+app.config['MYSQL_PASSWORD'] = 'vsyjAheSRR9N8TjVtEbKJd'
+app.config['MYSQL_DB'] = 'dgn'
+
+mysql = MySQL(app)
+
 
 @app.route("/")
 def generate_dungeon():
     generator.main()
     return render_template("template.html")
+
+# Route for handling the login page logic
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    # Output a message if something goes wrong...
+    msg = ''
+
+    # Check if "username" and "password" POST requests exist (user submitted form)
+    if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
+        # Create variables for easy access
+        username = request.form['username']
+        password = request.form['password']
+
+        # Check if account exists using MySQL
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT * FROM user WHERE username = %s AND password = %s', (username, password,))
+
+        # Fetch one record and return result
+        account = cursor.fetchone()
+        # If account exists in accounts table in out database
+        if account:
+            # Create session data, we can access this data in other routes
+            session['loggedin'] = True
+            session['id'] = account['iduser']
+            session['username'] = account['username']
+            # Redirect to home page
+            # flash('Login successful')
+            return 'Logged in successfully!'
+        else:
+            # Account doesnt exist or username/password incorrect
+            msg = 'Incorrect username/password!'
+    # Show the login form with message (if any)
+    return render_template('login.html', msg=msg)
+
+@app.route('/logout')
+def logout():
+    # Remove session data, this will log the user out
+   session.pop('loggedin', None)
+   session.pop('id', None)
+   session.pop('username', None)
+   # Redirect to login page
+   return redirect(url_for('login'))
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    # Output message if something goes wrong...
+    msg = ''
+    # Check if "username", "password" and "email" POST requests exist (user submitted form)
+    if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in request.form:
+        # Create variables for easy access
+        username = request.form['username']
+        password = request.form['password']
+        email = request.form['email']
+        # Check if account exists using MySQL
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT * FROM user WHERE username = %s', (username,))
+        account = cursor.fetchone()
+        # If account exists show error and validation checks
+        if account:
+            msg = 'Account already exists!'
+
+        # regex for validation (add later?)
+        #elif not re.match(r'[^@]+@[^@]+\.[^@]+', email):
+            #msg = 'Invalid email address!'
+        #elif not re.match(r'[A-Za-z0-9]+', username):
+            #msg = 'Username must contain only characters and numbers!'
+        
+        elif not username or not password or not email:
+            msg = 'Please fill out the form!'
+        else:
+            # Hash the password
+            # hash = password + app.secret_key
+            # hash = hashlib.sha1(hash.encode())
+            # password = hash.hexdigest()
+
+            # Account doesn't exist, and the form data is valid, so insert the new account into the accounts table
+            cursor.execute('INSERT INTO user VALUES (NULL, %s, %s, %s)', (username, password, email,))
+            mysql.connection.commit()
+            msg = 'You have successfully registered!'
+    elif request.method == 'POST':
+        # Form is empty... (no POST data)
+        msg = 'Please fill out the form!'
+    # Show registration form with message (if any)
+    return render_template('register.html', msg=msg)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
