@@ -10,7 +10,7 @@ import numpy.ma as ma
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import random
-import cmath
+import math
 from PIL import Image
 import csv
 
@@ -27,7 +27,8 @@ roomHeightMax = 4 # Maximum height of any room
 roomHeightMin = 2 # Minimum height of any room
 hallwayWidth = 1 # Width of hallways
 N = 200 # Size of grid
-image = plt.imread("output/CobblestoneTexture.png")
+#image = plt.imread("output/CobblestoneTexture.png")
+image = plt.imread("output/grid.png")
 image_array = np.array(image)
 
 imagex = 0.784
@@ -35,7 +36,8 @@ imagey = 0.86
 imagewidth = 1/N
 imageheight = 1/N
 
-rooms = []
+rooms = [] # Initialize array of all rooms
+hallways = [] # Initialize array of all hallways
 
 # Object for storing individual room information
 class Room(object):
@@ -59,19 +61,125 @@ class Hallway(object):
     end = []
     corner = []
 
-    def __init__(self, start, end, corner) -> None:
+    def __init__(self, start, end, corner, room1, room2) -> None:
         self.start = start
         self.end = end
         self.corner = corner
+        self.room1 = room1
+        self.room2 = room2
 
-def testOverlap(hallway1, hallway2):
-    hallway1coords = []
+def testOverlap(hallway, hallway2, loc1):
+    hallwayPath = [[], []]
+    hallway2Path = [[], []]
+    intersect = False
 
+    if hallway.start[0] != hallway.corner[0]:
+        if hallway.start[0] > hallway.corner[0]:
+            for i in range(hallway.start[0]-hallway.corner[0]):
+                hallwayPath[0].append(i+hallway.corner[0])
+            if hallway.corner[0] != hallway.end[0]:
+                if hallway.corner[0] > hallway.end[0]:
+                    for j in range(hallway.corner[0] - hallway.end[0]):
+                        hallwayPath[1].append(j+hallway.end[0])
+                else:
+                    for j in range(hallway.corner[0] - hallway.end[0]):
+                        hallwayPath[1].append(j+hallway.corner[0])
+        else:
+            for i in range(hallway.corner[0]-hallway.start[0]):
+                hallwayPath[0].append(i+hallway.start[0])
+            if hallway.corner[0] != hallway.end[0]:
+                if hallway.corner[0] > hallway.end[0]:
+                    for j in range(hallway.corner[0] - hallway.end[0]):
+                        hallwayPath[1].append(j+hallway.end[0])
+                else:
+                    for j in range(hallway.corner[0] - hallway.end[0]):
+                        hallwayPath[1].append(j+hallway.corner[0])             
+    else:
+        if hallway.start[1] > hallway.corner[1]:
+            for i in range(hallway.start[1]-hallway.corner[1]):
+                hallwayPath[0].append(i+hallway.corner[1])
+            if hallway.corner[0] != hallway.end[0]:
+                if hallway.corner[0] > hallway.end[0]:
+                    for j in range(hallway.corner[0] - hallway.end[0]):
+                        hallwayPath[1].append(j+hallway.end[0])
+                else:
+                    for j in range(hallway.corner[0] - hallway.end[0]):
+                        hallwayPath[1].append(j+hallway.corner[0])
+        else:
+            for i in range(hallway.corner[1]-hallway.start[1]):
+                hallwayPath[0].append(i+hallway.start[1])
+            if hallway.corner[0] != hallway.end[0]:
+                if hallway.corner[0] > hallway.end[0]:
+                    for j in range(hallway.corner[0] - hallway.end[0]):
+                        hallwayPath[1].append(j+hallway.end[0])
+                else:
+                    for j in range(hallway.corner[0] - hallway.end[0]):
+                        hallwayPath[1].append(j+hallway.corner[0])
+    
+    if hallway2.start[0] != hallway2.corner[0]:
+        if hallway2.start[0] > hallway2.corner[0]:
+            for i in range(hallway2.start[0]-hallway2.corner[0]):
+                hallway2Path[0].append(i+hallway2.corner[0])
+            if hallway2.corner[0] != hallway2.end[0]:
+                if hallway2.corner[0] > hallway2.end[0]:
+                    for j in range(hallway2.corner[0] - hallway2.end[0]):
+                        hallway2Path[1].append(j+hallway2.end[0])
+                else:
+                    for j in range(hallway2.corner[0] - hallway2.end[0]):
+                        hallway2Path[1].append(j+hallway2.corner[0])
+        else:
+            for i in range(hallway2.corner[0]-hallway2.start[0]):
+                hallway2Path[0].append(i+hallway2.start[0])
+            if hallway2.corner[0] != hallway2.end[0]:
+                if hallway2.corner[0] > hallway2.end[0]:
+                    for j in range(hallway2.corner[0] - hallway2.end[0]):
+                        hallway2Path[1].append(j+hallway2.end[0])
+                else:
+                    for j in range(hallway2.corner[0] - hallway2.end[0]):
+                        hallway2Path[1].append(j+hallway2.corner[0])             
+    else:
+        if hallway2.start[1] > hallway2.corner[1]:
+            for i in range(hallway2.start[1]-hallway2.corner[1]):
+                hallway2Path[0].append(i+hallway2.corner[1])
+            if hallway2.corner[0] != hallway2.end[0]:
+                if hallway2.corner[0] > hallway2.end[0]:
+                    for j in range(hallway2.corner[0] - hallway2.end[0]):
+                        hallway2Path[1].append(j+hallway2.end[0])
+                else:
+                    for j in range(hallway2.corner[0] - hallway2.end[0]):
+                        hallway2Path[1].append(j+hallway2.corner[0])
+        else:
+            for i in range(hallway2.corner[1]-hallway2.start[1]):
+                hallway2Path[0].append(i+hallway2.start[1])
+            if hallway2.corner[0] != hallway2.end[0]:
+                if hallway2.corner[0] > hallway2.end[0]:
+                    for j in range(hallway2.corner[0] - hallway2.end[0]):
+                        hallway2Path[1].append(j+hallway2.end[0])
+                else:
+                    for j in range(hallway2.corner[0] - hallway2.end[0]):
+                        hallway2Path[1].append(j+hallway2.corner[0])
+
+    for i in range(len(hallwayPath)):
+        for j in range(len(hallway2Path)):
+            if hallwayPath[i] == hallway2Path[j]:
+                intersect = True
+    print(intersect)
+    if abs(hallway.start[0] - hallway2.start[0]) < math.floor(rooms[hallway.room1].roomWidth*5/2) and intersect == True:
+        hallway.start[0] = hallway2.start[0]
+        print("Start X corrected")
+    if abs(hallway.start[1] - hallway2.start[1]) < math.floor(rooms[hallway.room1].roomHeight*5/2)  and intersect == True:
+        hallway.start[1] = hallway2.start[1]
+        print("Start Y corrected")
+    if abs(hallway.end[1] - hallway2.end[1]) < math.floor(rooms[hallway.room2].roomHeight*5/2)  and intersect == True:
+        hallway.end[1] = hallway2.end[1]
+        print("End Y corrected")
+    if abs(hallway.end[0] - hallway2.end[0]) < math.floor(rooms[hallway.room2].roomWidth*5/2)  and intersect == True:
+        hallway.end[0] = hallway2.end[0]
+        print("End X corrected")
+    return hallway
 
 # Generate rooms, hallways, and grid
 def generate(grid): 
-     # Initialize array of all rooms
-    hallways = [] # Initialize array of all hallways
 
     for i in range(roomNumber): # Generate and place up to roomNumber rooms
         print("DEBUG: Generating room", i)
@@ -82,6 +190,7 @@ def generate(grid):
             room = Room(random.randrange(roomWidthMin, roomWidthMax), random.randrange(roomHeightMin, roomHeightMax)) # Generate room of random size
             randX = random.randrange(5, round((N-roomWidthMax-5)/5))*5 # Generate random top-left corner coordinate for room
             randY = random.randrange(5, round((N-roomHeightMax-5)/5))*5 # Generate random top-left corner coordinate for room
+            randY += 1
             room.center = [randX + round(room.roomHeight * 5 / 2), randY + round(room.roomWidth * 5 / 2)] # Calculate the approximate center of each room
             print("DEBUG: Room", i, "location found, initiate comparison")
 
@@ -117,25 +226,47 @@ def generate(grid):
         themX = rooms[connectedRoom].center[0] # Get connectedRoom center X
         themY = rooms[connectedRoom].center[1] # Get connectedRoom center Y
 
-        hallway = Hallway(rooms[i].center, rooms[connectedRoom].center, [])
+        hallway = Hallway(rooms[i].center, rooms[connectedRoom].center, [], i, connectedRoom)
+        if rooms[i].roomWidth % 2 == 0:
+            hallway.start[0] += 3
+        if rooms[i].roomHeight % 2 == 0:
+            hallway.start[1] += 3
+        if rooms[connectedRoom].roomWidth % 2 == 0:
+            hallway.end[0] += 3
+        if rooms[connectedRoom].roomHeight % 2 == 0:
+            hallway.end[1] += 3
+        
+        if hallway.start[0] <= hallway.end[0]:
+            if hallway.start[1] <= hallway.end[1]:
+                hallway.corner = [hallway.end[0],hallway.start[1]]
+            else:
+                hallway.corner = [hallway.end[0],hallway.start[1]]
+        else:
+            if hallway.start[1] <= hallway.end[1]:
+                hallway.corner = [hallway.start[0],hallway.end[1]]
+            else:
+                hallway.corner = [hallway.start[0],hallway.end[1]]
+
+        for j in range(len(hallways)):
+            hallway = testOverlap(hallway, hallways[j], j)
 
         # Determine relative location of each room and place a corresponding hallway
-        if meX <= themX:
-            grid[meX:themX+round(hallwayWidth*5/2), meY-round(hallwayWidth*5/2):meY+round(hallwayWidth*5/2)] = 255
-            if meY <= themY:
-                grid[themX-round(hallwayWidth*5/2):themX+round(hallwayWidth*5/2), meY:themY+round(hallwayWidth*5/2)] = 255
-                hallway.corner = [themX,meY]
+        if hallway.start[0] <= hallway.end[0]:
+            grid[hallway.start[0]:hallway.end[0]+math.floor(hallwayWidth*5/2), hallway.start[1]-math.floor(hallwayWidth*5/2):hallway.start[1]+math.floor(hallwayWidth*5/2)] = 255
+            if hallway.start[1] <= hallway.end[1]:
+                grid[hallway.end[0]-math.floor(hallwayWidth*5/2):hallway.end[0]+math.floor(hallwayWidth*5/2), hallway.start[1]:hallway.end[1]+math.floor(hallwayWidth*5/2)] = 255
+                hallway.corner = [hallway.end[0],hallway.start[1]]
             else:
-                grid[themX-round(hallwayWidth*5/2):themX+round(hallwayWidth*5/2), themY:meY+round(hallwayWidth*5/2)] = 255
-                hallway.corner = [themX,meY]
+                grid[hallway.end[0]-math.floor(hallwayWidth*5/2):hallway.end[0]+math.floor(hallwayWidth*5/2), hallway.end[1]:hallway.start[1]+math.floor(hallwayWidth*5/2)] = 255
+                hallway.corner = [hallway.end[0],hallway.start[1]]
         else:
-            grid[themX:meX+round(hallwayWidth*5/2), themY-round(hallwayWidth*5/2):themY+round(hallwayWidth*5/2)] = 255
-            if meY <= themY:
-                grid[meX-round(hallwayWidth*5/2):meX+round(hallwayWidth*5/2), meY:themY+round(hallwayWidth*5/2)] = 255
-                hallway.corner = [meX,themY]
+            grid[hallway.end[0]:hallway.start[0]+math.floor(hallwayWidth*5/2), hallway.end[1]-math.floor(hallwayWidth*5/2):hallway.end[1]+math.floor(hallwayWidth*5/2)] = 255
+            if hallway.start[1] <= hallway.end[1]:
+                grid[hallway.start[0]-math.floor(hallwayWidth*5/2):hallway.start[0]+math.floor(hallwayWidth*5/2), hallway.start[1]:hallway.end[1]+math.floor(hallwayWidth*5/2)] = 255
+                hallway.corner = [hallway.start[0],hallway.end[1]]
             else:
-                grid[meX-round(hallwayWidth*5/2):meX+round(hallwayWidth*5/2), themY:meY+round(hallwayWidth*5/2)] = 255
-                hallway.corner = [meX,themY]
+                grid[hallway.start[0]-math.floor(hallwayWidth*5/2):hallway.start[0]+math.floor(hallwayWidth*5/2), hallway.end[1]:hallway.start[1]+math.floor(hallwayWidth*5/2)] = 255
+                hallway.corner = [hallway.start[0],hallway.end[1]]
         
         hallways.append(hallway)
 
