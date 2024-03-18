@@ -13,6 +13,7 @@ import random
 import math
 from PIL import Image
 import csv
+import JsonGenerator as gen1
 
 # setting up the values for the grid
 ON = 255
@@ -375,5 +376,6 @@ def main():
     plt.axis('off') # Remove grid axes
     plt.savefig("output/dungeon.png", bbox_inches='tight') # Output PNG of generated dungeon
     plt.show() # Display generated dungeon for Debug purposes
+    gen1.generateJson()
      
 main()

@@ -7,7 +7,7 @@ zeroZero = [-0.925,-0.933]
 
 #This is the top-left space coordinates for the object generation
 wallOffsets=[-17,-16]
-#This si the scalar for object positioning, it includes spaceSize for tweaking mu,tiple things at once, in the future once everything is nice and synced up
+#This is the scalar for object positioning, it includes spaceSize for tweaking mutiple things at once, in the future once everything is nice and synced up
 wallSpaceSize=spaceSize*1.8
 
 #this generates the snap points tht will be used for the main board
@@ -218,7 +218,7 @@ def generateHandtrigger():
                       ["\"Green\"",  -15.19,4.81,19.79,   0.0,180.0,0.0, 11.77,9.17,4.87,  0.19,0.70,0.17,0.0],
                       ["\"Pink\"",   30.1,4.81,-8.45,     0.0,270.0,0.0, 11.66,9.17,4.92,  0.96,0.44,0.81,0.0],
                       ["\"Orange\"", -30.24,4.81,-8.82,   0.0,90.0,0.0,  11.66,9.17,4.92,  0.96,0.39,0.11,0.0],
-                      ["\"Teal\"",   0.0,4.81,19.8,       0.0,180.0,0.0, 11.77,19.17,4.87, 0.13,0.69,0.61,0.0],
+                      ["\"Teal\"",   0.0,4.81,19.8,       0.0,180.0,0.0, 11.77,9.17,4.87, 0.13,0.69,0.61,0.0],
                       ["\"Brown\"",  0.0,4.81,-20.0,      0.0,180.0,0.0, 11.77,9.17,4.87,  0.44,0.23,0.09,0.0]]
     for i in range(len(handTriggerArray)):
         output+="\n\t{"
