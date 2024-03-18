@@ -13,13 +13,14 @@ app = Flask(__name__)
 
 app.secret_key = "holy moly"
 
+# SQL database connection
 app.config['MYSQL_HOST'] = 'dgn.c34mk48scuxa.us-east-2.rds.amazonaws.com'
 app.config['MYSQL_USER'] = 'dgnadmin'
 app.config['MYSQL_PASSWORD'] = 'vsyjAheSRR9N8TjVtEbKJd'
 app.config['MYSQL_DB'] = 'dgn'
-
 mysql = MySQL(app)
 
+### ROUTES ###
 
 @app.route("/")
 def generate_dungeon():
@@ -29,7 +30,6 @@ def generate_dungeon():
 # Route for handling the login page logic
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    # Output a message if something goes wrong...
     msg = ''
 
     # Check if "username" and "password" POST requests exist (user submitted form)
@@ -59,29 +59,33 @@ def login():
     # Show the login form with message (if any)
     return render_template('login.html', msg=msg)
 
+# Route for logging out
 @app.route('/logout')
 def logout():
-    # Remove session data, this will log the user out
-   session.pop('loggedin', None)
-   session.pop('id', None)
-   session.pop('username', None)
-   # Redirect to login page
-   return redirect(url_for('login'))
+    # Remove session data
+    session.pop('loggedin', None)
+    session.pop('id', None)
+    session.pop('username', None)
+    # Redirect to login page
+    return redirect(url_for('login'))
 
+# Route for creating new account
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    # Output message if something goes wrong...
     msg = ''
+
     # Check if "username", "password" and "email" POST requests exist (user submitted form)
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in request.form:
-        # Create variables for easy access
+
         username = request.form['username']
         password = request.form['password']
         email = request.form['email']
+
         # Check if account exists using MySQL
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM user WHERE username = %s', (username,))
         account = cursor.fetchone()
+
         # If account exists show error and validation checks
         if account:
             msg = 'Account already exists!'
@@ -95,7 +99,7 @@ def register():
         elif not username or not password or not email:
             msg = 'Please fill out the form!'
         else:
-            # Hash the password
+            # Hash the password (Add in future)
             # hash = password + app.secret_key
             # hash = hashlib.sha1(hash.encode())
             # password = hash.hexdigest()
@@ -110,17 +114,18 @@ def register():
     # Show registration form with message (if any)
     return render_template('register.html', msg=msg)
 
+# Route for profile page
 @app.route('/profile')
 def profile():
     # Check if the user is logged in
     if 'loggedin' in session:
-        # We need all the account info for the user so we can display it on the profile page
+        # Get account info from database
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM user WHERE iduser = %s', (session['id'],))
         account = cursor.fetchone()
         # Show the profile page with account info
         return render_template('profile.html', account=account)
-    # User is not logged in redirect to login page
+    # Redirect to login page if not logged in
     return redirect(url_for('login'))
 
 
