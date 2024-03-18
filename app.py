@@ -52,7 +52,7 @@ def login():
             session['username'] = account['username']
             # Redirect to home page
             # flash('Login successful')
-            return 'Logged in successfully!'
+            return redirect(url_for('profile'))
         else:
             # Account doesnt exist or username/password incorrect
             msg = 'Incorrect username/password!'
@@ -109,6 +109,19 @@ def register():
         msg = 'Please fill out the form!'
     # Show registration form with message (if any)
     return render_template('register.html', msg=msg)
+
+@app.route('/profile')
+def profile():
+    # Check if the user is logged in
+    if 'loggedin' in session:
+        # We need all the account info for the user so we can display it on the profile page
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT * FROM user WHERE iduser = %s', (session['id'],))
+        account = cursor.fetchone()
+        # Show the profile page with account info
+        return render_template('profile.html', account=account)
+    # User is not logged in redirect to login page
+    return redirect(url_for('login'))
 
 
 if __name__ == "__main__":

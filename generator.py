@@ -1,6 +1,3 @@
-## To run program, ensure that matplotlib is installed by typing
-## pip install matplotlib
-## into your console. Then simply run the program.
 ## Generated dungeon should be displayed, and a png of the
 ## displayed image can be found in the output folder
 

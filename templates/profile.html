@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Profile</title>
+	</head>
+	<body class="loggedin">
+		<div class="content">
+			<h1>{{ account['username'] }}'s Profile</h1>
+                <div>
+                    <p>Saved Dungeons (TBA)</p>
+                    <table>
+                        
+                    </table>
+                </div>
+		</div>
+        <div>
+            <a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i>Logout</a>
+        </div>
+	</body>
+</html>
