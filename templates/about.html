@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+        <title>About Me</title>
+    </head>
+    <body>
+        <div class="container">
+            <nav>
+                <div class="site-name">Dun-Gen</div>
+                <a href="/about">About</a>
+                <a href="/">Generator</a>
+            </nav>
+            <h2>About Dun-Gen</h2>
+            <div id="about-sections">
+                <div class="about-section">
+                    <h2>Our Team <span class="arrow">&#9658;</span></h2>
+                    <p class="section-content">Content for section 1...</p>
+                </div>
+                <div class="about-section">
+                    <h2>Generator Usage <span class="arrow">&#9658;</span></h2>
+                    <p class="section-content">Content for section 2...</p>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script>
+        const sections = document.querySelectorAll('.about-section');
+
+        sections.forEach((section, index) => {
+            const header = section.querySelector('h2');
+            const arrow = section.querySelector('.arrow');
+            const content = section.querySelector('.section-content');
+
+            header.addEventListener('click', () => {
+                const isExpanded = arrow.textContent === '▼';
+                arrow.textContent = isExpanded ? '►' : '▼';
+                content.style.display = isExpanded ? 'none' : 'block';
+
+                // Collapse other sections
+                sections.forEach((otherSection, otherIndex) => {
+                    if (otherIndex !== index) {
+                        const otherArrow = otherSection.querySelector('.arrow');
+                        const otherContent = otherSection.querySelector('.section-content');
+                        otherArrow.textContent = '►';
+                        otherContent.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+</html>

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Dungeon Generator</title>
+    </head>
+    <body>
+        <div class="container">
+            <nav>
+                <div class="site-name">Dun-Gen</div>
+                <a href="/about">About</a>
+                <a href="/">Generator</a>
+            </nav>
+            <h2>Dungeon Generator</h2>
+            <div class="generator-container">
+                <img
+                    src="{{ url_for('static', filename='dungeon.png') }}"
+                    alt="Generated Dungeon"
+                />
+            
+                <div class="form-container">
+                    <form>
+                        <form>
+                            <label for="size">Dungeon Size:</label>
+                            <select id="size" name="size">
+                                <option value="small">Small</option>
+                                <option value="medium">Medium</option>
+                                <option value="large">Large</option>
+                            </select>
+                        
+                            <label for="difficulty">Dungeon Complexity:</label>
+                            <select id="difficulty" name="difficulty">
+                                <option value="easy">Easy</option>
+                                <option value="medium">Medium</option>
+                                <option value="hard">Hard</option>
+                            </select>
+                        
+                            <label for="theme">Dungeon Theme:</label>
+                            <select id="theme" name="theme">
+                                <option value="cave">Cave</option>
+                                <option value="castle">Castle</option>
+                                <option value="forest">Forest</option>
+                            </select>
+                        
+                            <button id="generate-button" onclick="generator.main()">Generate</button>
+                        </form>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
