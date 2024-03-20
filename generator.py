@@ -22,20 +22,27 @@ OFF = 0
 random.seed()
 
 roomNumber = 10 # Number of rooms to be placed
-roomWidthMax = 4 # Maximum width of any room
-roomWidthMin = 2 # Minimum width of any room
-roomHeightMax = 4 # Maximum height of any room
-roomHeightMin = 2 # Minimum height of any room
+roomWidthMax = 5 # Maximum width of any room
+roomWidthMin = 3 # Minimum width of any room
+roomHeightMax = 5 # Maximum height of any room
+roomHeightMin = 3 # Minimum height of any room
 hallwayWidth = 1 # Width of hallways
-N = 200 # Size of grid
+N = 40 # Size of grid
 #image = plt.imread("output/CobblestoneTexture.png")
 image = plt.imread("output/grid.png")
-image_array = np.array(image)
+tile0 = plt.imread("output/SingleTile0.png")
+tile1 = plt.imread("output/SingleTile1.png")
+tile2 = plt.imread("output/SingleTile2.png")
+tile3 = plt.imread("output/SingleTile3.png")
+tile4 = plt.imread("output/SingleTile4.png")
 
-imagex = 0.784
-imagey = 0.86
-imagewidth = 1/N
-imageheight = 1/N
+imgDict = {
+    0: tile0,
+    1: tile1,
+    2: tile2,
+    3: tile3,
+    4: tile4
+}
 
 rooms = [] # Initialize array of all rooms
 hallways = [] # Initialize array of all hallways
@@ -51,7 +58,7 @@ class Room(object):
         self.roomWidth = roomWidth
         self.roomHeight = roomHeight
 
-        self.roomSpace = [[255]*(self.roomWidth*5)]*(self.roomHeight*5) # Create array of room space
+        self.roomSpace = [[255]*(self.roomWidth)]*(self.roomHeight) # Create array of room space
 
     def getSpace(self) -> None: # Returns room space
         return self.roomSpace
@@ -165,16 +172,16 @@ def testOverlap(hallway, hallway2, loc1):
             if hallwayPath[i] == hallway2Path[j]:
                 intersect = True
     print(intersect)
-    if abs(hallway.start[0] - hallway2.start[0]) < math.floor(rooms[hallway.room1].roomWidth*5/2) and intersect == True:
+    if abs(hallway.start[0] - hallway2.start[0]) < math.floor(rooms[hallway.room1].roomWidth/2) and intersect == True:
         hallway.start[0] = hallway2.start[0]
         print("Start X corrected")
-    if abs(hallway.start[1] - hallway2.start[1]) < math.floor(rooms[hallway.room1].roomHeight*5/2)  and intersect == True:
+    if abs(hallway.start[1] - hallway2.start[1]) < math.floor(rooms[hallway.room1].roomHeight/2)  and intersect == True:
         hallway.start[1] = hallway2.start[1]
         print("Start Y corrected")
-    if abs(hallway.end[1] - hallway2.end[1]) < math.floor(rooms[hallway.room2].roomHeight*5/2)  and intersect == True:
+    if abs(hallway.end[1] - hallway2.end[1]) < math.floor(rooms[hallway.room2].roomHeight/2)  and intersect == True:
         hallway.end[1] = hallway2.end[1]
         print("End Y corrected")
-    if abs(hallway.end[0] - hallway2.end[0]) < math.floor(rooms[hallway.room2].roomWidth*5/2)  and intersect == True:
+    if abs(hallway.end[0] - hallway2.end[0]) < math.floor(rooms[hallway.room2].roomWidth/2)  and intersect == True:
         hallway.end[0] = hallway2.end[0]
         print("End X corrected")
     return hallway
@@ -189,16 +196,16 @@ def generate(grid):
         # Repeat up to a set number of times to place room in a safe location
         while successful == False: 
             room = Room(random.randrange(roomWidthMin, roomWidthMax), random.randrange(roomHeightMin, roomHeightMax)) # Generate room of random size
-            randX = random.randrange(5, round((N-roomWidthMax-5)/5))*5 # Generate random top-left corner coordinate for room
-            randY = random.randrange(5, round((N-roomHeightMax-5)/5))*5 # Generate random top-left corner coordinate for room
+            randX = random.randrange(2, round((N-roomWidthMax-2))) # Generate random top-left corner coordinate for room
+            randY = random.randrange(2, round((N-roomHeightMax-2))) # Generate random top-left corner coordinate for room
             randY += 1
-            room.center = [randX + round(room.roomHeight * 5 / 2), randY + round(room.roomWidth * 5 / 2)] # Calculate the approximate center of each room
+            room.center = [randX + round(room.roomHeight / 2), randY + round(room.roomWidth / 2)] # Calculate the approximate center of each room
             print("DEBUG: Room", i, "location found, initiate comparison")
 
             # Begin placement test
             for j in range(len(rooms)):
                 # Calculate distance from room center to room center
-                if pow(pow(rooms[j].center[0]-room.center[0], 2) + pow(rooms[j].center[1]-room.center[1], 2), .5) <= ((roomWidthMax*5+roomHeightMax*5) / 2 * 1.5):
+                if pow(pow(rooms[j].center[0]-room.center[0], 2) + pow(rooms[j].center[1]-room.center[1], 2), .5) <= ((roomWidthMax+roomHeightMax) / 2 * 1.5):
                     print("DEBUG: Room placement failed")
                     successful = False
                     break
@@ -214,7 +221,7 @@ def generate(grid):
         # If placement successful, add it grid and list
         if successful == True:
             print("DEBUG: Room", i, "success")
-            grid[randX:randX + (room.roomHeight*5), randY:randY + (room.roomWidth*5)] = room.getSpace() # Place room at location
+            grid[randX:randX + (room.roomHeight), randY:randY + (room.roomWidth)] = room.getSpace() # Place room at location
             rooms.append(room) # Add room to list of rooms
     
     # Add hallways between placed rooms
@@ -228,14 +235,6 @@ def generate(grid):
         themY = rooms[connectedRoom].center[1] # Get connectedRoom center Y
 
         hallway = Hallway(rooms[i].center, rooms[connectedRoom].center, [], i, connectedRoom)
-        if rooms[i].roomWidth % 2 == 0:
-            hallway.start[0] += 3
-        if rooms[i].roomHeight % 2 == 0:
-            hallway.start[1] += 3
-        if rooms[connectedRoom].roomWidth % 2 == 0:
-            hallway.end[0] += 3
-        if rooms[connectedRoom].roomHeight % 2 == 0:
-            hallway.end[1] += 3
         
         if hallway.start[0] <= hallway.end[0]:
             if hallway.start[1] <= hallway.end[1]:
@@ -253,20 +252,20 @@ def generate(grid):
 
         # Determine relative location of each room and place a corresponding hallway
         if hallway.start[0] <= hallway.end[0]:
-            grid[hallway.start[0]:hallway.end[0]+math.floor(hallwayWidth*5/2), hallway.start[1]-math.floor(hallwayWidth*5/2):hallway.start[1]+math.floor(hallwayWidth*5/2)] = 255
+            grid[hallway.start[0]:hallway.end[0]+math.floor(hallwayWidth), hallway.start[1]:hallway.start[1]+math.floor(hallwayWidth)] = 255
             if hallway.start[1] <= hallway.end[1]:
-                grid[hallway.end[0]-math.floor(hallwayWidth*5/2):hallway.end[0]+math.floor(hallwayWidth*5/2), hallway.start[1]:hallway.end[1]+math.floor(hallwayWidth*5/2)] = 255
+                grid[hallway.end[0]:hallway.end[0]+math.floor(hallwayWidth), hallway.start[1]:hallway.end[1]+math.floor(hallwayWidth)] = 255
                 hallway.corner = [hallway.end[0],hallway.start[1]]
             else:
-                grid[hallway.end[0]-math.floor(hallwayWidth*5/2):hallway.end[0]+math.floor(hallwayWidth*5/2), hallway.end[1]:hallway.start[1]+math.floor(hallwayWidth*5/2)] = 255
+                grid[hallway.end[0]:hallway.end[0]+math.floor(hallwayWidth), hallway.end[1]:hallway.start[1]+math.floor(hallwayWidth)] = 255
                 hallway.corner = [hallway.end[0],hallway.start[1]]
         else:
-            grid[hallway.end[0]:hallway.start[0]+math.floor(hallwayWidth*5/2), hallway.end[1]-math.floor(hallwayWidth*5/2):hallway.end[1]+math.floor(hallwayWidth*5/2)] = 255
+            grid[hallway.end[0]:hallway.start[0]+math.floor(hallwayWidth), hallway.end[1]:hallway.end[1]+math.floor(hallwayWidth)] = 255
             if hallway.start[1] <= hallway.end[1]:
-                grid[hallway.start[0]-math.floor(hallwayWidth*5/2):hallway.start[0]+math.floor(hallwayWidth*5/2), hallway.start[1]:hallway.end[1]+math.floor(hallwayWidth*5/2)] = 255
+                grid[hallway.start[0]:hallway.start[0]+math.floor(hallwayWidth), hallway.start[1]:hallway.end[1]+math.floor(hallwayWidth)] = 255
                 hallway.corner = [hallway.start[0],hallway.end[1]]
             else:
-                grid[hallway.start[0]-math.floor(hallwayWidth*5/2):hallway.start[0]+math.floor(hallwayWidth*5/2), hallway.end[1]:hallway.start[1]+math.floor(hallwayWidth*5/2)] = 255
+                grid[hallway.start[0]:hallway.start[0]+math.floor(hallwayWidth), hallway.end[1]:hallway.start[1]+math.floor(hallwayWidth)] = 255
                 hallway.corner = [hallway.start[0],hallway.end[1]]
         
         hallways.append(hallway)
@@ -316,25 +315,25 @@ def main():
     generate(grid)
 
     walls = []
-    for i in range(round(N/5)):
-        for j in range(round(N/5)):
-            if grid[i*5,j*5] == 255:
-                if grid[(i*5-5)%N, (j*5-5)%N] == 0:
-                    walls.append([(i-1)%(N/5),(j-1)%(N/5)])
-                if grid[(i*5-5)%N, (j*5)%N] == 0:
-                    walls.append([(i-1)%(N/5),(j)%(N/5)])
-                if grid[(i*5-5)%N, (j*5+5)%N] == 0:
-                    walls.append([(i-1)%(N/5),(j+1)%(N/5)])
-                if grid[(i*5)%N, (j*5-5)%N] == 0:
-                    walls.append([(i)%(N/5),(j-1)%(N/5)])
-                if grid[(i*5)%N, (j*5+5)%N] == 0:
-                    walls.append([(i)%(N/5),(j+1)%(N/5)])
-                if grid[(i*5+5)%N, (j*5-5)%N] == 0:
-                    walls.append([(i+1)%(N/5),(j-1)%(N/5)])
-                if grid[(i*5+5)%N, (j*5)%N] == 0:
-                    walls.append([(i+5)%(N/5),(j)%(N/5)])
-                if grid[(i*5+5)%N, (j*5+5)%N] == 0:
-                    walls.append([(i-1)%(N/5),(j+1)%(N/5)])
+    for i in range(N):
+        for j in range(N):
+            if grid[i,j] == 255:
+                if grid[(i-1)%N, (j-1)%N] == 0:
+                    walls.append([(j-1)%(N),(i-1)%(N)])
+                if grid[(i-1)%N, (j)%N] == 0:
+                    walls.append([(j)%(N),(i-1)%(N)])
+                if grid[(i-1)%N, (j+1)%N] == 0:
+                    walls.append([(j+1)%(N),(i-1)%(N)])
+                if grid[(i)%N, (j-1)%N] == 0:
+                    walls.append([(j-1)%(N),(i)%(N)])
+                if grid[(i)%N, (j+1)%N] == 0:
+                    walls.append([(j+1)%(N),(i)%(N)])
+                if grid[(i+1)%N, (j-1)%N] == 0:
+                    walls.append([(j-1)%(N),(i+1)%(N)])
+                if grid[(i+1)%N, (j)%N] == 0:
+                    walls.append([(j)%(N),(i+1)%(N)])
+                if grid[(i+1)%N, (j+1)%N] == 0:
+                    walls.append([(j+1)%(N),(i+1)%(N)])
     
     res = [i for n, i in enumerate(walls) if i not in walls[:n]]
 
@@ -354,28 +353,18 @@ def main():
 								save_count=10)
     
     plt.axis('off') # Remove grid axes
-    """ ax_image = fig.add_axes([imagex,
-                         imagey,
-                         imagewidth,
-                         imageheight]
-                       ) """
-    
-    """ for i in range(N):
+
+    for i in range(N):
         for j in range(N):
-            if (grid[i,j] == 255):
-                ax_image = fig.add_axes([i/N,
-                         j/N,
-                         imagewidth,
-                         imageheight]
-                       )
+            if grid[i,j] == 255:
+                imgNum = random.randint(0, 4)
+                ax.imshow(imgDict[imgNum], extent=[j-.5, j+1-.5, i-.5, i+1-.5], zorder=1)
+                print("Tile ", imgNum, " placed at ", i, j)
     
-                ax_image.imshow(image, interpolation="nearest") """
-    
-    ax.imshow(image, extent=[0, 200, 0, 200], zorder=0)
+    ax.imshow(image, extent=[0, N-1, 0, N-1], zorder=0, alpha=0)
 
     plt.axis('off') # Remove grid axes
     plt.savefig("output/dungeon.png", bbox_inches='tight') # Output PNG of generated dungeon
     plt.show() # Display generated dungeon for Debug purposes
-    gen1.generateJson()
      
 main()
