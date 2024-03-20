@@ -1,2 +1,4 @@
 output/dungeon.png
 output/walls.csv
+__pycache__
+env
