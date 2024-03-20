@@ -376,6 +376,5 @@ def main():
     plt.axis('off') # Remove grid axes
     plt.savefig("output/dungeon.png", bbox_inches='tight') # Output PNG of generated dungeon
     plt.show() # Display generated dungeon for Debug purposes
-    gen1.generateJson()
      
 main()
