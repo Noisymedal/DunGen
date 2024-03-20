@@ -25,7 +25,11 @@ mysql = MySQL(app)
 @app.route("/")
 def generate_dungeon():
     generator.main()
-    return render_template("template.html")
+    return render_template("generator.html")
+
+@app.route("/about")
+def about():
+    return render_template("about.html")
 
 # Route for handling the login page logic
 @app.route('/login', methods=['GET', 'POST'])
