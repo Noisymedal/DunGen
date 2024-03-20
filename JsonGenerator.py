@@ -1,6 +1,6 @@
 import snappointStringGenerator as gen0
 import csv
-with open('output/walls.csv', newline='') as f:
+with open('output/walls1.csv', newline='') as f:
     reader = csv.reader(f)
     data = list(reader)
 
@@ -105,3 +105,5 @@ def generateJson():
     file1.close()
     print("A")
     return output
+
+generateJson()
