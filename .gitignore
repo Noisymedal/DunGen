@@ -1,2 +1,4 @@
 .venv/
 static/dungeon.png
+env
+__pycache__
