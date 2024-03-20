@@ -27,9 +27,9 @@ def generateSnappoints():
 
     #once all the strings are made write them to an output file
     output+="]},\n"
-    file1 = open('snappoints.txt', 'w')
-    file1.write(output)
-    file1.close()
+    #file1 = open('snappoints.txt', 'w')
+    #file1.write(output)
+    #file1.close()
     return output
 
 
@@ -61,9 +61,9 @@ def generateDungeonBricks(points):
         output+="\n\t\t\"rotX\": 0.0,"
         output+="\n\t\t\"rotY\": 0.0,"
         output+="\n\t\t\"rotZ\": 0.0,"
-        output+="\n\t\t\"scaleX\": 0.3501,"
+        output+="\n\t\t\"scaleX\": 0.4101,"
         output+="\n\t\t\"scaleY\": 0.173,"
-        output+="\n\t\t\"scaleZ\": 0.3501"
+        output+="\n\t\t\"scaleZ\": 0.4101"
         output+="\n\t},"
         output+="\n\t\"Nickname\": \"\","
         output+="\n\t\"Description\": \"\","
@@ -110,9 +110,9 @@ def generateDungeonBricks(points):
         if(i!=len(points)):
             output+=",\n"
     #write the output to a file
-    file2 = open('dungeonBricks.txt', 'w')
-    file2.write(output)
-    file2.close()
+    #file2 = open('dungeonBricks.txt', 'w')
+    #file2.write(output)
+    #file2.close()
     return output
 
 #identical to dungeonBricks but for the grey Dungeon tiles above our bricks to obscure the unexplored dungeon
@@ -131,9 +131,9 @@ def generateDungeonHats(points):
         output+="\n\t\t\"rotX\": 0.0,"
         output+="\n\t\t\"rotY\": 0.0,"
         output+="\n\t\t\"rotZ\": 0.0,"
-        output+="\n\t\t\"scaleX\": 0.3501,"
+        output+="\n\t\t\"scaleX\": 0.4101,"
         output+="\n\t\t\"scaleY\": 0.02,"
-        output+="\n\t\t\"scaleZ\": 0.3501"
+        output+="\n\t\t\"scaleZ\": 0.4101"
         output+="\n\t},"
         output+="\n\t\"Nickname\": \"\","
         output+="\n\t\"Description\": \"\","
@@ -178,9 +178,9 @@ def generateDungeonHats(points):
         output+="\n}"
         if(i!=len(points)-1):
             output+=",\n"
-    file3 = open('dungeonHats.txt', 'w')
-    file3.write(output)
-    file3.close()
+    #file3 = open('dungeonHats.txt', 'w')
+    #file3.write(output)
+    #file3.close()
     return output
 
 #I don't exactly know what tabstates are, but the .json files in TTS have them, and the generation works so I don't want to delete them
