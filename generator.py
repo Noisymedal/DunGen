@@ -13,6 +13,7 @@ import random
 import math
 from PIL import Image
 import csv
+import JsonGenerator as gen1
 
 # setting up the values for the grid
 ON = 255
