@@ -183,6 +183,148 @@ def generateDungeonHats(points):
     #file3.close()
     return output
 
+#These should be the large blocks that fill out the unexplorable space in the dungeon, the areas that aren't hallways or rooms
+def generateDungeonFillings(points)
+    #create the output string
+    output=""
+
+    #Append EVERY SINGLE LINE for making an object to the string, for every object we need
+    for i in range(0,len(points)):
+        output+="{\n\t\"GUID\": "+generateID()+","
+        output+="\n\t\"Name\": \"Custom_Model\","
+        output+="\n\t\"Transform\": {"
+        output+="\n\t\t\"posX\": "+str(float(points[i][0])*wallSpaceSize*10+zeroZero[0]+wallOffsets[0])+","
+        output+="\n\t\t\"posY\": 1.33155191,"
+        output+="\n\t\t\"posZ\": "+str(float(points[i][1])*wallSpaceSize*10+zeroZero[1]+wallOffsets[1])+","
+        output+="\n\t\t\"rotX\": 0.0,"
+        output+="\n\t\t\"rotY\": 0.0,"
+        output+="\n\t\t\"rotZ\": 0.0,"
+        output+="\n\t\t\"scaleX\": "+str(0.4301*points[i][2])
+        output+="\n\t\t\"scaleY\": 0.173,"
+        output+="\n\t\t\"scaleZ\": "+str(0.4301*points[i][3])
+        output+="\n\t},"
+        output+="\n\t\"Nickname\": \"\","
+        output+="\n\t\"Description\": \"\","
+        output+="\n\t\"GMNotes\": \"\","
+        output+="\n\t\"AltLookAngle\": {"
+        output+="\n\t\t\"x\": 0.0,"
+        output+="\n\t\t\"y\": 0.0,"
+        output+="\n\t\t\"z\": 0.0"
+        output+="\n\t}," 
+        output+="\n\t\"ColorDiffuse\": {"
+        output+="\n\t\t\"r\": 1.0,"
+        output+="\n\t\t\"g\": 1.0,"
+        output+="\n\t\t\"b\": 1.0"
+        output+="\n\t},"
+        output+="\n\t\"LayoutGroupSortIndex\": 0,"
+        output+="\n\t\"Value\": 0,"
+        output+="\n\t\"Locked\": true,"
+        output+="\n\t\"Grid\": true,"
+        output+="\n\t\"Snap\": true,"
+        output+="\n\t\"IngoreFoW\": false,"
+        output+="\n\t\"MeasureMovement\": false,"
+        output+="\n\t\"DragSelectable\": true,"
+        output+="\n\t\"Autoraise\": true,"
+        output+="\n\t\"Sticky\": true,"
+        output+="\n\t\"Tooltip\": true,"
+        output+="\n\t\"GridProjection\": false,"
+        output+="\n\t\"HideWhenFaceDown\": false,"
+        output+="\n\t\"Hands\": false,"
+        output+="\n\t\"CustomMesh\": {"
+        output+="\n\t\"MeshURL\": \"http://cloud-3.steamusercontent.com/ugc/5967903001166121478/309C68514D70709FCBF5A377C2535C0E460381CD/\","
+        output+="\n\t\"DiffuseURL\": \"http://cloud-3.steamusercontent.com/ugc/5967903001166121579/A2A1360574D2A3F86B15759A7AC7C972C344C87A/\","
+        output+="\n\t\"NormalURL\": \"\","
+        output+="\n\t\"ColliderURL\": \"\","
+        output+="\n\t\"Convex\": true,"
+        output+="\n\t\"MaterialIndex\": 0,"
+        output+="\n\t\"TypeIndex\": 0,"
+        output+="\n\t\"CastShadows\": true"
+        output+="\n\t},"
+        output+="\n\"LuaScript\": \"\","
+        output+="\n\"LuaScriptState\": \"\","
+        output+="\n\"XmlUI\": \"\""
+        output+="\n}"
+        #if the object is NOT the last one, add a comma, for formatting purposes
+        if(i!=len(points)):
+            output+=",\n"
+    #write the output to a file
+    #file2 = open('dungeonBricks.txt', 'w')
+    #file2.write(output)
+    #file2.close()
+    return output
+
+#identical to dungeonBricks but for the grey Dungeon tiles above our bricks to obscure the unexplored dungeon
+def generateDungeonFillingHats(points):
+    output=""
+
+
+    #Append EVERY SINGLE LINE for making an object to the string, for every object we need
+    for i in range(0,len(points)):
+        output+="{\n\t\"GUID\": "+generateID()+","
+        output+="\n\t\"Name\": \"Custom_Model\","
+        output+="\n\t\"Transform\": {"
+        output+="\n\t\t\"posX\": "+str(float(points[i][0])*wallSpaceSize*10+zeroZero[0]+wallOffsets[0])+","
+        output+="\n\t\t\"posY\": 1.6265,"
+        output+="\n\t\t\"posZ\": "+str(float(points[i][1])*wallSpaceSize*10+zeroZero[1]+wallOffsets[1])+","
+        output+="\n\t\t\"rotX\": 0.0,"
+        output+="\n\t\t\"rotY\": 0.0,"
+        output+="\n\t\t\"rotZ\": 0.0,"
+        output+="\n\t\t\"scaleX\": "+str(0.4301*points[i][2])
+        output+="\n\t\t\"scaleY\": 0.02,"
+        output+="\n\t\t\"scaleZ\": "+str(0.4301*points[i][3])
+        output+="\n\t},"
+        output+="\n\t\"Nickname\": \"\","
+        output+="\n\t\"Description\": \"\","
+        output+="\n\t\"GMNotes\": \"\","
+        output+="\n\t\"AltLookAngle\": {"
+        output+="\n\t\t\"x\": 0.0,"
+        output+="\n\t\t\"y\": 0.0,"
+        output+="\n\t\t\"z\": 0.0"
+        output+="\n\t}," 
+        output+="\n\t\"ColorDiffuse\": {"
+        output+="\n\t\t\"r\": 1.0,"
+        output+="\n\t\t\"g\": 1.0,"
+        output+="\n\t\t\"b\": 1.0"
+        output+="\n\t},"
+        output+="\n\t\"LayoutGroupSortIndex\": 0,"
+        output+="\n\t\"Value\": 0,"
+        output+="\n\t\"Locked\": true,"
+        output+="\n\t\"Grid\": true,"
+        output+="\n\t\"Snap\": true,"
+        output+="\n\t\"IngoreFoW\": false,"
+        output+="\n\t\"MeasureMovement\": false,"
+        output+="\n\t\"DragSelectable\": true,"
+        output+="\n\t\"Autoraise\": true,"
+        output+="\n\t\"Sticky\": true,"
+        output+="\n\t\"Tooltip\": true,"
+        output+="\n\t\"GridProjection\": false,"
+        output+="\n\t\"HideWhenFaceDown\": false,"
+        output+="\n\t\"Hands\": false,"
+        output+="\n\t\"CustomMesh\": {"
+        output+="\n\t\"MeshURL\": \"http://cloud-3.steamusercontent.com/ugc/5967903001166121478/309C68514D70709FCBF5A377C2535C0E460381CD/\","
+        output+="\n\t\"DiffuseURL\": \"http://cloud-3.steamusercontent.com/ugc/5967903001166216512/747BFC5FEEA8E6EC0635B2E74280C1244FF97FA4/\","
+        output+="\n\t\"NormalURL\": \"\","
+        output+="\n\t\"ColliderURL\": \"\","
+        output+="\n\t\"Convex\": true,"
+        output+="\n\t\"MaterialIndex\": 0,"
+        output+="\n\t\"TypeIndex\": 0,"
+        output+="\n\t\"CastShadows\": true"
+        output+="\n\t},"
+        output+="\n\"LuaScript\": \"\","
+        output+="\n\"LuaScriptState\": \"\","
+        output+="\n\"XmlUI\": \"\""
+        output+="\n}"
+        if(i!=len(points)-1):
+            output+=",\n"
+    #file3 = open('dungeonHats.txt', 'w')
+    #file3.write(output)
+    #file3.close()
+    return output
+
+
+
+
+
 #I don't exactly know what tabstates are, but the .json files in TTS have them, and the generation works so I don't want to delete them
 def generateTabstates():
     output=""
