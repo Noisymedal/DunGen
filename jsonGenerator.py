@@ -4,9 +4,9 @@ with open('output/walls.csv', newline='') as f:
     reader = csv.reader(f)
     data = list(reader)
 
-with open('output/fillings.csv', newline='') as f2:
-    reader = csv.reader(f2)
-    data = list(reader)
+# with open('output/fillings.csv', newline='') as f2:
+#     reader = csv.reader(f2)
+#     data = list(reader)
 
 def generateJson():
     output=""
