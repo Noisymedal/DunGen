@@ -418,7 +418,7 @@ def generateBoard():
     output=""
     output+="\n\t{"
     output+="\n\t\t\"GUID\": \"0\","
-    output+="\n\t\t\"Name\": \"Custom_Board\","
+    output+="\n\t\t\"Name\": \"Custom_Tile\","
     output+="\n\t\t\"Transform\": {"
     output+="\n\t\t\t\"posX\": -1.259222,"
     output+="\n\t\t\t\"posY\": 0.9591922,"
