@@ -8,7 +8,6 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import random
 import math
-from PIL import Image
 import csv
 
 # setting up the values for the grid
@@ -284,14 +283,54 @@ def update(frameNum, img, grid, N):
 def main():
     # Parser arguments may be used 
 
-    #parser = argparse.ArgumentParser(description="DunGen Generator")
+    parser = argparse.ArgumentParser(description="DunGen Generator")
 
     #parser.add_argument('--grid-size', dest='N', required=False)
-    #parser.add_argument('--mov-file', dest='movfile', required=False)
-    #args = parser.parse_args()
+    parser.add_argument('--room-num', dest='roomNum', required=False)
+    parser.add_argument('--room-width-min', dest='roomWidthMin', required=False)
+    parser.add_argument('--room-width-max', dest='roomWidthMax', required=False)
+    parser.add_argument('--room-height-min', dest='roomHeightMin', required=False)
+    parser.add_argument('--room-height-max', dest='roomHeightMax', required=False)
+    parser.add_argument('--hallway-width', dest='hallwayWidth', required=False)
+    args = parser.parse_args()
 
+    N = 40
     if N < 10: # Minimum grid size, end if too small
         return
+    
+    roomNumber = 10
+    if args.roomNum:
+        if int(args.roomNum) > 1:
+            roomNumber = int(args.roomNum)
+
+    roomWidthMin = 2
+    if args.roomWidthMin:
+        if int(args.roomWidthMin) > 0:
+            roomWidthMin = int(args.roomWidthMin)
+
+    roomWidthMax = 4
+    if args.roomWidthMax:
+        if int(args.roomWidthMax) > roomWidthMin:
+            roomWidthMax = int(args.roomWidthMax)
+        else:
+            roomWidthMax = roomWidthMin
+
+    roomHeightMin = 2
+    if args.roomHeightMin:
+        if int(args.roomHeightMin) > 0:
+            roomHeightMin = int(args.roomHeightMin)
+
+    roomHeightMax = 2
+    if args.roomHeightMax:
+        if int(args.roomHeightMax) > roomHeightMin:
+            roomHeightMax = int(args.roomHeightMax)
+        else:
+            roomHeightMax = roomHeightMin
+
+    hallwayWidth = 1
+    if args.hallwayWidth:
+        if int(args.hallwayWidth) >= 0:
+            hallwayWidth = int(args.hallwayWidth)
 
     """ if args.N and int(args.N) > 8:
         N = int(args.N)
@@ -360,7 +399,9 @@ def main():
     ax.imshow(image, extent=[0, N-1, 0, N-1], zorder=0, alpha=0)
 
     plt.axis('off') # Remove grid axes
-    plt.savefig("output/dungeon.png", bbox_inches='tight') # Output PNG of generated dungeon
+    plt.savefig("output/dungeon.png", bbox_inches='tight', dpi=1200) # Output PNG of generated dungeon
     plt.show() # Display generated dungeon for Debug purposes
      
-main()
+# call main
+if __name__ == '__main__':
+	main()
