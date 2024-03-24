@@ -199,9 +199,9 @@ def generateDungeonFillings(points):
         output+="\n\t\t\"rotX\": 0.0,"
         output+="\n\t\t\"rotY\": 0.0,"
         output+="\n\t\t\"rotZ\": 0.0,"
-        output+="\n\t\t\"scaleX\": "+str(0.4301*float(points[i][2]))
+        output+="\n\t\t\"scaleX\": "+str(0.4301*float(points[i][2]))+","
         output+="\n\t\t\"scaleY\": 0.173,"
-        output+="\n\t\t\"scaleZ\": "+str(0.4301*float(points[i][3]))
+        output+="\n\t\t\"scaleZ\": "+str(0.4301*float(points[i][3]))+","
         output+="\n\t},"
         output+="\n\t\"Nickname\": \"\","
         output+="\n\t\"Description\": \"\","
@@ -269,9 +269,9 @@ def generateDungeonFillingHats(points):
         output+="\n\t\t\"rotX\": 0.0,"
         output+="\n\t\t\"rotY\": 0.0,"
         output+="\n\t\t\"rotZ\": 0.0,"
-        output+="\n\t\t\"scaleX\": "+str(0.4301*float(points[i][2]))
+        output+="\n\t\t\"scaleX\": "+str(0.4301*float(points[i][2]))+","
         output+="\n\t\t\"scaleY\": 0.02,"
-        output+="\n\t\t\"scaleZ\": "+str(0.4301*float(points[i][3]))
+        output+="\n\t\t\"scaleZ\": "+str(0.4301*float(points[i][3]))+","
         output+="\n\t},"
         output+="\n\t\"Nickname\": \"\","
         output+="\n\t\"Description\": \"\","
