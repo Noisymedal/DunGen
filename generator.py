@@ -170,6 +170,18 @@ def testOverlap(hallway, hallway2, loc1):
         hallway.end[0] = hallway2.end[0]
     return hallway
 
+def findIntersections(hallways):
+    for i in range(len(hallways)):
+        for j in range(len(hallways)):
+            if i == j:
+                break
+            hallway = hallways[i]
+            hallway2 = hallways[j]
+            hallwayPath = [[], []]
+            hallway2Path = [[], []]
+            intersect = False
+
+            
 
 
 # Generate rooms, hallways, and grid
@@ -387,7 +399,7 @@ def main():
 
     roomData = []
     for i in rooms:
-        room = [i.center[0], i.center[1], i.roomWidth, i.roomHeight]
+        room = [i.center[1]+0.5, i.center[0]+0.5, i.roomWidth, i.roomHeight]
         roomData.append(room)
 
     with open("output/rooms.csv", "w", newline='') as f:
