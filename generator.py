@@ -399,7 +399,17 @@ def main():
 
     roomData = []
     for i in rooms:
-        room = [i.center[1]+0.5, i.center[0]+0.5, i.roomWidth, i.roomHeight]
+        if (i.roomWidth % 2 == 1):
+            if (i.roomHeight % 2 == 1):
+                room = [i.center[1], i.center[0], i.roomWidth, i.roomHeight]
+            else:
+                room = [i.center[1], i.center[0] - 0.5, i.roomWidth, i.roomHeight]
+        else:
+            if (i.roomHeight % 2 == 1):
+                room = [i.center[1] - 0.5, i.center[0], i.roomWidth, i.roomHeight]
+            else:
+                room = [i.center[1] - 0.5, i.center[0] - 0.5, i.roomWidth, i.roomHeight]
+        # room = [i.center[1]-0.5, i.center[0]-0.5, i.roomWidth, i.roomHeight]
         roomData.append(room)
 
     with open("output/rooms.csv", "w", newline='') as f:
