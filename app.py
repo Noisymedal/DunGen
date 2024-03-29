@@ -6,12 +6,13 @@
 
 from flask import Flask, render_template, redirect, url_for, request, session, flash
 from flask_mysqldb import MySQL
-import MySQLdb.cursors, re, hashlib
+import MySQLdb.cursors, re, bcrypt
 import generator
 
 app = Flask(__name__)
 
-app.secret_key = "holy moly"
+# Secret key for hashing passwords
+app.secret_key = "6xJ]&FRr?am@KX1h.%3=]w.@Wv'+/>f~"
 
 # SQL database connection
 app.config['MYSQL_HOST'] = 'dgn.c34mk48scuxa.us-east-2.rds.amazonaws.com'
@@ -36,30 +37,39 @@ def about():
 def login():
     msg = ''
 
-    # Check if "username" and "password" POST requests exist (user submitted form)
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
-        # Create variables for easy access
+        # If user submitted the form correctly, check if account exists in db
         username = request.form['username']
-        password = request.form['password']
+        loginPass = request.form['password']
 
-        # Check if account exists using MySQL
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM user WHERE username = %s AND password = %s', (username, password,))
-
-        # Fetch one record and return result
+        cursor.execute('SELECT * FROM user WHERE username = %s', [username])
         account = cursor.fetchone()
-        # If account exists in accounts table in out database
+
         if account:
-            # Create session data, we can access this data in other routes
-            session['loggedin'] = True
-            session['id'] = account['iduser']
-            session['username'] = account['username']
-            # Redirect to home page
-            # flash('Login successful')
-            return redirect(url_for('profile'))
-        else:
-            # Account doesnt exist or username/password incorrect
-            msg = 'Incorrect username/password!'
+            # If account exists in db, check if passwords match
+            dbPass = account['password']
+            dbBytes = dbPass.encode('utf-8')
+            loginBytes = loginPass.encode('utf-8')
+
+            passMatch = bcrypt.checkpw(loginBytes, dbBytes) # fix ---TODO---
+            print(passMatch)
+
+            if passMatch:
+                # If user and password match, log user in
+
+                # Create session data
+                session['loggedin'] = True
+                session['id'] = account['iduser']
+                session['username'] = account['username']
+                # Redirect to home page
+                return redirect(url_for('profile'))
+            else:
+                # Error: password does not match
+                msg = 'Incorrect password'
+        else: 
+            # Error: user not in db
+            msg = 'Username does not exist'
     # Show the login form with message (if any)
     return render_template('login.html', msg=msg)
 
@@ -103,13 +113,13 @@ def register():
         elif not username or not password or not email:
             msg = 'Please fill out the form!'
         else:
-            # Hash the password (Add in future)
-            # hash = password + app.secret_key
-            # hash = hashlib.sha1(hash.encode())
-            # password = hash.hexdigest()
+            # Encrypt the password
+            passBytes = password.encode('utf-8')
+            salt = bcrypt.gensalt()
+            passNew = bcrypt.hashpw(passBytes, salt)
 
-            # Account doesn't exist, and the form data is valid, so insert the new account into the accounts table
-            cursor.execute('INSERT INTO user VALUES (NULL, %s, %s, %s)', (username, password, email,))
+            # Insert the new account into the accounts table
+            cursor.execute('INSERT INTO user VALUES (NULL, %s, %s, %s)', (username, passNew, email,))
             mysql.connection.commit()
             msg = 'You have successfully registered!'
     elif request.method == 'POST':
