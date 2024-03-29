@@ -180,7 +180,96 @@ def findIntersections(hallways):
             hallwayPath = [[], []]
             hallway2Path = [[], []]
             intersect = False
+        if hallway.start[0] != hallway.corner[0]:
+            if hallway.start[0] > hallway.corner[0]:
+                for i in range(hallway.start[0]-hallway.corner[0]):
+                    hallwayPath[0].append(i+hallway.corner[0])
+                if hallway.corner[0] != hallway.end[0]:
+                    if hallway.corner[0] > hallway.end[0]:
+                        for j in range(hallway.corner[0] - hallway.end[0]):
+                            hallwayPath[1].append(j+hallway.end[0])
+                    else:
+                        for j in range(hallway.corner[0] - hallway.end[0]):
+                            hallwayPath[1].append(j+hallway.corner[0])
+        else:
+            for i in range(hallway.corner[0]-hallway.start[0]):
+                hallwayPath[0].append(i+hallway.start[0])
+            if hallway.corner[0] != hallway.end[0]:
+                if hallway.corner[0] > hallway.end[0]:
+                    for j in range(hallway.corner[0] - hallway.end[0]):
+                        hallwayPath[1].append(j+hallway.end[0])
+                else:
+                    for j in range(hallway.corner[0] - hallway.end[0]):
+                        hallwayPath[1].append(j+hallway.corner[0])             
+    else:
+        if hallway.start[1] > hallway.corner[1]:
+            for i in range(hallway.start[1]-hallway.corner[1]):
+                hallwayPath[0].append(i+hallway.corner[1])
+            if hallway.corner[0] != hallway.end[0]:
+                if hallway.corner[0] > hallway.end[0]:
+                    for j in range(hallway.corner[0] - hallway.end[0]):
+                        hallwayPath[1].append(j+hallway.end[0])
+                else:
+                    for j in range(hallway.corner[0] - hallway.end[0]):
+                        hallwayPath[1].append(j+hallway.corner[0])
+        else:
+            for i in range(hallway.corner[1]-hallway.start[1]):
+                hallwayPath[0].append(i+hallway.start[1])
+            if hallway.corner[0] != hallway.end[0]:
+                if hallway.corner[0] > hallway.end[0]:
+                    for j in range(hallway.corner[0] - hallway.end[0]):
+                        hallwayPath[1].append(j+hallway.end[0])
+                else:
+                    for j in range(hallway.corner[0] - hallway.end[0]):
+                        hallwayPath[1].append(j+hallway.corner[0])
+    
+    if hallway2.start[0] != hallway2.corner[0]:
+        if hallway2.start[0] > hallway2.corner[0]:
+            for i in range(hallway2.start[0]-hallway2.corner[0]):
+                hallway2Path[0].append(i+hallway2.corner[0])
+            if hallway2.corner[0] != hallway2.end[0]:
+                if hallway2.corner[0] > hallway2.end[0]:
+                    for j in range(hallway2.corner[0] - hallway2.end[0]):
+                        hallway2Path[1].append(j+hallway2.end[0])
+                else:
+                    for j in range(hallway2.corner[0] - hallway2.end[0]):
+                        hallway2Path[1].append(j+hallway2.corner[0])
+        else:
+            for i in range(hallway2.corner[0]-hallway2.start[0]):
+                hallway2Path[0].append(i+hallway2.start[0])
+            if hallway2.corner[0] != hallway2.end[0]:
+                if hallway2.corner[0] > hallway2.end[0]:
+                    for j in range(hallway2.corner[0] - hallway2.end[0]):
+                        hallway2Path[1].append(j+hallway2.end[0])
+                else:
+                    for j in range(hallway2.corner[0] - hallway2.end[0]):
+                        hallway2Path[1].append(j+hallway2.corner[0])             
+    else:
+        if hallway2.start[1] > hallway2.corner[1]:
+            for i in range(hallway2.start[1]-hallway2.corner[1]):
+                hallway2Path[0].append(i+hallway2.corner[1])
+            if hallway2.corner[0] != hallway2.end[0]:
+                if hallway2.corner[0] > hallway2.end[0]:
+                    for j in range(hallway2.corner[0] - hallway2.end[0]):
+                        hallway2Path[1].append(j+hallway2.end[0])
+                else:
+                    for j in range(hallway2.corner[0] - hallway2.end[0]):
+                        hallway2Path[1].append(j+hallway2.corner[0])
+        else:
+            for i in range(hallway2.corner[1]-hallway2.start[1]):
+                hallway2Path[0].append(i+hallway2.start[1])
+            if hallway2.corner[0] != hallway2.end[0]:
+                if hallway2.corner[0] > hallway2.end[0]:
+                    for j in range(hallway2.corner[0] - hallway2.end[0]):
+                        hallway2Path[1].append(j+hallway2.end[0])
+                else:
+                    for j in range(hallway2.corner[0] - hallway2.end[0]):
+                        hallway2Path[1].append(j+hallway2.corner[0])
 
+    for i in range(len(hallwayPath)):
+        for j in range(len(hallway2Path)):
+            if hallwayPath[i] == hallway2Path[j]:
+                intersect = True
             
 
 
@@ -399,7 +488,16 @@ def main():
 
     roomData = []
     for i in rooms:
-        room = [i.center[1]+0.5, i.center[0]+0.5, i.roomWidth, i.roomHeight]
+        if (i.roomWidth % 2 == 1):
+            if (i.roomHeight % 2 == 1):
+                room = [i.center[1], i.center[0], i.roomWidth, i.roomHeight]
+            else:
+                room = [i.center[1] - 0.5, i.center[0], i.roomWidth, i.roomHeight]
+        else:
+            if (i.roomHeight % 2 == 1):
+                room = [i.center[1], i.center[0] - 0.5, i.roomWidth, i.roomHeight]
+            else:
+                room = [i.center[1] - 0.5, i.center[0] - 0.5, i.roomWidth, i.roomHeight]
         roomData.append(room)
 
     with open("output/rooms.csv", "w", newline='') as f:
