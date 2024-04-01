@@ -108,9 +108,9 @@ def generateJson():
     output+=gen0.generateDungeonBricks(data)
     # output+=gen0.generateDungeonHats(data)+","
     output+=gen0.generateDungeonFillings(data2)
-    output+=gen0.generateDungeonFillingHats(data2)+","
-    output+=gen0.generateDungeonFillings(data3)
-    output+=gen0.generateDungeonFillingHats(data3)
+    # output+=gen0.generateDungeonFillingHats(data2)+","
+    output+=gen0.generateDungeonFillings(data3) #THIS ONE IS FOR THE ROOMS
+    # output+=gen0.generateDungeonFillingHats(data3)
     output+="\n]\n}"
     file1 = open('TS_Save_7.json', 'w')
     file1.write(output)
