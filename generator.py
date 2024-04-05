@@ -480,6 +480,42 @@ def main():
         write = csv.writer(f)
         write.writerows(wallFinal)
 
+    grid2 = grid
+    for i in wallFinal:
+        row, col = i
+        grid2[row,col] = 1
+
+    fillings = []
+    for i in range(N):
+        for j in range(N):
+            if grid2[i,j] == 0:
+                fillingWidth = 0
+                fillingHeight = 0
+                for i2 in range(i,N):
+                    if grid2[i2,j] == 0:
+                        fillingWidth += 1
+                    else:
+                        break
+                for j2 in range(j,N):
+                    lazyWidthCheck = 0
+                    for i2 in range(i,i+fillingWidth):
+                        if grid2[i2,j2] == 0:
+                            lazyWidthCheck += 1
+                        else:
+                            break
+                    if lazyWidthCheck == fillingWidth:
+                        fillingHeight += 1
+                    else:
+                        break
+                for i2 in range(i,i+fillingWidth):
+                    for j2 in range(j,j+fillingHeight):
+                        grid2[i2,j2] = 1
+                fillings.append([i+fillingWidth/2,j+fillingHeight/2,fillingWidth,fillingHeight])
+
+    with open("fillings.csv", "w", newline='') as f:
+        write = csv.writer(f)
+        write.writerows(fillings)
+
     roomData = []
     adjustment=0.5
     for i in rooms:
