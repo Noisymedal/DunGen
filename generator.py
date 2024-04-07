@@ -510,7 +510,7 @@ def main():
                 for i2 in range(i,i+fillingHeight):
                     for j2 in range(j,j+fillingWidth):
                         grid2[i2,j2] = 1
-                fillings.append([i+(fillingWidth-1)/2,j+(fillingHeight-1)/2,fillingWidth,fillingHeight])
+                fillings.append([j+(fillingWidth-1)/2,i+(fillingHeight-1)/2,fillingWidth,fillingHeight])
 
     with open("output/fillings.csv", "w", newline='') as f:
         write = csv.writer(f)
