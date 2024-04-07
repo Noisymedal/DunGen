@@ -482,37 +482,37 @@ def main():
 
     grid2 = grid
     for i in wallFinal:
-        row, col = i
+        col, row = i
         grid2[row,col] = 1
 
     fillings = []
     for i in range(N):
         for j in range(N):
             if grid2[i,j] == 0:
-                fillingWidth = 0
                 fillingHeight = 0
+                fillingWidth = 0
                 for i2 in range(i,N):
                     if grid2[i2,j] == 0:
-                        fillingWidth += 1
-                    else:
-                        break
-                for j2 in range(j,N):
-                    lazyWidthCheck = 0
-                    for i2 in range(i,i+fillingWidth):
-                        if grid2[i2,j2] == 0:
-                            lazyWidthCheck += 1
-                        else:
-                            break
-                    if lazyWidthCheck == fillingWidth:
                         fillingHeight += 1
                     else:
                         break
-                for i2 in range(i,i+fillingWidth):
-                    for j2 in range(j,j+fillingHeight):
+                for j2 in range(j,N):
+                    lazyHeightCheck = 0
+                    for i2 in range(i,i+fillingHeight):
+                        if grid2[i2,j2] == 0:
+                            lazyHeightCheck += 1
+                        else:
+                            break
+                    if lazyHeightCheck == fillingHeight:
+                        fillingWidth += 1
+                    else:
+                        break
+                for i2 in range(i,i+fillingHeight):
+                    for j2 in range(j,j+fillingWidth):
                         grid2[i2,j2] = 1
-                fillings.append([i+fillingWidth/2,j+fillingHeight/2,fillingWidth,fillingHeight])
+                fillings.append([i+(fillingWidth-1)/2,j+(fillingHeight-1)/2,fillingWidth,fillingHeight])
 
-    with open("fillings.csv", "w", newline='') as f:
+    with open("output/fillings.csv", "w", newline='') as f:
         write = csv.writer(f)
         write.writerows(fillings)
 
