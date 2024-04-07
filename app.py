@@ -4,10 +4,12 @@
 ## python app.py
 ## the web app should then run on http://localhost:5000
 
-from flask import Flask, render_template, redirect, url_for, request, session, flash
+from flask import Flask, render_template, redirect, url_for, request, session
+# from flask_login import login_required, LoginManager
 from flask_mysqldb import MySQL
 import MySQLdb.cursors, re, bcrypt
 import generator
+import cv2
 
 app = Flask(__name__)
 
@@ -29,6 +31,7 @@ def generate_dungeon():
     return render_template("generator.html")
 
 @app.route("/about")
+# @login_required
 def about():
     return render_template("about.html")
 
@@ -75,6 +78,7 @@ def login():
 
 # Route for logging out
 @app.route('/logout')
+# @login_required
 def logout():
     # Remove session data
     session.pop('loggedin', None)
@@ -130,6 +134,7 @@ def register():
 
 # Route for profile page
 @app.route('/profile')
+# @login_required
 def profile():
     # Check if the user is logged in
     if 'loggedin' in session:
@@ -137,11 +142,59 @@ def profile():
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM user WHERE iduser = %s', (session['id'],))
         account = cursor.fetchone()
+
+        # Get saved dungeons
+        cursor.execute('SELECT * FROM dungeon WHERE iduser = %s', (session['id'],))
+        dungeons = cursor.fetchall()
+
         # Show the profile page with account info
-        return render_template('profile.html', account=account)
+        return render_template('profile.html', account = account, dungeons = dungeons)
     # Redirect to login page if not logged in
     return redirect(url_for('login'))
 
+@app.route('/delete')
+# @login_required
+def delete():
+    msg = ''
+    if 'loggedin' in session:
+        # remove user from the database
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('DELETE FROM user WHERE iduser = %s', (session['id'],))
+        mysql.connection.commit()
+
+        # remove saved dungeons associated with user
+        cursor.execute('DELETE FROM dungeon WHERE iduser = %s', (session['id'],))
+        mysql.connection.commit()
+
+        # logout the user
+        session.pop('loggedin', None)
+        session.pop('id', None)
+        session.pop('username', None)
+        return redirect(url_for('login'))
+    else:
+        msg = 'literally how'
+
+    return redirect(url_for('/'), msg=msg)
+
+@app.route('/save', methods=['POST'])
+# @login_required
+def save():
+    msg = ''
+    if 'loggedin' in session:
+        if request.method == 'POST' and 'name' in request.form:
+            # get name from request form & image from static folder
+            name = request.form['name']
+            image = cv2.imread('static/dungeon.png')
+            # create new dungeon entry in database
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('INSERT INTO dungeon VALUES (NULL, %s, %s, %s, NULL)', (session['id'], image, name))
+            mysql.connection.commit()
+            msg = 'Dungeon saved successfully!'
+        else: 
+            msg = 'Please fill out the form'
+    else: 
+        msg = 'Please log in to save a dungeon'
+    return redirect(url_for('profile'))
 
 if __name__ == "__main__":
     app.run(debug=True)

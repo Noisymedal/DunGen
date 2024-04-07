@@ -184,7 +184,7 @@ def testOverlap(hallway, hallway2, loc1):
 
 # Generate rooms, hallways, and grid
 def generate(grid): 
-
+    
     for i in range(roomNumber): # Generate and place up to roomNumber rooms
         print("DEBUG: Generating room", i)
         successful = False # Was the room successfully placed
@@ -355,12 +355,12 @@ def main():
             if grid[i,j] == 255:
                 imgNum = random.randint(0, 4)
                 ax.imshow(imgDict[imgNum], extent=[j-.5, j+1-.5, i-.5, i+1-.5], zorder=1)
-                print("Tile ", imgNum, " placed at ", i, j)
+                # print("Tile ", imgNum, " placed at ", i, j)
     
     ax.imshow(image, extent=[0, N-1, 0, N-1], zorder=0, alpha=0)
 
     plt.axis('off') # Remove grid axes
-    plt.savefig("output/dungeon.png", bbox_inches='tight') # Output PNG of generated dungeon
-    plt.show() # Display generated dungeon for Debug purposes
+    plt.savefig("static/dungeon.png", bbox_inches='tight') # Output PNG of generated dungeon
+    # plt.show() # Display generated dungeon for Debug purposes
      
-main()
+# main()
