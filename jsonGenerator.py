@@ -4,6 +4,14 @@ with open('output/walls.csv', newline='') as f:
     reader = csv.reader(f)
     data = list(reader)
 
+with open('output/fillings.csv', newline='') as f2:
+    reader = csv.reader(f2)
+    data2 = list(reader)
+
+with open('output/rooms.csv', newline='') as f2:
+    reader = csv.reader(f2)
+    data3 = list(reader)
+
 def generateJson():
     output=""
     output+="{"
@@ -98,7 +106,11 @@ def generateJson():
     output+=gen0.generateHandtrigger()
     output+=gen0.generateBoard()
     output+=gen0.generateDungeonBricks(data)
-    output+=gen0.generateDungeonHats(data)
+    # output+=gen0.generateDungeonHats(data)+","
+    output+=gen0.generateDungeonFillings(data2)
+    # output+=gen0.generateDungeonFillingHats(data2)+","
+    output+=gen0.generateDungeonFillings(data3) #THIS ONE IS FOR THE ROOMS
+    # output+=gen0.generateDungeonFillingHats(data3)
     output+="\n]\n}"
     file1 = open('TS_Save_7.json', 'w')
     file1.write(output)
