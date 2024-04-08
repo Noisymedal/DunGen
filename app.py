@@ -10,6 +10,7 @@ from flask_mysqldb import MySQL
 import MySQLdb.cursors, re, bcrypt
 import generator
 import cv2
+import base64
 
 app = Flask(__name__)
 
@@ -107,12 +108,6 @@ def register():
         # If account exists show error and validation checks
         if account:
             msg = 'Account already exists!'
-
-        # regex for validation (add later?)
-        #elif not re.match(r'[^@]+@[^@]+\.[^@]+', email):
-            #msg = 'Invalid email address!'
-        #elif not re.match(r'[A-Za-z0-9]+', username):
-            #msg = 'Username must contain only characters and numbers!'
         
         elif not username or not password or not email:
             msg = 'Please fill out the form!'
@@ -146,6 +141,11 @@ def profile():
         # Get saved dungeons
         cursor.execute('SELECT * FROM dungeon WHERE iduser = %s', (session['id'],))
         dungeons = cursor.fetchall()
+        for dungeon in dungeons:
+            image = dungeon['dgnImg']
+            binary_data = base64.b64encode(image)
+            print(binary_data)
+            dungeon['dgnImg'] = binary_data
 
         # Show the profile page with account info
         return render_template('profile.html', account = account, dungeons = dungeons)
@@ -170,7 +170,7 @@ def delete():
         session.pop('loggedin', None)
         session.pop('id', None)
         session.pop('username', None)
-        return redirect(url_for('login'))
+        return redirect(url_for('register'))
     else:
         msg = 'literally how'
 

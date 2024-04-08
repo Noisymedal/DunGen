@@ -51,15 +51,19 @@
             </div>
             <div></div>
             <div class="generator-container">
-                <h3>Save to Profile</h3>
-                    <div class="form-container">
-                        <form action="/save" method="POST">
-                            <label>Name</label>
-                            <input type="text" id="name" name="name" />
-                            <input type="submit" value="Save" />
+                {% if session['loggedin'] %}
+                    <h3>Save to Profile</h3>
+                        <div class="form-container">
+                            <form action="/save" method="POST">
+                                <label>Name</label>
+                                <input type="text" id="name" name="name" />
+                                <input type="submit" value="Save" />
 
-                        </form>
-                    </div>
+                            </form>
+                        </div>
+                {% else %}
+                    <h3>Please log in to save this dungeon</h3>
+                {% endif %}
             </div>
         </div>
     </body>

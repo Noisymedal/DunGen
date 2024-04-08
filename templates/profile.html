@@ -1,23 +1,40 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta charset="utf-8">
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Profile</title>
 	</head>
 	<body class="loggedin">
-		<div class="generator-container">
-			<h1>{{ account['username'] }}'s Profile</h1>
-                <div>
-                    <p>Saved Dungeons</p>
-					<p>{{ dungeons }}</p>
-                    <table>
-                        
-						
-                    </table>
-                </div>
+		<div class="container">
+			<nav>
+				<div class="site-name">Dun-Gen</div>
+				<a href="/about">About</a>
+				<a href="/">Generator</a>
+			</nav>
+			<div id="profile">
+				<h2>{{ account['username'] }}'s Profile</h2>
+					<div>
+						<p style="text-align: center;">
+							<a href="{{ url_for('delete') }}"></i>Delete Account</a>
+							<a href="{{ url_for('logout') }}"></i>Logout</a>
+						</p>
+						<h2>Saved Dungeons</h2>
+						<table class="savedlist">
+							<tr>
+								<th>Dungeon Name</th>
+								<th>Image</th>
+							</tr>
+							{%for dungeon in dungeons%}
+							<tr>
+								<td>{{ dungeon['dgnName'] }}</td>
+								<td><img src="data:image/png;base64,{{ dungeon['dgnImg'] }}" /></td>
+							</tr>
+							{%endfor%}
+						</table>
+					</div>
+			</div>
 		</div>
-        <div>
-            <a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i>Logout</a>
-        </div>
 	</body>
 </html>
