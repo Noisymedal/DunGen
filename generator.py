@@ -32,6 +32,8 @@ imgDict = {
     4: tile4
 }
 
+global grid
+global rooms
 rooms = [] # Initialize array of all rooms
 global hallways # Initialize array of all hallways
 hallways = []
@@ -262,10 +264,98 @@ def findIntersections(hallwayList):
             for i in range(len(hallwayPath)):
                 for j in range(len(hallway2Path)):
                     if hallwayPath[i][0] == hallway2Path[j][0] and hallwayPath[i][1] == hallway2Path[j][1] and hallwayPath[i][2] != hallway2Path[j][2]:
-                        print("Intersection found at", hallwayPath[i])
-                        intersections.append([hallwayPath[i][1], hallwayPath[i][0]])
+                        intersections.append([hallwayPath[i][0], hallwayPath[i][1]])
+            intersections.append([hallway.corner[1], hallway.corner[0]])
             
+def fillHallways(hallwayList):
+    global hallwaySegments
+    hallwaySegments = []
+    for a in range(len(hallwayList)):
+        hallwayPath = []
+        hallway = hallwayList[a]
+        if (hallway.start[1] == hallway.corner[1]):
+            if (hallway.start[0] < hallway.corner[0]):
+                for i in range(hallway.corner[0]- hallway.start[0]):
+                    hallwayPath.append([hallway.start[0] + i, hallway.start[1]])
+                if (hallway.end[1] < hallway.corner[1]):
+                    for i in range(hallway.corner[1] - hallway.end[1]):
+                        hallwayPath.append([hallway.corner[0], hallway.end[1] + i])
+                else:
+                    for i in range(hallway.end[1] - hallway.corner[1]):
+                        hallwayPath.append([hallway.corner[0], hallway.corner[1] + i])
+            else:
+                for i in range(hallway.start[0]- hallway.corner[0]):
+                    hallwayPath.append([hallway.corner[0] + i, hallway.start[1]])
+                if (hallway.end[1] < hallway.corner[1]):
+                    for i in range(hallway.corner[1] - hallway.end[1]):
+                        hallwayPath.append([hallway.corner[0], hallway.end[1] + i])
+                else:
+                    for i in range(hallway.end[1] - hallway.corner[1]):
+                        hallwayPath.append([hallway.corner[0], hallway.corner[1] + i])
+        else:
+            if (hallway.start[1] < hallway.corner[1]):
+                for i in range(hallway.corner[1] - hallway.start[1]):
+                    hallwayPath.append([hallway.start[0], hallway.start[1] + i])
+                if (hallway.end[0] < hallway.corner[0]):
+                    for i in range(hallway.corner[0] - hallway.end[0]):
+                        hallwayPath.append([hallway.end[0] + i, hallway.end[1]])
+                else:
+                    for i in range(hallway.end[0] - hallway.corner[1]):
+                        hallwayPath.append([hallway.corner[0] + i, hallway.corner[1]])
+            else:
+                for i in range(hallway.start[1] - hallway.corner[1]):
+                    hallwayPath.append([hallway.start[0], hallway.corner[1] + i])
+                if (hallway.end[0] < hallway.corner[0]):
+                    for i in range(hallway.corner[0] - hallway.end[0]):
+                        hallwayPath.append([hallway.end[0] + i, hallway.end[1]])
+                else:
+                    for i in range(hallway.end[0] - hallway.corner[1]):
+                        hallwayPath.append([hallway.corner[0] + i, hallway.corner[1]])
+        
+        section = []
+        for i in hallwayPath:
+            if i in intersections and section != []:
+                hallwaySegments.append(section)
+                print(section)
+                section = []
+            else:
+                if i not in intersections:
+                    section.append(i)
+        hallwaySegments.append(section)
+        print(section)
+    
+    for i in range(len(hallwaySegments)):
+        if hallwaySegments[i] == []:
+            hallwaySegments.remove([])
+    
+    hallwaySegments = [i for n, i in enumerate(hallwaySegments) if i not in hallwaySegments[:n]]
 
+    interpretSegments(hallwaySegments)
+
+def interpretSegments(hallwaySegments):
+    global segmentsFinal
+    segmentsFinal = []
+    for i in hallwaySegments:
+        centerX = 0
+        centerY = 0
+        for j in i:
+            minX = i[j][0]
+            maxX = i[j][0]
+            minY = i[j][1]
+            maxY = i[j][1]
+            if j[0] > maxX:
+                maxX = j[0]
+            if j[0] < minX:
+                minX = j[0]
+            if j[1] > maxY:
+                maxY = j[1]
+            if j[1] < minY:
+                minY = j[1]
+        width = maxX - minX + 1
+        height = maxY - minY + 1
+        centerX = minX + width / 2
+        centerY = minY + height / 2
+        segmentsFinal.append([centerY, centerX, width, height])
 
 # Generate rooms, hallways, and grid
 def generate(grid): 
@@ -371,7 +461,19 @@ def update(frameNum, img, grid, N):
 	grid[:] = newGrid[:] """
 	return img,
 
-def main():
+def reset():
+    grid = np.zeros(N*N).reshape(N, N)
+    rooms = []
+    hallways = []
+
+global ran
+ran = False
+
+def main(ran):
+    if ran == True:
+        reset()
+
+    ran = True
     # Parser arguments may be used 
 
     parser = argparse.ArgumentParser(description="DunGen Generator")
@@ -446,7 +548,6 @@ def main():
     updateInterval = 10
 
     #plt.rcParams['grid.color'] = (0.5, 0.5, 0.5, 0.1)
-
     grid = np.array([]) # Create grid
     grid = np.zeros(N*N).reshape(N, N)
 
@@ -501,15 +602,19 @@ def main():
 
     findIntersections(hallways)
     intersect = [i for n, i in enumerate(intersections) if i not in intersections[:n]]
-    """ for i in range(len(intersect)):
-        temp = intersect[0]
-        intersect[0] = intersect[1]
-        intersect[1] = temp """
+    for i in range(len(intersect)):
+        temp = intersect[i][0]
+        intersect[i][0] = intersect[i][1]
+        intersect[i][1] = temp
     with open("output/intersect.csv", "w", newline='') as f:
         write = csv.writer(f)
         write.writerows(intersect)
+    
     #for i in hallways:
-
+    """ fillHallways(hallways)
+    with open("output/hallwaySegments.csv", "w", newline='') as f:
+        write = csv.writer(f)
+        write.writerows(segmentsFinal) """
 
     fig, ax = plt.subplots()
     alphas = ((grid/255) + 1) % 2
@@ -538,4 +643,4 @@ def main():
      
 # call main
 if __name__ == '__main__':
-	main()
+	main(ran)
