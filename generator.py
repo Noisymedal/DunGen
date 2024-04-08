@@ -17,7 +17,7 @@ TEST = 200
 OFF = 0
 random.seed()
 
-roomNumber = 10 # Number of rooms to be placed
+#roomNumber = 10 # Number of rooms to be placed
 roomWidthMax = 5 # Maximum width of any room
 roomWidthMin = 3 # Minimum width of any room
 roomHeightMax = 5 # Maximum height of any room
@@ -167,26 +167,26 @@ def testOverlap(hallway, hallway2, loc1):
         for j in range(len(hallway2Path)):
             if hallwayPath[i] == hallway2Path[j]:
                 intersect = True
-    print(intersect)
+    #print(intersect)
     if abs(hallway.start[0] - hallway2.start[0]) < math.floor(rooms[hallway.room1].roomWidth/2) and intersect == True:
         hallway.start[0] = hallway2.start[0]
-        print("Start X corrected")
+        #print("Start X corrected")
     if abs(hallway.start[1] - hallway2.start[1]) < math.floor(rooms[hallway.room1].roomHeight/2)  and intersect == True:
         hallway.start[1] = hallway2.start[1]
-        print("Start Y corrected")
+        #print("Start Y corrected")
     if abs(hallway.end[1] - hallway2.end[1]) < math.floor(rooms[hallway.room2].roomHeight/2)  and intersect == True:
         hallway.end[1] = hallway2.end[1]
-        print("End Y corrected")
+        #print("End Y corrected")
     if abs(hallway.end[0] - hallway2.end[0]) < math.floor(rooms[hallway.room2].roomWidth/2)  and intersect == True:
         hallway.end[0] = hallway2.end[0]
-        print("End X corrected")
+        #print("End X corrected")
     return hallway
 
 # Generate rooms, hallways, and grid
-def generate(grid): 
+def generate(grid, N, roomNumber): 
 
     for i in range(roomNumber): # Generate and place up to roomNumber rooms
-        print("DEBUG: Generating room", i)
+        #print("DEBUG: Generating room", i)
         successful = False # Was the room successfully placed
         attempts = 0 # Total attempts to place room
         # Repeat up to a set number of times to place room in a safe location
@@ -196,13 +196,13 @@ def generate(grid):
             randY = random.randrange(2, round((N-roomHeightMax-2))) # Generate random top-left corner coordinate for room
             randY += 1
             room.center = [randX + round(room.roomHeight / 2), randY + round(room.roomWidth / 2)] # Calculate the approximate center of each room
-            print("DEBUG: Room", i, "location found, initiate comparison")
+            #print("DEBUG: Room", i, "location found, initiate comparison")
 
             # Begin placement test
             for j in range(len(rooms)):
                 # Calculate distance from room center to room center
                 if pow(pow(rooms[j].center[0]-room.center[0], 2) + pow(rooms[j].center[1]-room.center[1], 2), .5) <= ((roomWidthMax+roomHeightMax) / 2 * 1.5):
-                    print("DEBUG: Room placement failed")
+                    #print("DEBUG: Room placement failed")
                     successful = False
                     break
                 else: # No rooms were too close, placement successful
@@ -211,12 +211,12 @@ def generate(grid):
                 successful = True
             attempts += 1
             if attempts > 5: # If too many attempts were made, abort room placement
-                print("DEBUG: Attempt limit reached")
+                #print("DEBUG: Attempt limit reached")
                 break
         
         # If placement successful, add it grid and list
         if successful == True:
-            print("DEBUG: Room", i, "success")
+            #print("DEBUG: Room", i, "success")
             grid[randX:randX + (room.roomHeight), randY:randY + (room.roomWidth)] = room.getSpace() # Place room at location
             rooms.append(room) # Add room to list of rooms
     
@@ -281,7 +281,7 @@ def update(frameNum, img, grid, N):
 	grid[:] = newGrid[:] """
 	return img,
 
-def main():
+def main(N=40, roomNumber=10):
     # Parser arguments may be used 
 
     #parser = argparse.ArgumentParser(description="DunGen Generator")
@@ -307,8 +307,8 @@ def main():
     grid = np.array([]) # Create grid
     grid = np.zeros(N*N).reshape(N, N)
 
-    print("DEBUG: Start generation")
-    generate(grid)
+    #print("DEBUG: Start generation")
+    generate(grid, N, roomNumber)
 
     walls = []
     for i in range(N):
@@ -355,12 +355,13 @@ def main():
             if grid[i,j] == 255:
                 imgNum = random.randint(0, 4)
                 ax.imshow(imgDict[imgNum], extent=[j-.5, j+1-.5, i-.5, i+1-.5], zorder=1)
-                print("Tile ", imgNum, " placed at ", i, j)
+                #print("Tile ", imgNum, " placed at ", i, j)
     
     ax.imshow(image, extent=[0, N-1, 0, N-1], zorder=0, alpha=0)
 
     plt.axis('off') # Remove grid axes
-    plt.savefig("output/dungeon.png", bbox_inches='tight') # Output PNG of generated dungeon
-    plt.show() # Display generated dungeon for Debug purposes
+    #plt.savefig("output/dungeon.png", bbox_inches='tight') # Output PNG of generated dungeon
+    plt.savefig("static/dungeon.png", bbox_inches='tight') # Output PNG of generated dungeon
+    #plt.show() # Display generated dungeon for Debug purposes
      
 main()

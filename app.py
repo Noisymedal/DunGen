@@ -8,6 +8,8 @@ from flask import Flask, render_template, redirect, url_for, request, session, f
 from flask_mysqldb import MySQL
 import MySQLdb.cursors, re, hashlib
 import generator
+from flask import jsonify
+from flask import send_from_directory
 
 app = Flask(__name__)
 
@@ -26,6 +28,23 @@ mysql = MySQL(app)
 def generate_dungeon():
     generator.main()
     return render_template("generator.html")
+
+@app.route('/generate', methods=['POST'])
+def generate_route():
+    data = request.get_json()
+    size = int(data.get('size'))  # Convert 'size' to integer
+    difficulty = int(data.get('difficulty'))  # Convert 'difficulty' to integer
+    theme = data.get('theme')  # Get 'theme' as string
+
+    try:
+        generator.main(size, difficulty)  # Generate the image
+        return jsonify({'message': 'Image generated successfully'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/dungeon.png')
+def serve_dungeon():
+    return send_from_directory('static', 'dungeon.png')
 
 @app.route("/about")
 def about():
