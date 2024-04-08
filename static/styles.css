@@ -83,3 +83,16 @@ nav a:hover {
 #size:hover, #difficulty:hover, #theme:hover, #generate-button:hover {
     cursor: pointer;
 }
+
+.savedlist {
+    border: 1px solid black;
+    margin-left: auto;
+    margin-right: auto;
+    border-collapse: collapse;
+}
+
+th, td { 
+    text-align: center;
+    padding: 10px;
+    border: 2px solid black;
+  }

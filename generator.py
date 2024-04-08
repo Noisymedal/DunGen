@@ -359,7 +359,7 @@ def interpretSegments(hallwaySegments):
 
 # Generate rooms, hallways, and grid
 def generate(grid): 
-
+    
     for i in range(roomNumber): # Generate and place up to roomNumber rooms
         successful = False # Was the room successfully placed
         attempts = 0 # Total attempts to place room
