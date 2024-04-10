@@ -12,27 +12,24 @@
 				<div class="site-name">Dun-Gen</div>
 				<a href="/about">About</a>
 				<a href="/">Generator</a>
+				<a href="/login">Login</a>
 			</nav>
 			<div class="login">
-				<h1>Login</h1>
-				<form action="{{ url_for('login') }}" method="post">
-					<label for="username">
-						<i class="fas fa-user"></i>
-					</label>
-					<input type="text" name="username" placeholder="Username" id="username" required>
-					<div></div>
-					<label for="password">
-						<i class="fas fa-lock"></i>
-					</label>
-					<input type="password" name="password" placeholder="Password" id="password" required>
-					<div class="msg">{{ msg }}</div>
-					<input type="submit" value="Login">
-				</form>
-				<div class="links">
-					<p>New to Dun-Gen?
-					<a href="{{ url_for('register') }}">Register here</a>
-				</div>
-
+			<form action="{{ url_for('login') }}" method="post">
+				<label for="username">
+					<i class="fas fa-user"></i>
+				</label>
+				<input type="text" name="username" placeholder="Username" id="username" required>
+				<label for="password">
+					<i class="fas fa-lock"></i>
+				</label>
+				<input type="password" name="password" placeholder="Password" id="password" required>
+				<div class="msg">{{ msg }}</div>
+				<input type="submit" value="Login">
+			</form>
+			<div class="links">
+				<p>New to Dun-Gen?
+				<a href="{{ url_for('register') }}">Register here</a>
 			</div>
 		</div>
 	</body>

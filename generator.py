@@ -358,7 +358,7 @@ def interpretSegments(hallwaySegments):
         segmentsFinal.append([centerY, centerX, width, height])
 
 # Generate rooms, hallways, and grid
-def generate(grid): 
+def generate(grid, N, roomNumber): 
     
     for i in range(roomNumber): # Generate and place up to roomNumber rooms
         successful = False # Was the room successfully placed
@@ -469,7 +469,7 @@ def reset():
 global ran
 ran = False
 
-def main(ran):
+def main(ran, N=40, roomNumber=10):
     if ran == True:
         reset()
 
@@ -487,12 +487,12 @@ def main(ran):
     parser.add_argument('--hallway-width', dest='hallwayWidth', required=False)
     args = parser.parse_args()
 
-    global N
+    # global N
     N = 40
     if N < 10: # Minimum grid size, end if too small
         return
     
-    global roomNumber
+    # global roomNumber
     roomNumber = 10
     if args.roomNum:
         if int(args.roomNum) > 1:
@@ -552,7 +552,7 @@ def main(ran):
     grid = np.zeros(N*N).reshape(N, N)
 
     print("DEBUG: Start generation")
-    generate(grid)
+    generate(grid, N, roomNumber)
 
     walls = []
     for i in range(N):
@@ -674,7 +674,7 @@ def main(ran):
     ax.imshow(image, extent=[0, N-1, 0, N-1], zorder=0, alpha=0)
 
     plt.axis('off') # Remove grid axes
-    plt.savefig("output/dungeon.png", bbox_inches='tight', dpi=600) # Output PNG of generated dungeon
+    plt.savefig("static/dungeon.png", bbox_inches='tight', dpi=600) # Output PNG of generated dungeon
     #plt.show() # Display generated dungeon for Debug purposes
      
 # call main
