@@ -158,3 +158,8 @@ input[type="submit"]:hover {
 .links a.active {
     font-weight: bold;
 }
+
+img {
+    max-width: 45%;
+    height: auto;
+}
