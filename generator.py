@@ -32,11 +32,7 @@ imgDict = {
     4: tile4
 }
 
-global grid
-global rooms
-rooms = [] # Initialize array of all rooms
-global hallways # Initialize array of all hallways
-hallways = []
+
 
 # Object for storing individual room information
 class Room(object):
@@ -461,7 +457,7 @@ def update(frameNum, img, grid, N):
 	grid[:] = newGrid[:] """
 	return img,
 
-def reset():
+def reset(grid, N, rooms, hallways):
     grid = np.zeros(N*N).reshape(N, N)
     rooms = []
     hallways = []
@@ -470,8 +466,15 @@ global ran
 ran = False
 
 def main(ran, N=40, roomNumber=10):
+
+    global grid
+    global rooms
+    rooms = [] # Initialize array of all rooms
+    global hallways # Initialize array of all hallways
+    hallways = []
+
     if ran == True:
-        reset()
+        reset(grid, N, rooms, hallways)
 
     ran = True
     # Parser arguments may be used 
@@ -581,7 +584,10 @@ def main(ran, N=40, roomNumber=10):
         write = csv.writer(f)
         write.writerows(wallFinal)
 
-    grid2 = grid
+    grid2 = np.array([])
+    grid2 = np.zeros(N*N).reshape(N, N)
+    for i in range(N):
+        grid2[i] = grid[i]
     for i in wallFinal:
         col, row = i
         grid2[row,col] = 1
