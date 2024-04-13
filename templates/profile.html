@@ -12,14 +12,24 @@
 				<div class="site-name">Dun-Gen</div>
 				<a href="/about">About</a>
 				<a href="/">Generator</a>
+				{% if session['loggedin'] %}
+                <a href="/profile">Profile</a>
+                {% else %}
+                <a href="/login">Login</a>
+                {% endif %}
 			</nav>
 			<div id="profile">
 				<h2>{{ account['username'] }}'s Profile</h2>
 					<div>
-						<p style="text-align: center;">
-							<a href="{{ url_for('delete') }}"></i>Delete Account</a>
-							<a href="{{ url_for('logout') }}"></i>Logout</a>
-						</p>
+						<h2>
+						<form action="/settings" class="profform">
+							<input type="submit" value="Settings" />
+						</form>
+						<form action="/logout" class="profform">
+							<input type="submit" value="Log Out" />
+						</form>
+						</h2><br>
+						
 						<h2>Saved Dungeons</h2>
 						<table class="savedlist">
 							<tr>

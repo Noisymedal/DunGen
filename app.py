@@ -143,7 +143,7 @@ def register():
             # Insert the new account into the accounts table
             cursor.execute('INSERT INTO user VALUES (NULL, %s, %s, %s)', (username, passNew, email,))
             mysql.connection.commit()
-            msg = 'You have successfully registered!'
+            return render_template('login.html', msg = 'You have successfully registered!')
     elif request.method == 'POST':
         # Form is empty... (no POST data)
         msg = 'Please fill out the form!'
@@ -167,7 +167,6 @@ def profile():
         for dungeon in dungeons:
             image = dungeon['dgnImg']
             binary_data = base64.b64encode(image)
-            print(binary_data)
             dungeon['dgnImg'] = binary_data
 
         # Show the profile page with account info
@@ -175,29 +174,101 @@ def profile():
     # Redirect to login page if not logged in
     return redirect(url_for('login'))
 
-@app.route('/delete')
+# route for user settings page
+@app.route('/settings')
+def settings():
+    if 'loggedin' in session:
+        return render_template('settings.html')
+    else:
+        return redirect(url_for('login'))
+
+# route for updating user information
+@app.route('/update', methods=['GET', 'POST'])
+def update():
+    msg=''
+    # get user info from database to verify
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SELECT * FROM user WHERE username = %s', [session['username']])
+    account = cursor.fetchone()
+
+    if account == None:
+        # account does not exist, credentials are incorrect
+        msg='Invalid username or password'
+
+    else:
+        # decrypt and verify mathcing password
+        loginPass = request.form['passverify']
+        loginBytes = loginPass.encode('utf-8') # encode form password
+        dbPass = account['password']
+        dbBytes = dbPass.encode('utf-8') # encode db password
+        passMatch = bcrypt.checkpw(loginBytes, dbBytes) # check if they match
+
+        # begin updating if all credentials match
+        if 'loggedin' in session and request.form['userverify'] == account['username'] and passMatch:
+
+            # change username if username form is filled out
+            if request.method == 'POST' and 'newuser' in request.form:
+                cursor.execute('UPDATE user SET username = %s WHERE iduser = %s', [request.form['newuser'], session['id']])
+                mysql.connection.commit()
+            
+            # change password if password form is filled out
+            if request.method == 'POST' and 'newpass' in request.form:
+                newpass = request.form['newpass']
+                # Encrypt the new password
+                passBytes = newpass.encode('utf-8')
+                salt = bcrypt.gensalt()
+                newPassEncrypt = bcrypt.hashpw(passBytes, salt)
+                # add to db
+                cursor.execute('UPDATE user SET password = %s WHERE iduser = %s', [newPassEncrypt, session['id']])
+                mysql.connection.commit()
+                msg='Changes saved'
+
+    # return if changes were saved or not
+    return render_template('settings.html', msg=msg)
+
+# route for deleting user
+@app.route('/delete', methods=['GET', 'POST'])
 # @login_required
 def delete():
-    msg = ''
-    if 'loggedin' in session:
-        # remove user from the database
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('DELETE FROM user WHERE iduser = %s', (session['id'],))
-        mysql.connection.commit()
+    msg=''
+    # get user info from database to verify
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SELECT * FROM user WHERE username = %s', [session['username']])
+    account = cursor.fetchone()
 
-        # remove saved dungeons associated with user
-        cursor.execute('DELETE FROM dungeon WHERE iduser = %s', (session['id'],))
-        mysql.connection.commit()
+    if account == None:
+        # account does not exist, credentials are incorrect
+        msg='Invalid username or password'
 
-        # logout the user
-        session.pop('loggedin', None)
-        session.pop('id', None)
-        session.pop('username', None)
-        return redirect(url_for('register'))
     else:
-        msg = 'literally how'
+        # decrypt and verify mathcing password
+        loginPass = request.form['passverify']
+        loginBytes = loginPass.encode('utf-8') # encode form password
+        dbPass = account['password']
+        dbBytes = dbPass.encode('utf-8') # encode db password
+        passMatch = bcrypt.checkpw(loginBytes, dbBytes) # check if they match
 
-    return redirect(url_for('/'), msg=msg)
+        # delete account if credentials are correct
+        if 'loggedin' in session and request.form['userverify'] == account['username'] and passMatch:
+            # remove user from the database
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('DELETE FROM user WHERE iduser = %s', (session['id'],))
+            mysql.connection.commit()
+
+            # remove saved dungeons associated with user
+            cursor.execute('DELETE FROM dungeon WHERE iduser = %s', (session['id'],))
+            mysql.connection.commit()
+
+            # logout the user
+            session.pop('loggedin', None)
+            session.pop('id', None)
+            session.pop('username', None)
+            msg = 'Account deleted'
+            return render_template('login.html', msg=msg)
+        else:
+            msg='Invalid username or password'
+
+    return redirect(url_for('settings'), msg=msg)
 
 @app.route('/save', methods=['POST'])
 # @login_required

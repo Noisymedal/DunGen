@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>User Settings</title>
+    </head>
+    <body>
+        <div class="container">
+            <nav>
+                <div class="site-name">Dun-Gen</div>
+                <a href="/about">About</a>
+                <a href="/">Generator</a>
+                {% if session['loggedin'] %}
+                <a href="/profile">Profile</a>
+                {% else %}
+                <a href="/login">Login</a>
+                {% endif %}
+            </nav>
+
+            <div class="login">
+                <h2>Change Account Info</h2>
+                <form action="/update" method="post">
+                    <input type="text" name="userverify" placeholder="Current Username (Required)" id="userverify" required />
+                    <input type="password" name="passverify" placeholder="Current Password (Required)" id="passverify" required />
+
+                    <input type="text" name="newuser" placeholder="New Username" id="newuser" />
+                    <input type="password" name="newpass" placeholder="New Password" id="newpass" />
+                    
+                    <div class="msg">{{ msg }}</div>
+                    <input type="submit" value="Save Changes" />
+                    <input type="submit" onclick="return confirm('Are you sure? This cannot be undone')" formaction='/delete' value="Delete Account" />
+                </form>
+            </div>
+    </div>
+
+    </body>
+</html>
