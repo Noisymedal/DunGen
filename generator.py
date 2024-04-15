@@ -611,10 +611,10 @@ def main(ran):
         write.writerows(intersect)
     
     #for i in hallways:
-    """ fillHallways(hallways)
+    fillHallways(hallways)
     with open("output/hallwaySegments.csv", "w", newline='') as f:
         write = csv.writer(f)
-        write.writerows(segmentsFinal) """
+        write.writerows(segmentsFinal)
 
     fig, ax = plt.subplots()
     alphas = ((grid/255) + 1) % 2

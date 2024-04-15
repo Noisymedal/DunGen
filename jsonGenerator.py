@@ -16,7 +16,7 @@ with open('output/intersect.csv', newline='')  as f4:
     reader = csv.reader(f4)
     data4 = list(reader)
 
-with open('output/hallwaySegements.csv', newline='')  as f5:
+with open('output/hallwaySegments.csv', newline='')  as f5:
     reader = csv.reader(f5)
     data5 = list(reader)
 
