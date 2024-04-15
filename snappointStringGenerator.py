@@ -1,10 +1,14 @@
 #number of spaces across on the board, note that we start counting from 0
-boardSize=40
+boardSize=38
 #the size of each space on the board
-spaceSize=0.019*2.5
+spaceSize=0.019*2.5#DEPRECATED BUT DO NOT TOUCH
 #this is the top left space coordinates for the snappoints
 zeroZero = [-0.925,-0.933]
 
+
+#This is the variable I'm using for snap-points distancing.
+snapSize=0.049
+snapZeroZero=[-0.905,-0.905]
 #This is the top-left space coordinates for the object generation
 wallOffsets=[-17,-16]
 #This is the scalar for object positioning, it includes spaceSize for tweaking mutiple things at once, in the future once everything is nice and synced up
@@ -16,10 +20,10 @@ def generateSnappoints():
     output=""
     #for every space x
     for i in range(boardSize):
-        xval = zeroZero[0]+(i*spaceSize)
+        xval = snapZeroZero[0]+(i*snapSize)
         #create a column of spaces y
         for j in range(boardSize):
-            yval = zeroZero[1]+(j*spaceSize)
+            yval = snapZeroZero[1]+(j*snapSize)
             #and append them to the string
             output+=("\n{\n\t\"Position\": {\n\t \"x\": "+str(xval)+",\n\t \"y\": 0.0,\n\t \"z\": "+str(yval)+"\n\t }\n}" )
             if(not(i==boardSize-1 and j==boardSize-1)):
@@ -540,15 +544,15 @@ def generateBoard():
     output+="\n\t\t\"GUID\": \"0\","
     output+="\n\t\t\"Name\": \"Custom_Tile\","
     output+="\n\t\t\"Transform\": {"
-    output+="\n\t\t\t\"posX\": -1.259222,"
+    output+="\n\t\t\t\"posX\": -1.2,"
     output+="\n\t\t\t\"posY\": 0.9591922,"
-    output+="\n\t\t\t\"posZ\": -0.0529934131,"
+    output+="\n\t\t\t\"posZ\": -0.2,"#Up/Down
     output+="\n\t\t\t\"rotX\": 0.0,"
     output+="\n\t\t\t\"rotY\": 180,"
     output+="\n\t\t\t\"rotZ\": 0.0,"
-    output+="\n\t\t\t\"scaleX\": 18.2097855,"
+    output+="\n\t\t\t\"scaleX\": 17.6989784,"
     output+="\n\t\t\t\"scaleY\": 1.0,"
-    output+="\n\t\t\t\"scaleZ\": 18.2097855"
+    output+="\n\t\t\t\"scaleZ\": 17.6989784"
     output+="\n\t\t},"
     output+="\n\t\t\"Nickname\": \"\","
     output+="\n\t\t\"Description\": \"\","

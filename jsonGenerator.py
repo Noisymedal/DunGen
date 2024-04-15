@@ -8,9 +8,17 @@ with open('output/fillings.csv', newline='') as f2:
     reader = csv.reader(f2)
     data2 = list(reader)
 
-with open('output/rooms.csv', newline='') as f2:
-    reader = csv.reader(f2)
+with open('output/rooms.csv', newline='') as f3:
+    reader = csv.reader(f3)
     data3 = list(reader)
+
+with open('output/intersect.csv', newline='')  as f4:
+    reader = csv.reader(f4)
+    data4 = list(reader)
+
+with open('output/hallwaySegements.csv', newline='')  as f5:
+    reader = csv.reader(f5)
+    data5 = list(reader)
 
 def generateJson():
     output=""
@@ -111,6 +119,8 @@ def generateJson():
     # output+=gen0.generateDungeonFillingHats(data2)+","
     output+=gen0.generateDungeonFillings(data3) #THIS ONE IS FOR THE ROOMS
     # output+=gen0.generateDungeonFillingHats(data3)
+    output+=gen0.generateDungeonFillings(data4)#Intersects
+    output+=gen0.generateDungeonFillings(data5)#HallwaySegments
     output+="\n]\n}"
     file1 = open('TS_Save_7.json', 'w')
     file1.write(output)
