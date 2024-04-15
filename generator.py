@@ -642,6 +642,11 @@ def main(ran, N=40, roomNumber=10):
         write.writerows(roomData)
 
     findIntersections(hallways)
+    for i in range(len(intersections)):
+        temp = intersections[i][0]
+        intersections[i][0] = intersections[i][1]
+        intersections[i][1] = temp
+
     intersect = [i for n, i in enumerate(intersections) if i not in intersections[:n]]
     for i in range(len(intersect)):
         temp = intersect[i][0]
