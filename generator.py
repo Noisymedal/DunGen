@@ -266,16 +266,16 @@ def fillHallways(hallwayList):
                 for i in range(hallway.corner[0]- hallway.start[0]):
                     hallwayPath.append([hallway.start[0] + i, hallway.start[1]])
                 if (hallway.end[1] < hallway.corner[1]):
-                    for i in range(hallway.corner[1] - hallway.end[1]):
+                    for i in range(hallway.corner[1] - hallway.end[1], 0, -1):
                         hallwayPath.append([hallway.corner[0], hallway.end[1] + i])
                 else:
                     for i in range(hallway.end[1] - hallway.corner[1]):
                         hallwayPath.append([hallway.corner[0], hallway.corner[1] + i])
             else:
-                for i in range(hallway.start[0]- hallway.corner[0]):
+                for i in range(hallway.start[0]- hallway.corner[0], 0, -1):
                     hallwayPath.append([hallway.corner[0] + i, hallway.start[1]])
                 if (hallway.end[1] < hallway.corner[1]):
-                    for i in range(hallway.corner[1] - hallway.end[1]):
+                    for i in range(hallway.corner[1] - hallway.end[1], 0, -1):
                         hallwayPath.append([hallway.corner[0], hallway.end[1] + i])
                 else:
                     for i in range(hallway.end[1] - hallway.corner[1]):
@@ -285,16 +285,16 @@ def fillHallways(hallwayList):
                 for i in range(hallway.corner[1] - hallway.start[1]):
                     hallwayPath.append([hallway.start[0], hallway.start[1] + i])
                 if (hallway.end[0] < hallway.corner[0]):
-                    for i in range(hallway.corner[0] - hallway.end[0]):
+                    for i in range(hallway.corner[0] - hallway.end[0], 0, -1):
                         hallwayPath.append([hallway.end[0] + i, hallway.end[1]])
                 else:
                     for i in range(hallway.end[0] - hallway.corner[1]):
                         hallwayPath.append([hallway.corner[0] + i, hallway.corner[1]])
             else:
-                for i in range(hallway.start[1] - hallway.corner[1]):
+                for i in range(hallway.start[1] - hallway.corner[1], 0, -1):
                     hallwayPath.append([hallway.start[0], hallway.corner[1] + i])
                 if (hallway.end[0] < hallway.corner[0]):
-                    for i in range(hallway.corner[0] - hallway.end[0]):
+                    for i in range(hallway.corner[0] - hallway.end[0], 0, -1):
                         hallwayPath.append([hallway.end[0] + i, hallway.end[1]])
                 else:
                     for i in range(hallway.end[0] - hallway.corner[1]):
@@ -304,7 +304,6 @@ def fillHallways(hallwayList):
         for i in hallwayPath:
             if i in intersections and section != []:
                 hallwaySegments.append(section)
-                print(section)
                 section = []
             else:
                 if i not in intersections:
@@ -312,8 +311,6 @@ def fillHallways(hallwayList):
         hallwaySegments.append(section)
     
     for i in range(len(hallwaySegments)-1, 0, -1):
-        print(len(hallwaySegments))
-        print(i)
         if hallwaySegments[i] == []:
             hallwaySegments.remove([])
             print("Segement removed")
@@ -342,9 +339,10 @@ def interpretSegments(hallwaySegments):
             if i[j][1] < minY:
                 minY = i[j][1]
         width = maxX - minX + 1
-        print("Width:", width, maxX, minX)
         height = maxY - minY + 1
-        print("Height:", height, maxY, minY)
+        if width > 1 and height > 1:
+            print(i)
+            print()
         centerX = minX + width / 2
         centerY = minY + height / 2
         segmentsFinal.append([centerY, centerX, width, height])
@@ -685,7 +683,7 @@ def main(ran, N=40, roomNumber=10):
 
     plt.axis('off') # Remove grid axes
     plt.savefig("static/dungeon.png", bbox_inches='tight', dpi=600) # Output PNG of generated dungeon
-    plt.show() # Display generated dungeon for Debug purposes
+    #plt.show() # Display generated dungeon for Debug purposes
      
 # call main
 if __name__ == '__main__':
