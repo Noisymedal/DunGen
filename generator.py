@@ -338,13 +338,16 @@ def interpretSegments(hallwaySegments):
                 maxY = i[j][1]
             if i[j][1] < minY:
                 minY = i[j][1]
-        width = maxX - minX + 1
-        height = maxY - minY + 1
-        if width > 1 and height > 1:
-            print(i)
-            print()
-        centerX = minX + width / 2
-        centerY = minY + height / 2
+        width = maxX - minX
+        height = maxY - minY
+        if width == 0:
+            width = 1
+        if height == 0:
+            height = 1
+        """ centerX = minX + width / 2
+        centerY = minY + height / 2 """
+        centerX = minX + height / 2
+        centerY = minY + width / 2
         segmentsFinal.append([centerY, centerX, width, height])
 
 # Generate rooms, hallways, and grid
