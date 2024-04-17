@@ -12,29 +12,27 @@
                 <div class="site-name">Dun-Gen</div>
                 <a href="/about">About</a>
                 <a href="/">Generator</a>
+                <a href="/login">Login</a>
             </nav>
             <h2>Dungeon Generator</h2>
             <div class="generator-container">
-                <img
-                    src="{{ url_for('static', filename='dungeon.png') }}"
-                    alt="Generated Dungeon"
-                />
+                <img id="dungeon-image" src="/dungeon.png">
             
                 <div class="form-container">
                     <form>
                         <form>
                             <label for="size">Dungeon Size:</label>
                             <select id="size" name="size">
-                                <option value="small">Small</option>
-                                <option value="medium">Medium</option>
-                                <option value="large">Large</option>
+                                <option value="10">Small</option>
+                                <option value="40">Medium</option>
+                                <option value="100">Large</option>
                             </select>
                         
                             <label for="difficulty">Dungeon Complexity:</label>
                             <select id="difficulty" name="difficulty">
-                                <option value="easy">Easy</option>
-                                <option value="medium">Medium</option>
-                                <option value="hard">Hard</option>
+                                <option value="10">Easy</option>
+                                <option value="20">Medium</option>
+                                <option value="30">Hard</option>
                             </select>
                         
                             <label for="theme">Dungeon Theme:</label>
@@ -44,7 +42,7 @@
                                 <option value="forest">Forest</option>
                             </select>
                         
-                            <button id="generate-button" onclick="generator.main()">Generate</button>
+                            <button id="generate-button">Generate</button>
                         </form>
                     </form>
                 </div>
@@ -67,4 +65,5 @@
             </div>
         </div>
     </body>
+    <script src="{{ url_for('static', filename='generator.js') }}"></script>
 </html>

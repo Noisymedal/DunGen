@@ -4,7 +4,7 @@
 ## python app.py
 ## the web app should then run on http://localhost:5000
 
-from flask import Flask, render_template, redirect, url_for, request, session
+from flask import Flask, render_template, redirect, url_for, request, session, jsonify, send_from_directory
 # from flask_login import login_required, LoginManager
 from flask_mysqldb import MySQL
 import MySQLdb.cursors, re, bcrypt
@@ -28,8 +28,31 @@ mysql = MySQL(app)
 
 @app.route("/")
 def generate_dungeon():
-    generator.main()
+    generator.main(False, 40, 10)
     return render_template("generator.html")
+
+@app.route('/generate', methods=['POST'])
+def generate_route():
+    timesRan = 0
+    data = request.get_json()
+    size = int(data.get('size'))  # Convert 'size' to integer
+    difficulty = int(data.get('difficulty'))  # Convert 'difficulty' to integer
+    theme = data.get('theme')  # Get 'theme' as string
+    if timesRan > 0:
+        ran = True
+    else:
+        ran = False
+
+    try:
+        generator.main(ran, size, difficulty)  # Generate the image
+        return jsonify({'message': 'Image generated successfully'})
+        timesRan += 1
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/dungeon.png')
+def serve_dungeon():
+    return send_from_directory('static', 'dungeon.png')
 
 @app.route("/about")
 # @login_required
@@ -56,7 +79,7 @@ def login():
             dbBytes = dbPass.encode('utf-8')
             loginBytes = loginPass.encode('utf-8')
 
-            passMatch = bcrypt.checkpw(loginBytes, dbBytes) # fix ---TODO---
+            passMatch = bcrypt.checkpw(loginBytes, dbBytes)
             print(passMatch)
 
             if passMatch:

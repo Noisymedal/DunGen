@@ -51,7 +51,12 @@ nav a:hover {
 .generator-container {
     display: flex;
     align-items: center;
-    padding-left: 300px;
+    justify-content: center;
+}
+
+.login, .register {
+    max-width: 25%;
+    margin: 0 auto;
 }
 
 .form-container {
@@ -96,3 +101,65 @@ th, td {
     padding: 10px;
     border: 2px solid black;
   }
+
+  /********************************/
+
+.login, .register {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-top: 10px;
+}
+
+input[type="text"], input[type="password"], input[type="email"] {
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+input[type="submit"] {
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    color: white;
+    background-color: #007BFF;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+.links {
+    display: flex;
+    justify-content: center;    
+}
+
+.links a {
+    color: #007BFF;
+    text-decoration: none;
+}
+
+.links a:not(:last-child) {
+    margin-right: 20px;
+}
+
+.links a.active {
+    font-weight: bold;
+}
+
+img {
+    max-width: 45%;
+    height: auto;
+}
