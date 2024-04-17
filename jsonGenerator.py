@@ -115,7 +115,7 @@ def generateJson():
     output+=gen0.generateBoard()
     output+=gen0.generateDungeonBricks(data)
     # output+=gen0.generateDungeonHats(data)+","
-    output+=gen0.generateDungeonFillings(data2,0)
+    # output+=gen0.generateDungeonFillings(data2,0) #THIS ONES IS FOR FILLINGS
     # output+=gen0.generateDungeonFillingHats(data2)+","
     output+=gen0.generateDungeonFillings(data3,0) #THIS ONE IS FOR THE ROOMS
     # output+=gen0.generateDungeonFillingHats(data3)
