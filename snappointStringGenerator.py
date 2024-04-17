@@ -248,7 +248,7 @@ def generateDungeonHats(points):
     return output
 
 #These should be the large blocks that fill out the unexplorable space in the dungeon, the areas that aren't hallways or rooms
-def generateDungeonFillings(points):
+def generateDungeonFillings(points,type):
     #create the output string
     output=""
 
@@ -257,9 +257,14 @@ def generateDungeonFillings(points):
         output+="{\n\t\"GUID\": "+generateID()+","
         output+="\n\t\"Name\": \"Custom_Model\","
         output+="\n\t\"Transform\": {"
-        output+="\n\t\t\"posX\": "+str(float(points[i][0])*wallSpaceSize*10+zeroZero[0]+wallOffsets[0])+","
-        output+="\n\t\t\"posY\": 1.33155191,"
-        output+="\n\t\t\"posZ\": "+str(float(points[i][1])*wallSpaceSize*10+zeroZero[1]+wallOffsets[1])+","
+        if (type==0):
+            output+="\n\t\t\"posX\": "+str(float(points[i][0])*wallSpaceSize*10+zeroZero[0]+wallOffsets[0])+","
+            output+="\n\t\t\"posY\": 1.33155191,"
+            output+="\n\t\t\"posZ\": "+str(float(points[i][1])*wallSpaceSize*10+zeroZero[1]+wallOffsets[1])+","
+        if (type==1):
+            output+="\n\t\t\"posX\": "+str(float(points[i][1])*wallSpaceSize*10+zeroZero[0]+wallOffsets[0])+","
+            output+="\n\t\t\"posY\": 1.33155191,"
+            output+="\n\t\t\"posZ\": "+str(float(points[i][0])*wallSpaceSize*10+zeroZero[1]+wallOffsets[1])+","
         output+="\n\t\t\"rotX\": 0.0,"
         output+="\n\t\t\"rotY\": 0.0,"
         output+="\n\t\t\"rotZ\": 0.0,"
@@ -508,7 +513,7 @@ def generateDungeonIntersects(points):
     return output
 
 #identical to dungeonBricks but for the grey Dungeon tiles above our bricks to obscure the unexplored dungeon
-def generateDungeonFillingHats(points):
+def generateDungeonFillingHats(points,type):
     output=""
 
 
@@ -517,9 +522,14 @@ def generateDungeonFillingHats(points):
         output+="{\n\t\"GUID\": "+generateID()+","
         output+="\n\t\"Name\": \"Custom_Model\","
         output+="\n\t\"Transform\": {"
-        output+="\n\t\t\"posX\": "+str(float(points[i][0])*wallSpaceSize*10+zeroZero[0]+wallOffsets[0])+","
-        output+="\n\t\t\"posY\": 1.6265,"
-        output+="\n\t\t\"posZ\": "+str(float(points[i][1])*wallSpaceSize*10+zeroZero[1]+wallOffsets[1])+","
+        if (type==0):
+            output+="\n\t\t\"posX\": "+str(float(points[i][0])*wallSpaceSize*10+zeroZero[0]+wallOffsets[0])+","
+            output+="\n\t\t\"posY\": 1.6265,"
+            output+="\n\t\t\"posZ\": "+str(float(points[i][1])*wallSpaceSize*10+zeroZero[1]+wallOffsets[1])+","
+        if (type==1):
+            output+="\n\t\t\"posX\": "+str(float(points[i][1])*wallSpaceSize*10+zeroZero[0]+wallOffsets[0])+","
+            output+="\n\t\t\"posY\": 1.6265,"
+            output+="\n\t\t\"posZ\": "+str(float(points[i][0])*wallSpaceSize*10+zeroZero[1]+wallOffsets[1])+","
         output+="\n\t\t\"rotX\": 0.0,"
         output+="\n\t\t\"rotY\": 0.0,"
         output+="\n\t\t\"rotZ\": 0.0,"
