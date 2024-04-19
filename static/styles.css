@@ -167,3 +167,15 @@ img {
 .profform {
     display: inline; 
 }
+
+button {
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    color: white;
+    background-color: #007BFF;
+    cursor: pointer;
+    margin:auto;
+    display:block;
+  }
