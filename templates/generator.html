@@ -12,7 +12,11 @@
                 <div class="site-name">Dun-Gen</div>
                 <a href="/about">About</a>
                 <a href="/">Generator</a>
+                {% if session['loggedin'] %}
+                <a href="/profile">Profile</a>
+                {% else %}
                 <a href="/login">Login</a>
+                {% endif %}
             </nav>
             <h2>Dungeon Generator</h2>
             <div class="generator-container">

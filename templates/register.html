@@ -11,7 +11,12 @@
 				<div class="site-name">Dun-Gen</div>
 				<a href="/about">About</a>
 				<a href="/">Generator</a>
-				<a href="/login">Login</a>
+				{% if session['loggedin'] %}
+                <a href="/profile">Profile</a>
+                {% else %}
+                <a href="/login">Login</a>
+                {% endif %}
+
 			</nav>
 			<div class="register">
 				<form action="{{ url_for('register') }}" method="post" autocomplete="off" class = "form-container">
@@ -30,11 +35,11 @@
 					<div class="msg">{{ msg }}</div>
 					<input type="submit" value="Register">
 				</form>
-				<div class="links">
-					<p>Already have an account?
+
+				<div class="links" style="text-align: center;">
+					<p>Already have an account?<br>
 					<a href="{{ url_for('login') }}">Login here</a>
 				</div>
-
 			</div>
 		</div>
 	</body>

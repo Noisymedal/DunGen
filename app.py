@@ -1,16 +1,20 @@
-## SETUP: run the following command in the terminal to install dependencies (flask and matplotlib specifically):
-## -m pip install -r requirements.txt
-## run the web app by typing the following command in the terminal:
-## python app.py
-## the web app should then run on http://localhost:5000
+## SETUP: 
+## 1) install & run a virtual environment by running these commands in the vscode bash terminal:
+##      py -m venv .venv
+##      .venv/scripts/activate
+##    bash terminal should show (env) on it now
+## 2) run the following command in the vscode terminal to install dependencies:
+##      -m pip install -r requirements.txt
+## 3) run the web app by typing the following command in the terminal:
+##      python app.py
+## 4) the web app should then run on http://localhost:5000 (also displayed in vscode terminal)
 
+import MySQLdb.cursors, bcrypt, generator
 from flask import Flask, render_template, redirect, url_for, request, session, jsonify, send_from_directory
 # from flask_login import login_required, LoginManager
 from flask_mysqldb import MySQL
-import MySQLdb.cursors, re, bcrypt
-import generator
-import cv2
-import base64
+from imgur_python import Imgur
+from os import path
 
 app = Flask(__name__)
 
@@ -24,13 +28,25 @@ app.config['MYSQL_PASSWORD'] = 'vsyjAheSRR9N8TjVtEbKJd'
 app.config['MYSQL_DB'] = 'dgn'
 mysql = MySQL(app)
 
+# Imgur API connection
+imgur_client = Imgur({
+    "access_token": "5b49aa23222bc7d472a3ffdca6bd53c7b7fbbddd",
+    "expires_in": 315360000,
+    "token_type": "bearer",
+    "refresh_token": "44c1b31054dcdb1042ce9bec941c150d4ec742bb",
+    "account_id": 116171211,
+    "account_username": "GebTheGib"
+})
+
 ### ROUTES ###
 
+# Landing page / dungeon generation page
 @app.route("/")
 def generate_dungeon():
     generator.main(False, 40, 10)
     return render_template("generator.html")
 
+# Route for generating a new dungeon
 @app.route('/generate', methods=['POST'])
 def generate_route():
     timesRan = 0
@@ -50,10 +66,12 @@ def generate_route():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+# Route for serving the generated dungeon image
 @app.route('/dungeon.png')
 def serve_dungeon():
     return send_from_directory('static', 'dungeon.png')
 
+# About page
 @app.route("/about")
 # @login_required
 def about():
@@ -143,7 +161,7 @@ def register():
             # Insert the new account into the accounts table
             cursor.execute('INSERT INTO user VALUES (NULL, %s, %s, %s)', (username, passNew, email,))
             mysql.connection.commit()
-            msg = 'You have successfully registered!'
+            return render_template('login.html', msg = 'You have successfully registered!')
     elif request.method == 'POST':
         # Form is empty... (no POST data)
         msg = 'Please fill out the form!'
@@ -164,40 +182,115 @@ def profile():
         # Get saved dungeons
         cursor.execute('SELECT * FROM dungeon WHERE iduser = %s', (session['id'],))
         dungeons = cursor.fetchall()
-        for dungeon in dungeons:
-            image = dungeon['dgnImg']
-            binary_data = base64.b64encode(image)
-            print(binary_data)
-            dungeon['dgnImg'] = binary_data
 
         # Show the profile page with account info
         return render_template('profile.html', account = account, dungeons = dungeons)
     # Redirect to login page if not logged in
     return redirect(url_for('login'))
 
-@app.route('/delete')
+# User settings page
+@app.route('/settings')
+def settings():
+    if 'loggedin' in session:
+        return render_template('settings.html')
+    else:
+        return redirect(url_for('login'))
+
+# Route for updating user information
+@app.route('/update', methods=['GET', 'POST'])
+def update():
+    msg=''
+    # get user info from database to verify
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SELECT * FROM user WHERE username = %s', [session['username']])
+    account = cursor.fetchone()
+
+    if account == None:
+        # account does not exist, credentials are incorrect
+        msg='Invalid username or password'
+
+    else:
+        # decrypt and verify mathcing password
+        loginPass = request.form['passverify']
+        loginBytes = loginPass.encode('utf-8') # encode form password
+        dbPass = account['password']
+        dbBytes = dbPass.encode('utf-8') # encode db password
+        passMatch = bcrypt.checkpw(loginBytes, dbBytes) # check if they match
+
+        # begin updating if all credentials match
+        if 'loggedin' in session and request.form['userverify'] == account['username'] and passMatch:
+
+            # change username if username form is filled out
+            if request.method == 'POST' and 'newuser' in request.form:
+                cursor.execute('UPDATE user SET username = %s WHERE iduser = %s', [request.form['newuser'], session['id']])
+                mysql.connection.commit()
+            
+            # change password if password form is filled out
+            if request.method == 'POST' and 'newpass' in request.form:
+                newpass = request.form['newpass']
+                # Encrypt the new password
+                passBytes = newpass.encode('utf-8')
+                salt = bcrypt.gensalt()
+                newPassEncrypt = bcrypt.hashpw(passBytes, salt)
+                # add to db
+                cursor.execute('UPDATE user SET password = %s WHERE iduser = %s', [newPassEncrypt, session['id']])
+                mysql.connection.commit()
+                msg='Changes saved'
+
+    # return if changes were saved or not
+    return render_template('settings.html', msg=msg)
+
+# Route for deleting user
+@app.route('/delete', methods=['GET', 'POST'])
 # @login_required
 def delete():
-    msg = ''
-    if 'loggedin' in session:
-        # remove user from the database
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('DELETE FROM user WHERE iduser = %s', (session['id'],))
-        mysql.connection.commit()
+    msg=''
+    # get user info from database to verify
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SELECT * FROM user WHERE username = %s', [session['username']])
+    account = cursor.fetchone()
 
-        # remove saved dungeons associated with user
-        cursor.execute('DELETE FROM dungeon WHERE iduser = %s', (session['id'],))
-        mysql.connection.commit()
+    if account == None:
+        # account does not exist, credentials are incorrect
+        msg='Invalid username or password'
 
-        # logout the user
-        session.pop('loggedin', None)
-        session.pop('id', None)
-        session.pop('username', None)
-        return redirect(url_for('register'))
     else:
-        msg = 'literally how'
+        # decrypt and verify mathcing password
+        loginPass = request.form['passverify']
+        loginBytes = loginPass.encode('utf-8') # encode form password
+        dbPass = account['password']
+        dbBytes = dbPass.encode('utf-8') # encode db password
+        passMatch = bcrypt.checkpw(loginBytes, dbBytes) # check if they match
 
-    return redirect(url_for('/'), msg=msg)
+        # delete account if credentials are correct
+        if 'loggedin' in session and request.form['userverify'] == account['username'] and passMatch:
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+
+            # remove all associated dungeon images from imgur gallery
+            cursor.execute('SELECT imgId FROM dungeon WHERE iduser = %s', (session['id'],))
+            imgIdList = cursor.fetchall()
+            print(imgIdList)
+            for id in imgIdList:
+                response = imgur_client.image_delete(id['imgId'])
+
+            # remove user from the database
+            cursor.execute('DELETE FROM user WHERE iduser = %s', (session['id'],))
+            mysql.connection.commit()
+
+            # remove saved dungeons associated with user
+            cursor.execute('DELETE FROM dungeon WHERE iduser = %s', (session['id'],))
+            mysql.connection.commit()
+
+            # logout the user
+            session.pop('loggedin', None)
+            session.pop('id', None)
+            session.pop('username', None)
+            msg = 'Account deleted'
+            return render_template('login.html', msg=msg)
+        else:
+            msg='Invalid username or password'
+
+    return redirect(url_for('settings'), msg=msg)
 
 @app.route('/save', methods=['POST'])
 # @login_required
@@ -207,10 +300,19 @@ def save():
         if request.method == 'POST' and 'name' in request.form:
             # get name from request form & image from static folder
             name = request.form['name']
-            image = cv2.imread('static/dungeon.png')
+
+            # store dungeon image via imgur API
+            file = path.realpath('static/dungeon.png')
+            title = name
+            description = ''
+            album = None
+            disable_audio = 0
+            response = imgur_client.image_upload(file, title, description, album, disable_audio)
+            id = response['response']['data']['id']
+
             # create new dungeon entry in database
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('INSERT INTO dungeon VALUES (NULL, %s, %s, %s, NULL)', (session['id'], image, name))
+            cursor.execute('INSERT INTO dungeon VALUES (NULL, %s, %s, %s, NULL)', (session['id'], id, name))
             mysql.connection.commit()
             msg = 'Dungeon saved successfully!'
         else: 
@@ -220,4 +322,4 @@ def save():
     return redirect(url_for('profile'))
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run('0.0.0.0', debug=True)
