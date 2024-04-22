@@ -18,6 +18,7 @@ Flask-WTF==1.2.1
 fleep==1.0.1
 fonttools==4.50.0
 greenlet==3.0.3
+gunicorn==22.0.0
 idna==3.6
 imgur-python==0.2.4
 imgurpython==1.1.7
