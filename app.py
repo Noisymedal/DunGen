@@ -9,7 +9,7 @@
 ##      python app.py
 ## 4) the web app should then run on http://localhost:5000 (also displayed in vscode terminal)
 
-import MySQLdb.cursors, bcrypt, generator, cv2, base64
+import MySQLdb.cursors, bcrypt, generator, base64
 from flask import Flask, render_template, redirect, url_for, request, session, jsonify, send_from_directory
 # from flask_login import login_required, LoginManager
 from flask_mysqldb import MySQL
@@ -300,7 +300,6 @@ def save():
         if request.method == 'POST' and 'name' in request.form:
             # get name from request form & image from static folder
             name = request.form['name']
-            image = cv2.imread('static/dungeon.png')
 
             # store dungeon image via imgur API
             file = path.realpath('static/dungeon.png')
