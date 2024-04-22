@@ -9,7 +9,7 @@
 ##      python app.py
 ## 4) the web app should then run on http://localhost:5000 (also displayed in vscode terminal)
 
-import MySQLdb.cursors, bcrypt, generator, base64
+import MySQLdb.cursors, bcrypt, generator
 from flask import Flask, render_template, redirect, url_for, request, session, jsonify, send_from_directory
 # from flask_login import login_required, LoginManager
 from flask_mysqldb import MySQL
