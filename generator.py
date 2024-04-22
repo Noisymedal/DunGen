@@ -265,7 +265,7 @@ def fillHallways(hallwayList):
     
     for a in range(len(intersections)-1, 0, -1):
         if intersections[a] in roomLocations:
-            print("Popped", intersections[a])
+            #print("Popped", intersections[a])
             intersections.pop(a)
     
     global hallwaySegments
@@ -364,8 +364,8 @@ def interpretSegments(hallwaySegments):
         centerY = minY + height / 2 """
         centerX = minX + (width / 2)
         centerY = minY + (height / 2)
-        print(minX, maxX, height)
-        print(minY, maxY, width)
+        #print(minX, maxX, height)
+        #print(minY, maxY, width)
         segmentsFinal.append([centerX - 0.5, centerY - 0.5, height, width])
         #segmentsFinal.append([centerX, centerY, height, width])
 
@@ -647,11 +647,19 @@ def main(ran, N=40, roomNumber=10):
             if (i.roomWidth % 2 == 1):
                 if (i.roomHeight % 2 == 1):
                     room = [i.center[1] - 0.5-adjustment, i.center[0] - 0.5-adjustment, i.roomWidth, i.roomHeight]
+                    if (i.roomWidth % 4 == 1):
+                        room[0] += 1
+                        if (i.roomHeight % 4 == 1):
+                            room[1] += 1
                 else:
                     room = [i.center[1] - 0.5-adjustment, i.center[0]-adjustment, i.roomWidth, i.roomHeight]
+                    if (i.roomWidth % 4 == 1):
+                        room[0] += 1
             else:
                 if (i.roomHeight % 2 == 1):
                     room = [i.center[1]-adjustment, i.center[0] - 0.5-adjustment, i.roomWidth, i.roomHeight]
+                    if (i.roomHeight % 4 == 1):
+                        room[1] += 1
                 else:
                     room = [i.center[1]-adjustment, i.center[0]-adjustment, i.roomWidth, i.roomHeight]
             roomData.append(room)
@@ -701,7 +709,7 @@ def main(ran, N=40, roomNumber=10):
 
     plt.axis('off') # Remove grid axes
     plt.savefig("static/dungeon.png", bbox_inches='tight', dpi=600) # Output PNG of generated dungeon
-    plt.show() # Display generated dungeon for Debug purposes
+    #plt.show() # Display generated dungeon for Debug purposes
      
 # call main
 if __name__ == '__main__':
