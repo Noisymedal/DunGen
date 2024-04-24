@@ -499,13 +499,24 @@ def update(frameNum, img, grid, N):
 	grid[:] = newGrid[:] """
 	return img,
 
-def reset(grid, N, rooms, hallways):
+def reset(grid, N, rooms, hallways, intersections, hallwaySegments):
     grid = np.zeros(N*N).reshape(N, N)
     rooms = []
     hallways = []
+    intersections = []
+    hallwaySegments = []
+    
+def getTheme():
+    if theme == "Basic":
+        return 0
+    if theme == "MC":
+        return 1
+    if theme == "IP":
+        return 2
 
 global ran
 ran = False
+theme = "Basic"
 
 def main(ran, N=40, roomNumber=10, roomWidthMin=2, roomWidthMax=5, roomHeightMin=2, roomHeightMax=5, hallwayWidth=1, theme="Basic"):
 
@@ -519,7 +530,7 @@ def main(ran, N=40, roomNumber=10, roomWidthMin=2, roomWidthMax=5, roomHeightMin
     hallways = []
 
     if ran == True:
-        reset(grid, N, rooms, hallways)
+        reset(grid, N, rooms, hallways, intersections, hallwaySegments)
 
     ran = True
     # Parser arguments may be used 
