@@ -103,7 +103,7 @@ def generateDungeonBricks(points,form):
         elif(form==1):
             output+="\n\t\"DiffuseURL\": \"http://cloud-3.steamusercontent.com/ugc/2508017401741441630/A2955F784ED15F092509490B7F0FF13964B42078/\","
         elif(form==2):
-            pass
+            output+="\n\t\"DiffuseURL\": \"http://cloud-3.steamusercontent.com/ugc/2500136812466760337/7842E82A0DE27C9A26DD8C78FDBC5C33D791B241/\","
         output+="\n\t\"NormalURL\": \"\","
         output+="\n\t\"ColliderURL\": \"\","
         output+="\n\t\"Convex\": true,"
