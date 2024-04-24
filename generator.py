@@ -396,7 +396,7 @@ def interpretSegments(hallwaySegments):
         #segmentsFinal.append([centerX, centerY, height, width])
 
 # Generate rooms, hallways, and grid
-def generate(grid, N, roomNumber): 
+def generate(grid, N, roomNumber, roomWidthMin, roomWidthMax, roomHeightMin, roomHeightMax, hallwayWidth): 
     
     for i in range(roomNumber): # Generate and place up to roomNumber rooms
         successful = False # Was the room successfully placed
@@ -507,7 +507,7 @@ def reset(grid, N, rooms, hallways):
 global ran
 ran = False
 
-def main(ran, N=40, roomNumber=10, theme="Basic"):
+def main(ran, N=40, roomNumber=10, roomWidthMin=2, roomWidthMax=5, roomHeightMin=2, roomHeightMax=5, hallwayWidth=1, theme="Basic"):
 
     if theme != "Basic" and theme != "IP" and theme != "MC":
         print("ERROR: Unknown theme detected, cancelling generation")
@@ -524,7 +524,7 @@ def main(ran, N=40, roomNumber=10, theme="Basic"):
     ran = True
     # Parser arguments may be used 
 
-    parser = argparse.ArgumentParser(description="DunGen Generator")
+    """ parser = argparse.ArgumentParser(description="DunGen Generator")
 
     #parser.add_argument('--grid-size', dest='N', required=False)
     parser.add_argument('--room-num', dest='roomNum', required=False)
@@ -533,57 +533,61 @@ def main(ran, N=40, roomNumber=10, theme="Basic"):
     parser.add_argument('--room-height-min', dest='roomHeightMin', required=False)
     parser.add_argument('--room-height-max', dest='roomHeightMax', required=False)
     parser.add_argument('--hallway-width', dest='hallwayWidth', required=False)
-    args = parser.parse_args()
+    args = parser.parse_args() """
 
     # global N
-    N = 40
+    """ N = 40
     if N < 10: # Minimum grid size, end if too small
-        return
+        return """
     
     # global roomNumber
-    roomNumber = 10
+    """ roomNumber = 10
     if args.roomNum:
         if int(args.roomNum) > 1:
-            roomNumber = int(args.roomNum)
+            roomNumber = int(args.roomNum) """
     print("DEBUG roomNumber:", roomNumber)
 
-    global roomWidthMin
-    roomWidthMin = 2
+    #global roomWidthMin
+    """ roomWidthMin = 2
     if args.roomWidthMin:
         if int(args.roomWidthMin) > 0:
-            roomWidthMin = int(args.roomWidthMin)
+            roomWidthMin = int(args.roomWidthMin) """
     print("DEBUG roomWidthMin:", roomWidthMin)
 
-    global roomWidthMax
-    roomWidthMax = 4
+    #global roomWidthMax
+    """ roomWidthMax = 4
     if args.roomWidthMax:
         if int(args.roomWidthMax) > roomWidthMin:
             roomWidthMax = int(args.roomWidthMax)
         else:
-            roomWidthMax = roomWidthMin
+            roomWidthMax = roomWidthMin """
+    if roomWidthMax < roomWidthMin:
+        roomWidthMax = roomWidthMin
     print("DEBUG roomWidthMax:", roomWidthMax)
 
-    global roomHeightMin
+    """ global roomHeightMin
     roomHeightMin = 2
     if args.roomHeightMin:
         if int(args.roomHeightMin) > 0:
-            roomHeightMin = int(args.roomHeightMin)
+            roomHeightMin = int(args.roomHeightMin) """
     print("DEBUG roomHeightMin:", roomHeightMin)
 
-    global roomHeightMax
+    """ global roomHeightMax
     roomHeightMax = 4
     if args.roomHeightMax:
         if int(args.roomHeightMax) > roomHeightMin:
             roomHeightMax = int(args.roomHeightMax)
         else:
-            roomHeightMax = roomHeightMin
+            roomHeightMax = roomHeightMin """
+    if roomHeightMax < roomHeightMin:
+        roomHeightMax = roomHeightMin
     print("DEBUG roomHeightMax:", roomHeightMax)
 
-    global hallwayWidth
+    """ global hallwayWidth
     hallwayWidth = 1
     if args.hallwayWidth:
         if int(args.hallwayWidth) >= 0:
-            hallwayWidth = int(args.hallwayWidth)
+            hallwayWidth = int(args.hallwayWidth) """
     print("DEBUG hallwayWidth:", hallwayWidth)
 
     """ if args.N and int(args.N) > 8:
@@ -600,7 +604,7 @@ def main(ran, N=40, roomNumber=10, theme="Basic"):
     grid = np.zeros(N*N).reshape(N, N)
 
     print("DEBUG: Start generation")
-    generate(grid, N, roomNumber)
+    generate(grid, N, roomNumber, roomWidthMin, roomWidthMax, roomHeightMin, roomHeightMax, hallwayWidth)
 
     walls = []
     for i in range(N):
@@ -720,11 +724,6 @@ def main(ran, N=40, roomNumber=10, theme="Basic"):
     
     #ax.set_alpha(1.0)
     img = ax.imshow(grid, interpolation='nearest', zorder=1, alpha=alphas)
-    
-    ani = animation.FuncAnimation(fig, update, fargs=(img, grid, N),
-								frames = 10,
-								interval=updateInterval,
-								save_count=10)
     
     plt.axis('off') # Remove grid axes
 
