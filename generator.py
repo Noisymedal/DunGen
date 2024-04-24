@@ -17,14 +17,26 @@ OFF = 0
 random.seed()
 
 #image = plt.imread("output/CobblestoneTexture.png")
-image = plt.imread("output/grid.png")
-tile0 = plt.imread("output/SingleTile0.png")
-tile1 = plt.imread("output/SingleTile1.png")
-tile2 = plt.imread("output/SingleTile2.png")
-tile3 = plt.imread("output/SingleTile3.png")
-tile4 = plt.imread("output/SingleTile4.png")
+image = plt.imread("textures/grid.png")
+tile0 = plt.imread("textures/Basic/SingleTile0.png")
+tile1 = plt.imread("textures/Basic/SingleTile1.png")
+tile2 = plt.imread("textures/Basic/SingleTile2.png")
+tile3 = plt.imread("textures/Basic/SingleTile3.png")
+tile4 = plt.imread("textures/Basic/SingleTile4.png")
 
-imgDict = {
+iceTile0 = plt.imread("textures/IcePalace/SingleTile0_IP.png")
+iceTile1 = plt.imread("textures/IcePalace/SingleTile1_IP.png")
+iceTile2 = plt.imread("textures/IcePalace/SingleTile2_IP.png")
+iceTile3 = plt.imread("textures/IcePalace/SingleTile3_IP.png")
+iceTile4 = plt.imread("textures/IcePalace/SingleTile4_IP.png")
+
+mcTile0 = plt.imread("textures/Minecraft_Dungeon/DungeonTile0_Mc.png")
+mcTile1 = plt.imread("textures/Minecraft_Dungeon/DungeonTile1_mc.png")
+mcTile2 = plt.imread("textures/Minecraft_Dungeon/DungeonTile2_mc.png")
+mcTile3 = plt.imread("textures/Minecraft_Dungeon/DungeonTile3_mc.png")
+mcTile4 = plt.imread("textures/Minecraft_Dungeon/DungeonTile4_mc.png")
+
+BasicImgDict = {
     0: tile0,
     1: tile1,
     2: tile2,
@@ -32,7 +44,21 @@ imgDict = {
     4: tile4
 }
 
+IPImgDict = {
+    0: iceTile0,
+    1: iceTile1,
+    2: iceTile2,
+    3: iceTile3,
+    4: iceTile4
+}
 
+MCImgDict = {
+    0: mcTile0,
+    1: mcTile1,
+    2: mcTile2,
+    3: mcTile3,
+    4: mcTile4
+}
 
 # Object for storing individual room information
 class Room(object):
@@ -481,7 +507,10 @@ def reset(grid, N, rooms, hallways):
 global ran
 ran = False
 
-def main(ran, N=40, roomNumber=10):
+def main(ran, N=40, roomNumber=10, theme="Basic"):
+
+    if theme != "Basic" and theme != "IP" and theme != "MC":
+        print("ERROR: Unknown theme detected, cancelling generation")
 
     global grid
     global rooms
@@ -703,7 +732,12 @@ def main(ran, N=40, roomNumber=10):
         for j in range(N):
             if grid[i,j] == 255:
                 imgNum = random.randint(0, 4)
-                ax.imshow(imgDict[imgNum], extent=[j-.5, j+1-.5, i-.5, i+1-.5], zorder=1)
+                if theme == "Basic":
+                    ax.imshow(BasicImgDict[imgNum], extent=[j-.5, j+1-.5, i-.5, i+1-.5], zorder=1)
+                if theme == "IP":
+                    ax.imshow(IPImgDict[imgNum], extent=[j-.5, j+1-.5, i-.5, i+1-.5], zorder=1)
+                if theme == "MC":
+                    ax.imshow(MCImgDict[imgNum], extent=[j-.5, j+1-.5, i-.5, i+1-.5], zorder=1)
     
     ax.imshow(image, extent=[0, N-1, 0, N-1], zorder=0, alpha=0)
 
