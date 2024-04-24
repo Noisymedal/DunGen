@@ -113,7 +113,7 @@ def generateJson():
     output+="\n\"ObjectStates\": ["
     output+=gen0.generateHandtrigger()
     output+=gen0.generateBoard()
-    output+=gen0.generateDungeonBricks(data) #WALLS
+    output+=gen0.generateDungeonBricks(data,0) #WALLS
     # output+=gen0.generateDungeonHats(data)+","
     output+=gen0.generateDungeonFillings(data2,0) #THIS ONES IS FOR FILLINGS
     # output+=gen0.generateDungeonFillingHats(data2)+","

@@ -50,7 +50,7 @@ def generateID():
     return str(id)
 
 #generate the dungeon bricks that will tile our walls
-def generateDungeonBricks(points):
+def generateDungeonBricks(points,form):
     #create the output string
     output=""
 
@@ -98,7 +98,12 @@ def generateDungeonBricks(points):
         output+="\n\t\"Hands\": false,"
         output+="\n\t\"CustomMesh\": {"
         output+="\n\t\"MeshURL\": \"http://cloud-3.steamusercontent.com/ugc/5967903001166121478/309C68514D70709FCBF5A377C2535C0E460381CD/\","
-        output+="\n\t\"DiffuseURL\": \"http://cloud-3.steamusercontent.com/ugc/5967903001166121579/A2A1360574D2A3F86B15759A7AC7C972C344C87A/\","
+        if (form==0):
+            output+="\n\t\"DiffuseURL\": \"http://cloud-3.steamusercontent.com/ugc/5967903001166121579/A2A1360574D2A3F86B15759A7AC7C972C344C87A/\","
+        elif(form==1):
+            output+="\n\t\"DiffuseURL\": \"http://cloud-3.steamusercontent.com/ugc/2508017401741441630/A2955F784ED15F092509490B7F0FF13964B42078/\","
+        elif(form==2):
+            pass
         output+="\n\t\"NormalURL\": \"\","
         output+="\n\t\"ColliderURL\": \"\","
         output+="\n\t\"Convex\": true,"
