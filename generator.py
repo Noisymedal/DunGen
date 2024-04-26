@@ -12,19 +12,19 @@ import csv
 
 # setting up the values for the grid
 ON = 255
-TEST = 200
 OFF = 0
 random.seed()
 
-#image = plt.imread("output/CobblestoneTexture.png")
-image = plt.imread("output/grid.png")
-tile0 = plt.imread("output/SingleTile0.png")
-tile1 = plt.imread("output/SingleTile1.png")
-tile2 = plt.imread("output/SingleTile2.png")
-tile3 = plt.imread("output/SingleTile3.png")
-tile4 = plt.imread("output/SingleTile4.png")
+image = plt.imread("textures/grid.png")
 
-imgDict = {
+# Get tiles for Basic theme
+tile0 = plt.imread("textures/Basic/SingleTile0.png")
+tile1 = plt.imread("textures/Basic/SingleTile1.png")
+tile2 = plt.imread("textures/Basic/SingleTile2.png")
+tile3 = plt.imread("textures/Basic/SingleTile3.png")
+tile4 = plt.imread("textures/Basic/SingleTile4.png")
+
+BasicImgDict = {
     0: tile0,
     1: tile1,
     2: tile2,
@@ -32,7 +32,35 @@ imgDict = {
     4: tile4
 }
 
+# Get tiles for Ice Palace theme
+iceTile0 = plt.imread("textures/IcePalace/SingleTile0_IP.png")
+iceTile1 = plt.imread("textures/IcePalace/SingleTile1_IP.png")
+iceTile2 = plt.imread("textures/IcePalace/SingleTile2_IP.png")
+iceTile3 = plt.imread("textures/IcePalace/SingleTile3_IP.png")
+iceTile4 = plt.imread("textures/IcePalace/SingleTile4_IP.png")
 
+IPImgDict = {
+    0: iceTile0,
+    1: iceTile1,
+    2: iceTile2,
+    3: iceTile3,
+    4: iceTile4
+}
+
+# Get tiles for Mincraft theme
+mcTile0 = plt.imread("textures/Minecraft_Dungeon/DungeonTile0_Mc.png")
+mcTile1 = plt.imread("textures/Minecraft_Dungeon/DungeonTile1_mc.png")
+mcTile2 = plt.imread("textures/Minecraft_Dungeon/DungeonTile2_mc.png")
+mcTile3 = plt.imread("textures/Minecraft_Dungeon/DungeonTile3_mc.png")
+mcTile4 = plt.imread("textures/Minecraft_Dungeon/DungeonTile4_mc.png")
+
+MCImgDict = {
+    0: mcTile0,
+    1: mcTile1,
+    2: mcTile2,
+    3: mcTile3,
+    4: mcTile4
+}
 
 # Object for storing individual room information
 class Room(object):
@@ -50,11 +78,12 @@ class Room(object):
     def getSpace(self) -> None: # Returns room space
         return self.roomSpace
     
+# Object for storing individual hallway information
 class Hallway(object):
     width = 1
-    start = []
-    end = []
-    corner = []
+    start = [] # Start coords
+    end = [] # End coords
+    corner = [] # Corner coords
 
     def __init__(self, start, end, corner, room1, room2, width) -> None:
         self.start = start
@@ -64,11 +93,13 @@ class Hallway(object):
         self.room2 = room2
         self.width = width
 
+# Adjust hallway positions for better alignment
 def testOverlap(hallway, hallway2, loc1):
     hallwayPath = [[], []]
     hallway2Path = [[], []]
     intersect = False
 
+    # Get hallway path
     if (hallway.start[1] == hallway.corner[1]):
         if (hallway.start[0] < hallway.corner[0]):
             for i in range(hallway.corner[0]- hallway.start[0]):
@@ -107,6 +138,8 @@ def testOverlap(hallway, hallway2, loc1):
             else:
                 for i in range(hallway.end[0] - hallway.corner[1]):
                     hallwayPath.append([hallway.corner[0] + i, hallway.corner[1]])
+    
+    # Get second hallway path
     if (hallway2.start[1] == hallway2.corner[1]):
         if (hallway2.start[0] < hallway2.corner[0]):
             for i in range(hallway2.corner[0]- hallway2.start[0]):
@@ -146,10 +179,13 @@ def testOverlap(hallway, hallway2, loc1):
                 for i in range(hallway2.end[0] - hallway2.corner[1]):
                     hallway2Path.append([hallway2.corner[0] + i, hallway2.corner[1]])
 
+    # Determine if hallways intersect
     for i in range(len(hallwayPath)):
         for j in range(len(hallway2Path)):
             if hallwayPath[i] == hallway2Path[j]:
                 intersect = True
+
+    # Begin Adjustments
     if abs(hallway.start[0] - hallway2.start[0]) < math.floor(rooms[hallway.room1].roomWidth/2) and intersect == True:
         hallway.start[0] = hallway2.start[0]
     if abs(hallway.start[1] - hallway2.start[1]) < math.floor(rooms[hallway.room1].roomHeight/2)  and intersect == True:
@@ -162,6 +198,7 @@ def testOverlap(hallway, hallway2, loc1):
 
 intersections = []
 
+# Find and list hallway intersections
 def findIntersections(hallwayList):
     for a in range(len(hallwayList)):
         for b in range(len(hallwayList)):
@@ -250,22 +287,25 @@ def findIntersections(hallwayList):
 
             for i in range(len(hallwayPath)):
                 for j in range(len(hallway2Path)):
+                    # Mark intersection if hallways are moving perpendicularly
                     if hallwayPath[i][0] == hallway2Path[j][0] and hallwayPath[i][1] == hallway2Path[j][1] and hallwayPath[i][2] != hallway2Path[j][2]:
                         intersections.append([hallwayPath[i][0], hallwayPath[i][1]])
+            # Mark hallway corners as intersections
             intersections.append([hallway.corner[0], hallway.corner[1]])
             intersections.append([hallway2.corner[0], hallway2.corner[1]])
             
+# Determine locations occupied by segemnts of hallways
 def fillHallways(hallwayList):
+    # Find locations occupied by rooms
     roomLocations = []
     for a in range(len(rooms)):
         for i in range(rooms[a].roomWidth):
             for j in range(rooms[a].roomHeight):
-                #print("[", rooms[a].center[1]-round(rooms[a].roomWidth/2) + i, ",", rooms[a].center[0]-round(rooms[a].roomHeight/2) + j, "]")
                 roomLocations.append([rooms[a].center[0]-round(rooms[a].roomHeight/2) + j, rooms[a].center[1]-round(rooms[a].roomWidth/2) + i])
-    
+
+    # Remove intersections that are in rooms
     for a in range(len(intersections)-1, 0, -1):
         if intersections[a] in roomLocations:
-            #print("Popped", intersections[a])
             intersections.pop(a)
     
     global hallwaySegments
@@ -314,7 +354,9 @@ def fillHallways(hallwayList):
         
         section = []
         exempt = []
+        # Set up hallway sections
         for i in hallwayPath:
+            # Ignore locations already registered
             for j in hallwaySegments:
                 if i in j:
                     exempt.append(i)
@@ -326,15 +368,17 @@ def fillHallways(hallwayList):
                     section.append(i)
         hallwaySegments.append(section)
     
+    # Remove empty segments
     for i in range(len(hallwaySegments)-1, 0, -1):
         if hallwaySegments[i] == []:
             hallwaySegments.remove([])
-            #print("Segment removed")
     
+    # Remove duplicates
     hallwaySegments = [i for n, i in enumerate(hallwaySegments) if i not in hallwaySegments[:n]]
 
     interpretSegments(hallwaySegments)
 
+# Convert hallway segments to interpritable data
 def interpretSegments(hallwaySegments):
     global segmentsFinal
     segmentsFinal = []
@@ -360,17 +404,12 @@ def interpretSegments(hallwaySegments):
             width = 1
         if height == 0:
             height = 1
-        """ centerX = minX + width / 2
-        centerY = minY + height / 2 """
         centerX = minX + (width / 2)
         centerY = minY + (height / 2)
-        #print(minX, maxX, height)
-        #print(minY, maxY, width)
         segmentsFinal.append([centerX - 0.5, centerY - 0.5, height, width])
-        #segmentsFinal.append([centerX, centerY, height, width])
 
 # Generate rooms, hallways, and grid
-def generate(grid, N, roomNumber): 
+def generate(grid, N, roomNumber, roomWidthMin, roomWidthMax, roomHeightMin, roomHeightMax, hallwayWidth): 
     
     for i in range(roomNumber): # Generate and place up to roomNumber rooms
         successful = False # Was the room successfully placed
@@ -473,15 +512,31 @@ def update(frameNum, img, grid, N):
 	grid[:] = newGrid[:] """
 	return img,
 
-def reset(grid, N, rooms, hallways):
+# Reset shared objects
+def reset(grid, N, rooms, hallways, intersections, hallwaySegments):
     grid = np.zeros(N*N).reshape(N, N)
     rooms = []
     hallways = []
+    intersections = []
+    hallwaySegments = []
+    
+def getTheme():
+    if theme == "Basic":
+        return 0
+    if theme == "MC":
+        return 1
+    if theme == "IP":
+        return 2
 
 global ran
 ran = False
+theme = "Basic"
 
-def main(ran, N=40, roomNumber=10):
+def main(ran, N=40, roomNumber=4, roomWidthMin=7, roomWidthMax=9, roomHeightMin=7, roomHeightMax=9, hallwayWidth=1, theme="Basic"):
+    random.seed()
+
+    if theme != "Basic" and theme != "IP" and theme != "MC":
+        print("ERROR: Unknown theme detected, cancelling generation")
 
     global grid
     global rooms
@@ -490,89 +545,30 @@ def main(ran, N=40, roomNumber=10):
     hallways = []
 
     if ran == True:
-        reset(grid, N, rooms, hallways)
+        reset(grid, N, rooms, hallways, intersections, hallwaySegments)
 
     ran = True
-    # Parser arguments may be used 
 
-    parser = argparse.ArgumentParser(description="DunGen Generator")
-
-    #parser.add_argument('--grid-size', dest='N', required=False)
-    parser.add_argument('--room-num', dest='roomNum', required=False)
-    parser.add_argument('--room-width-min', dest='roomWidthMin', required=False)
-    parser.add_argument('--room-width-max', dest='roomWidthMax', required=False)
-    parser.add_argument('--room-height-min', dest='roomHeightMin', required=False)
-    parser.add_argument('--room-height-max', dest='roomHeightMax', required=False)
-    parser.add_argument('--hallway-width', dest='hallwayWidth', required=False)
-    args = parser.parse_args()
-
-    # global N
-    N = 40
-    if N < 10: # Minimum grid size, end if too small
-        return
-    
-    # global roomNumber
-    roomNumber = 10
-    if args.roomNum:
-        if int(args.roomNum) > 1:
-            roomNumber = int(args.roomNum)
     print("DEBUG roomNumber:", roomNumber)
-
-    global roomWidthMin
-    roomWidthMin = 2
-    if args.roomWidthMin:
-        if int(args.roomWidthMin) > 0:
-            roomWidthMin = int(args.roomWidthMin)
     print("DEBUG roomWidthMin:", roomWidthMin)
-
-    global roomWidthMax
-    roomWidthMax = 4
-    if args.roomWidthMax:
-        if int(args.roomWidthMax) > roomWidthMin:
-            roomWidthMax = int(args.roomWidthMax)
-        else:
-            roomWidthMax = roomWidthMin
+    if roomWidthMax < roomWidthMin:
+        roomWidthMax = roomWidthMin
     print("DEBUG roomWidthMax:", roomWidthMax)
-
-    global roomHeightMin
-    roomHeightMin = 2
-    if args.roomHeightMin:
-        if int(args.roomHeightMin) > 0:
-            roomHeightMin = int(args.roomHeightMin)
     print("DEBUG roomHeightMin:", roomHeightMin)
-
-    global roomHeightMax
-    roomHeightMax = 4
-    if args.roomHeightMax:
-        if int(args.roomHeightMax) > roomHeightMin:
-            roomHeightMax = int(args.roomHeightMax)
-        else:
-            roomHeightMax = roomHeightMin
+    if roomHeightMax < roomHeightMin:
+        roomHeightMax = roomHeightMin
     print("DEBUG roomHeightMax:", roomHeightMax)
-
-    global hallwayWidth
-    hallwayWidth = 1
-    if args.hallwayWidth:
-        if int(args.hallwayWidth) >= 0:
-            hallwayWidth = int(args.hallwayWidth)
     print("DEBUG hallwayWidth:", hallwayWidth)
 
-    """ if args.N and int(args.N) > 8:
-        N = int(args.N)
-    
-    # set animation update interval
-    updateInterval = 10
-    if args.interval:
-        updateInterval = int(args.interval) """
     updateInterval = 10
 
-    #plt.rcParams['grid.color'] = (0.5, 0.5, 0.5, 0.1)
     grid = np.array([]) # Create grid
     grid = np.zeros(N*N).reshape(N, N)
 
     print("DEBUG: Start generation")
-    generate(grid, N, roomNumber)
+    generate(grid, N, roomNumber, roomWidthMin, roomWidthMax, roomHeightMin, roomHeightMax, hallwayWidth)
 
+    # Find wall locations
     walls = []
     for i in range(N):
         for j in range(N):
@@ -596,6 +592,7 @@ def main(ran, N=40, roomNumber=10):
     
     wallFinal = [i for n, i in enumerate(walls) if i not in walls[:n]]
 
+    # Output wall locations
     with open("output/walls.csv", "w", newline='') as f:
         write = csv.writer(f)
         write.writerows(wallFinal)
@@ -639,6 +636,7 @@ def main(ran, N=40, roomNumber=10):
         write = csv.writer(f)
         write.writerows(fillings)
 
+    # Setup room information
     roomData = []
     adjustment=0.5
     roomNum = 0
@@ -665,14 +663,15 @@ def main(ran, N=40, roomNumber=10):
             roomData.append(room)
         roomNum += 1
 
+    # Output room information
     with open("output/rooms.csv", "w", newline='') as f:
         write = csv.writer(f)
         write.writerows(roomData)
 
     findIntersections(hallways)
 
-    #for i in hallways:
     fillHallways(hallways)
+    # Output hallway segments
     with open("output/hallwaySegments.csv", "w", newline='') as f:
         write = csv.writer(f)
         write.writerows(segmentsFinal)
@@ -682,6 +681,7 @@ def main(ran, N=40, roomNumber=10):
         temp = intersect[i][0]
         intersect[i][0] = intersect[i][1]
         intersect[i][1] = temp
+    # Output intersection information
     with open("output/intersect.csv", "w", newline='') as f:
         write = csv.writer(f)
         write.writerows(intersect)
@@ -692,18 +692,27 @@ def main(ran, N=40, roomNumber=10):
     #ax.set_alpha(1.0)
     img = ax.imshow(grid, interpolation='nearest', zorder=1, alpha=alphas)
     
-    ani = animation.FuncAnimation(fig, update, fargs=(img, grid, N),
-								frames = 10,
-								interval=updateInterval,
-								save_count=10)
-    
     plt.axis('off') # Remove grid axes
 
-    for i in range(N):
-        for j in range(N):
-            if grid[i,j] == 255:
-                imgNum = random.randint(0, 4)
-                ax.imshow(imgDict[imgNum], extent=[j-.5, j+1-.5, i-.5, i+1-.5], zorder=1)
+    # Place floor tiles depending on theme
+    if theme == "Basic":
+        for i in range(N):
+            for j in range(N):
+                if grid[i,j] == 255:
+                    imgNum = random.randint(0, 4)
+                    ax.imshow(BasicImgDict[imgNum], extent=[j-.5, j+1-.5, i-.5, i+1-.5], zorder=1)
+    if theme == "IP":
+        for i in range(N):
+            for j in range(N):
+                if grid[i,j] == 255:
+                    imgNum = random.randint(0, 4)
+                    ax.imshow(IPImgDict[imgNum], extent=[j-.5, j+1-.5, i-.5, i+1-.5], zorder=1)
+    if theme == "MC":
+        for i in range(N):
+            for j in range(N):
+                if grid[i,j] == 255:
+                    imgNum = random.randint(0, 4)
+                    ax.imshow(MCImgDict[imgNum], extent=[j-.5, j+1-.5, i-.5, i+1-.5], zorder=1)
     
     ax.imshow(image, extent=[0, N-1, 0, N-1], zorder=0, alpha=0)
 
