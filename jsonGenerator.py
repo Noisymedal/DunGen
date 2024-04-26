@@ -1,21 +1,37 @@
 import snappointStringGenerator as gen0
 import csv
-with open('output/walls.csv', newline='') as f:
-    reader = csv.reader(f)
-    data = list(reader)
 
-with open('output/fillings.csv', newline='') as f2:
-    reader = csv.reader(f2)
-    data2 = list(reader)
+def csvGen():
+    with open('output/walls.csv', newline='') as f:
+        reader = csv.reader(f)
+        data = list(reader)
 
-with open('output/rooms.csv', newline='') as f2:
-    reader = csv.reader(f2)
-    data3 = list(reader)
+    with open('output/fillings.csv', newline='') as f2:
+        reader = csv.reader(f2)
+        data2 = list(reader)
 
-def generateJson():
+    with open('output/rooms.csv', newline='') as f3:
+        reader = csv.reader(f3)
+        data3 = list(reader)
+
+    with open('output/intersect.csv', newline='')  as f4:
+        reader = csv.reader(f4)
+        data4 = list(reader)
+
+    with open('output/hallwaySegments.csv', newline='')  as f5:
+        reader = csv.reader(f5)
+        data5 = list(reader)
+    
+    return [data, data2, data3, data4, data5]
+
+
+#THEME, 0 is basic, 1 is minecraft, 2 is Ice Palace
+theme=0
+
+def generateJson(imgid, name):
     output=""
     output+="{"
-    output+="\n\"SaveName\": \"Dun-Gen Tool Testing\","
+    output+="\n\"SaveName\": \"" + name + "\","
     output+="\n\"EpochTime\": 1708982873,"
     output+="\n\"Date\": \"2/26/2024 3:27:53 PM\","
     output+="\n\"VersionNumber\": \"v13.2.2\","
@@ -104,13 +120,18 @@ def generateJson():
     output+="\n\"XmlUI\": \"<!-- Xml UI. See documentation: https://api.tabletopsimulator.com/ui/introUI/ -->\","
     output+="\n\"ObjectStates\": ["
     output+=gen0.generateHandtrigger()
-    output+=gen0.generateBoard()
-    output+=gen0.generateDungeonBricks(data)
+    output+=gen0.generateBoard(imgid)
+
+    dataArr = csvGen()
+
+    output+=gen0.generateDungeonBricks(dataArr[0],theme) #WALLS
     # output+=gen0.generateDungeonHats(data)+","
-    output+=gen0.generateDungeonFillings(data2)
+    output+=gen0.generateDungeonFillings(dataArr[1],0) #THIS ONES IS FOR FILLINGS
     # output+=gen0.generateDungeonFillingHats(data2)+","
-    output+=gen0.generateDungeonFillings(data3) #THIS ONE IS FOR THE ROOMS
+    output+=gen0.generateDungeonFillings(dataArr[2],0) #THIS ONE IS FOR THE ROOMS
     # output+=gen0.generateDungeonFillingHats(data3)
+    output+=gen0.generateDungeonIntersects(dataArr[3])#Intersects
+    output+=gen0.generateDungeonFillings(dataArr[4],1)#HallwaySegments
     output+="\n]\n}"
     file1 = open('TS_Save_7.json', 'w')
     file1.write(output)
@@ -118,4 +139,4 @@ def generateJson():
     print("A")
     return output
 
-generateJson()
+# generateJson(imgid = 'AU7YcQ8')

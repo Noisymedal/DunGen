@@ -11,3 +11,4 @@ output/rooms.csv
 output/intersect.csv
 output/hallwaySegments.csv
 output/fillings.csv
+output/*.json

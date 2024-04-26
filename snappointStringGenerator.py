@@ -1,10 +1,20 @@
 #number of spaces across on the board, note that we start counting from 0
-boardSize=40
+boardSize=38
 #the size of each space on the board
-spaceSize=0.019*2.5
+spaceSize=0.019*2.5#DEPRECATED BUT DO NOT TOUCH
 #this is the top left space coordinates for the snappoints
 zeroZero = [-0.925,-0.933]
 
+#THEME, 0 is basic, 1 is minecraft, 2 is Ice Palace
+theme=0
+
+
+
+
+
+#This is the variable I'm using for snap-points distancing.
+snapSize=0.049
+snapZeroZero=[-0.905,-0.905]
 #This is the top-left space coordinates for the object generation
 wallOffsets=[-17,-16]
 #This is the scalar for object positioning, it includes spaceSize for tweaking mutiple things at once, in the future once everything is nice and synced up
@@ -16,10 +26,10 @@ def generateSnappoints():
     output=""
     #for every space x
     for i in range(boardSize):
-        xval = zeroZero[0]+(i*spaceSize)
+        xval = snapZeroZero[0]+(i*snapSize)
         #create a column of spaces y
         for j in range(boardSize):
-            yval = zeroZero[1]+(j*spaceSize)
+            yval = snapZeroZero[1]+(j*snapSize)
             #and append them to the string
             output+=("\n{\n\t\"Position\": {\n\t \"x\": "+str(xval)+",\n\t \"y\": 0.0,\n\t \"z\": "+str(yval)+"\n\t }\n}" )
             if(not(i==boardSize-1 and j==boardSize-1)):
@@ -46,7 +56,7 @@ def generateID():
     return str(id)
 
 #generate the dungeon bricks that will tile our walls
-def generateDungeonBricks(points):
+def generateDungeonBricks(points,form):
     #create the output string
     output=""
 
@@ -94,7 +104,12 @@ def generateDungeonBricks(points):
         output+="\n\t\"Hands\": false,"
         output+="\n\t\"CustomMesh\": {"
         output+="\n\t\"MeshURL\": \"http://cloud-3.steamusercontent.com/ugc/5967903001166121478/309C68514D70709FCBF5A377C2535C0E460381CD/\","
-        output+="\n\t\"DiffuseURL\": \"http://cloud-3.steamusercontent.com/ugc/5967903001166121579/A2A1360574D2A3F86B15759A7AC7C972C344C87A/\","
+        if (form==0):
+            output+="\n\t\"DiffuseURL\": \"http://cloud-3.steamusercontent.com/ugc/5967903001166121579/A2A1360574D2A3F86B15759A7AC7C972C344C87A/\","
+        elif(form==1):
+            output+="\n\t\"DiffuseURL\": \"http://cloud-3.steamusercontent.com/ugc/2508017401741441630/A2955F784ED15F092509490B7F0FF13964B42078/\","
+        elif(form==2):
+            output+="\n\t\"DiffuseURL\": \"http://cloud-3.steamusercontent.com/ugc/2500136812466760337/7842E82A0DE27C9A26DD8C78FDBC5C33D791B241/\","
         output+="\n\t\"NormalURL\": \"\","
         output+="\n\t\"ColliderURL\": \"\","
         output+="\n\t\"Convex\": true,"
@@ -244,7 +259,7 @@ def generateDungeonHats(points):
     return output
 
 #These should be the large blocks that fill out the unexplorable space in the dungeon, the areas that aren't hallways or rooms
-def generateDungeonFillings(points):
+def generateDungeonFillings(points,type):
     #create the output string
     output=""
 
@@ -253,9 +268,14 @@ def generateDungeonFillings(points):
         output+="{\n\t\"GUID\": "+generateID()+","
         output+="\n\t\"Name\": \"Custom_Model\","
         output+="\n\t\"Transform\": {"
-        output+="\n\t\t\"posX\": "+str(float(points[i][0])*wallSpaceSize*10+zeroZero[0]+wallOffsets[0])+","
-        output+="\n\t\t\"posY\": 1.33155191,"
-        output+="\n\t\t\"posZ\": "+str(float(points[i][1])*wallSpaceSize*10+zeroZero[1]+wallOffsets[1])+","
+        if (type==0):
+            output+="\n\t\t\"posX\": "+str(float(points[i][0])*wallSpaceSize*10+zeroZero[0]+wallOffsets[0])+","
+            output+="\n\t\t\"posY\": 1.33155191,"
+            output+="\n\t\t\"posZ\": "+str(float(points[i][1])*wallSpaceSize*10+zeroZero[1]+wallOffsets[1])+","
+        if (type==1):
+            output+="\n\t\t\"posX\": "+str(float(points[i][1])*wallSpaceSize*10+zeroZero[0]+wallOffsets[0])+","
+            output+="\n\t\t\"posY\": 1.33155191,"
+            output+="\n\t\t\"posZ\": "+str(float(points[i][0])*wallSpaceSize*10+zeroZero[1]+wallOffsets[1])+","
         output+="\n\t\t\"rotX\": 0.0,"
         output+="\n\t\t\"rotY\": 0.0,"
         output+="\n\t\t\"rotZ\": 0.0,"
@@ -373,8 +393,138 @@ def generateDungeonFillings(points):
     #file2.close()
     return output
 
+#These should be the large blocks that fill out the unexplorable space in the dungeon, the areas that aren't hallways or rooms
+def generateDungeonIntersects(points):
+    #create the output string
+    output=""
+
+    #Append EVERY SINGLE LINE for making an object to the string, for every object we need
+    for i in range(0,len(points)):
+        output+="{\n\t\"GUID\": "+generateID()+","
+        output+="\n\t\"Name\": \"Custom_Model\","
+        output+="\n\t\"Transform\": {"
+        output+="\n\t\t\"posX\": "+str(float(points[i][0])*wallSpaceSize*10+zeroZero[0]+wallOffsets[0])+","
+        output+="\n\t\t\"posY\": 1.33155191,"
+        output+="\n\t\t\"posZ\": "+str(float(points[i][1])*wallSpaceSize*10+zeroZero[1]+wallOffsets[1])+","
+        output+="\n\t\t\"rotX\": 0.0,"
+        output+="\n\t\t\"rotY\": 0.0,"
+        output+="\n\t\t\"rotZ\": 0.0,"
+        output+="\n\t\t\"scaleX\": "+str(0.4301*1)+","
+        output+="\n\t\t\"scaleY\": 0.173,"
+        output+="\n\t\t\"scaleZ\": "+str(0.4301*1)
+        output+="\n\t},"
+        output+="\n\t\"Nickname\": \"\","
+        output+="\n\t\"Description\": \"\","
+        output+="\n\t\"GMNotes\": \"\","
+        output+="\n\t\"AltLookAngle\": {"
+        output+="\n\t\t\"x\": 0.0,"
+        output+="\n\t\t\"y\": 0.0,"
+        output+="\n\t\t\"z\": 0.0"
+        output+="\n\t}," 
+        output+="\n\t\"ColorDiffuse\": {"
+        output+="\n\t\t\"r\": 1.0,"
+        output+="\n\t\t\"g\": 1.0,"
+        output+="\n\t\t\"b\": 1.0"
+        output+="\n\t},"
+        output+="\n\t\"LayoutGroupSortIndex\": 0,"
+        output+="\n\t\"Value\": 0,"
+        output+="\n\t\"Locked\": true,"
+        output+="\n\t\"Grid\": true,"
+        output+="\n\t\"Snap\": true,"
+        output+="\n\t\"IngoreFoW\": false,"
+        output+="\n\t\"MeasureMovement\": false,"
+        output+="\n\t\"DragSelectable\": true,"
+        output+="\n\t\"Autoraise\": true,"
+        output+="\n\t\"Sticky\": true,"
+        output+="\n\t\"Tooltip\": true,"
+        output+="\n\t\"GridProjection\": false,"
+        output+="\n\t\"HideWhenFaceDown\": false,"
+        output+="\n\t\"Hands\": false,"
+        output+="\n\t\"CustomMesh\": {"
+        output+="\n\t\"MeshURL\": \"http://cloud-3.steamusercontent.com/ugc/5967903001166121478/309C68514D70709FCBF5A377C2535C0E460381CD/\","
+        output+="\n\t\"DiffuseURL\": \"http://cloud-3.steamusercontent.com/ugc/2508015499658746495/79F41D75E30BE548C96F9D7FE8123BF32E8DDAA9/\","
+        output+="\n\t\"NormalURL\": \"\","
+        output+="\n\t\"ColliderURL\": \"\","
+        output+="\n\t\"Convex\": true,"
+        output+="\n\t\"MaterialIndex\": 0,"
+        output+="\n\t\"TypeIndex\": 0,"
+        output+="\n\t\"CastShadows\": true"
+        output+="\n\t},"
+        output+="\n\"LuaScript\": \"\","
+        output+="\n\"LuaScriptState\": \"\","
+        output+="\n\"XmlUI\": \"\","
+        output+="\n\"ChildObjects\": ["
+        output+="{\n\t\"GUID\": "+generateID()+","
+        output+="\n\t\"Name\": \"Custom_Model\","
+        output+="\n\t\"Transform\": {"
+        # output+="\n\t\t\"posX\": "+str(float(points[i][0])*wallSpaceSize*10+zeroZero[0]+wallOffsets[0])+","
+        output+="\n\t\t\"posX\": 0.0,"
+        output+="\n\t\t\"posY\": 1.6265,"
+        # output+="\n\t\t\"posZ\": "+str(float(points[i][1])*wallSpaceSize*10+zeroZero[1]+wallOffsets[1])+","
+        output+="\n\t\t\"posZ\": 0.0,"
+        output+="\n\t\t\"rotX\": 0.0,"
+        output+="\n\t\t\"rotY\": 0.0,"
+        output+="\n\t\t\"rotZ\": 0.0,"
+        # output+="\n\t\t\"scaleX\": "+str(0.4301*float(points[i][2]))+","
+        output+="\n\t\t\"scaleX\": 1.0,"
+        output+="\n\t\t\"scaleY\": 0.02,"
+        # output+="\n\t\t\"scaleZ\": "+str(0.4301*float(points[i][3])) 
+        output+="\n\t\t\"scaleZ\": 1.0"
+        output+="\n\t},"
+        output+="\n\t\"Nickname\": \"\","
+        output+="\n\t\"Description\": \"\","
+        output+="\n\t\"GMNotes\": \"\","
+        output+="\n\t\"AltLookAngle\": {"
+        output+="\n\t\t\"x\": 0.0,"
+        output+="\n\t\t\"y\": 0.0,"
+        output+="\n\t\t\"z\": 0.0"
+        output+="\n\t}," 
+        output+="\n\t\"ColorDiffuse\": {"
+        output+="\n\t\t\"r\": 1.0,"
+        output+="\n\t\t\"g\": 1.0,"
+        output+="\n\t\t\"b\": 1.0"
+        output+="\n\t},"
+        output+="\n\t\"LayoutGroupSortIndex\": 0,"
+        output+="\n\t\"Value\": 0,"
+        output+="\n\t\"Locked\": true,"
+        output+="\n\t\"Grid\": true,"
+        output+="\n\t\"Snap\": true,"
+        output+="\n\t\"IngoreFoW\": false,"
+        output+="\n\t\"MeasureMovement\": false,"
+        output+="\n\t\"DragSelectable\": true,"
+        output+="\n\t\"Autoraise\": true,"
+        output+="\n\t\"Sticky\": true,"
+        output+="\n\t\"Tooltip\": true,"
+        output+="\n\t\"GridProjection\": false,"
+        output+="\n\t\"HideWhenFaceDown\": false,"
+        output+="\n\t\"Hands\": false,"
+        output+="\n\t\"CustomMesh\": {"
+        output+="\n\t\"MeshURL\": \"http://cloud-3.steamusercontent.com/ugc/5967903001166121478/309C68514D70709FCBF5A377C2535C0E460381CD/\","
+        output+="\n\t\"DiffuseURL\": \"http://cloud-3.steamusercontent.com/ugc/5967903001166216512/747BFC5FEEA8E6EC0635B2E74280C1244FF97FA4/\","
+        output+="\n\t\"NormalURL\": \"\","
+        output+="\n\t\"ColliderURL\": \"\","
+        output+="\n\t\"Convex\": true,"
+        output+="\n\t\"MaterialIndex\": 0,"
+        output+="\n\t\"TypeIndex\": 0,"
+        output+="\n\t\"CastShadows\": true"
+        output+="\n\t},"
+        output+="\n\"LuaScript\": \"\","
+        output+="\n\"LuaScriptState\": \"\","
+        output+="\n\"XmlUI\": \"\""
+        output+="\n}"
+        output+="\n]"
+        output+="\n}"
+        #if the object is NOT the last one, add a comma, for formatting purposes
+        if(i!=len(points)):
+            output+=",\n"
+    #write the output to a file
+    #file2 = open('dungeonBricks.txt', 'w')
+    #file2.write(output)
+    #file2.close()
+    return output
+
 #identical to dungeonBricks but for the grey Dungeon tiles above our bricks to obscure the unexplored dungeon
-def generateDungeonFillingHats(points):
+def generateDungeonFillingHats(points,type):
     output=""
 
 
@@ -383,9 +533,14 @@ def generateDungeonFillingHats(points):
         output+="{\n\t\"GUID\": "+generateID()+","
         output+="\n\t\"Name\": \"Custom_Model\","
         output+="\n\t\"Transform\": {"
-        output+="\n\t\t\"posX\": "+str(float(points[i][0])*wallSpaceSize*10+zeroZero[0]+wallOffsets[0])+","
-        output+="\n\t\t\"posY\": 1.6265,"
-        output+="\n\t\t\"posZ\": "+str(float(points[i][1])*wallSpaceSize*10+zeroZero[1]+wallOffsets[1])+","
+        if (type==0):
+            output+="\n\t\t\"posX\": "+str(float(points[i][0])*wallSpaceSize*10+zeroZero[0]+wallOffsets[0])+","
+            output+="\n\t\t\"posY\": 1.6265,"
+            output+="\n\t\t\"posZ\": "+str(float(points[i][1])*wallSpaceSize*10+zeroZero[1]+wallOffsets[1])+","
+        if (type==1):
+            output+="\n\t\t\"posX\": "+str(float(points[i][1])*wallSpaceSize*10+zeroZero[0]+wallOffsets[0])+","
+            output+="\n\t\t\"posY\": 1.6265,"
+            output+="\n\t\t\"posZ\": "+str(float(points[i][0])*wallSpaceSize*10+zeroZero[1]+wallOffsets[1])+","
         output+="\n\t\t\"rotX\": 0.0,"
         output+="\n\t\t\"rotY\": 0.0,"
         output+="\n\t\t\"rotZ\": 0.0,"
@@ -534,21 +689,21 @@ def generateHandtrigger():
             output+=",\n"
     return output
 
-def generateBoard():
+def generateBoard(imgid):
     output=""
     output+="\n\t{"
     output+="\n\t\t\"GUID\": \"0\","
     output+="\n\t\t\"Name\": \"Custom_Tile\","
     output+="\n\t\t\"Transform\": {"
-    output+="\n\t\t\t\"posX\": -1.259222,"
+    output+="\n\t\t\t\"posX\": -1.2,"
     output+="\n\t\t\t\"posY\": 0.9591922,"
-    output+="\n\t\t\t\"posZ\": -0.0529934131,"
+    output+="\n\t\t\t\"posZ\": -0.2,"#Up/Down
     output+="\n\t\t\t\"rotX\": 0.0,"
     output+="\n\t\t\t\"rotY\": 180,"
     output+="\n\t\t\t\"rotZ\": 0.0,"
-    output+="\n\t\t\t\"scaleX\": 18.2097855,"
+    output+="\n\t\t\t\"scaleX\": 17.6989784,"
     output+="\n\t\t\t\"scaleY\": 1.0,"
-    output+="\n\t\t\t\"scaleZ\": 18.2097855"
+    output+="\n\t\t\t\"scaleZ\": 17.6989784"
     output+="\n\t\t},"
     output+="\n\t\t\"Nickname\": \"\","
     output+="\n\t\t\"Description\": \"\","
@@ -578,8 +733,8 @@ def generateBoard():
     output+="\n\t\t\"HideWhenFaceDown\": false,"
     output+="\n\t\t\"Hands\": false,"
     output+="\n\t\t\"CustomImage\": {"
-    output+="\n\t\t\t\"ImageURL\": \"file:///C:\\\\Users\\\\BrownIan\\\\OneDrive - University of Wisconsin-Stout\\\\Documents\\\\GitHub\\\\DunGen\\\\output\\\\dungeon.png\","
-    output+="\n\t\t\t\"ImageSecondaryURL\": \"file:///C:\\\\Users\\\\BrownIan\\\\OneDrive - University of Wisconsin-Stout\\\\Documents\\\\GitHub\\\\DunGen\\\\output\\\\dungeon.png\","
+    output+="\n\t\t\t\"ImageURL\": \"https://imgur.com/" + imgid + ".png\","
+    output+="\n\t\t\t\"ImageSecondaryURL\": \"https://imgur.com/" + imgid + ".png\","
     output+="\n\t\t\t\"ImageScalar\": 1.0,"
     output+="\n\t\t\t\"WidthScale\": 0.0,"
     output+="\n\t\t\t\"CustomTile\": {"
