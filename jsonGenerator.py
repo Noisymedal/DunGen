@@ -20,6 +20,10 @@ with open('output/hallwaySegments.csv', newline='')  as f5:
     reader = csv.reader(f5)
     data5 = list(reader)
 
+
+#THEME, 0 is basic, 1 is minecraft, 2 is Ice Palace
+theme=0
+
 def generateJson():
     output=""
     output+="{"
@@ -113,7 +117,7 @@ def generateJson():
     output+="\n\"ObjectStates\": ["
     output+=gen0.generateHandtrigger()
     output+=gen0.generateBoard()
-    output+=gen0.generateDungeonBricks(data,2) #WALLS
+    output+=gen0.generateDungeonBricks(data,theme) #WALLS
     # output+=gen0.generateDungeonHats(data)+","
     output+=gen0.generateDungeonFillings(data2,0) #THIS ONES IS FOR FILLINGS
     # output+=gen0.generateDungeonFillingHats(data2)+","

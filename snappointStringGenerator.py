@@ -5,6 +5,12 @@ spaceSize=0.019*2.5#DEPRECATED BUT DO NOT TOUCH
 #this is the top left space coordinates for the snappoints
 zeroZero = [-0.925,-0.933]
 
+#THEME, 0 is basic, 1 is minecraft, 2 is Ice Palace
+theme=0
+
+
+
+
 
 #This is the variable I'm using for snap-points distancing.
 snapSize=0.049
