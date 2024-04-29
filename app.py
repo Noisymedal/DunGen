@@ -315,6 +315,7 @@ def save():
                 payload = {'image': img}
                 response = requests.post(url, headers=headers, files=payload)
                 id = response.json()['data']['id']
+                print(response.json())
 
 
             # imgur_python method
