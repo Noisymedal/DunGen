@@ -271,11 +271,11 @@ def delete():
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
             # remove all associated dungeon images from imgur gallery
-            cursor.execute('SELECT imgId FROM dungeon WHERE iduser = %s', (session['id'],))
-            imgIdList = cursor.fetchall()
+            #cursor.execute('SELECT imgId FROM dungeon WHERE iduser = %s', (session['id'],))
+            #imgIdList = cursor.fetchall()
             #print(imgIdList)
-            for id in imgIdList:
-                response = imgur_client.image_delete(id['imgId'])
+            #for id in imgIdList:
+            #    response = imgur_client.image_delete(id['imgId'])
 
             # remove user from the database
             cursor.execute('DELETE FROM user WHERE iduser = %s', (session['id'],))
@@ -294,7 +294,7 @@ def delete():
         else:
             msg='Invalid username or password'
 
-    return redirect(url_for('settings'), msg=msg)
+    return redirect(url_for('settings'))
 
 @app.route('/save', methods=['POST'])
 # @login_required
