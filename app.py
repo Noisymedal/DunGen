@@ -310,7 +310,7 @@ def save():
             # requests method
             clientID = 'afe66f42ae38075'
             headers = {'Authorization': 'Client-ID ' + clientID}
-            url = 'https://api.imgur.com/3/upload'
+            url = 'http://api.imgur.com/3/upload'
             with open(path.realpath('static/dungeon.png'), 'rb') as img:
                 payload = {'image': img}
                 response = requests.post(url, headers=headers, files=payload)
