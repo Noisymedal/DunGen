@@ -288,24 +288,43 @@ def findIntersections(hallwayList):
             for i in range(len(hallwayPath)):
                 for j in range(len(hallway2Path)):
                     # Mark intersection if hallways are moving perpendicularly
-                    if hallwayPath[i][0] == hallway2Path[j][0] and hallwayPath[i][1] == hallway2Path[j][1] and hallwayPath[i][2] != hallway2Path[j][2]:
+                    if (hallwayPath[i][0] == hallway2Path[j][0]) and (hallwayPath[i][1] == hallway2Path[j][1]) and (hallwayPath[i][2] != hallway2Path[j][2]):
                         intersections.append([hallwayPath[i][0], hallwayPath[i][1]])
             # Mark hallway corners as intersections
-            intersections.append([hallway.corner[0], hallway.corner[1]])
-            intersections.append([hallway2.corner[0], hallway2.corner[1]])
+            if hallway.corner != hallway.start and hallway.corner != hallway.end:
+                intersections.append([hallway.corner[0], hallway.corner[1]])
+            if hallway2.corner != hallway2.start and hallway2.corner != hallway2.end:
+                intersections.append([hallway2.corner[0], hallway2.corner[1]])
+
+            if len(intersections) > 0:
+                for c in range(len(intersections)-1, 0, -1):
+                    for d in hallways:
+                        if intersections[c] == (d.start or d.end):
+                            print("DEBUG: popping", intersections[c])
+                            intersections.pop(c)
+    return intersections
             
 # Determine locations occupied by segemnts of hallways
-def fillHallways(hallwayList):
+def fillHallways(hallwayList, intersections):
     # Find locations occupied by rooms
     roomLocations = []
     for a in range(len(rooms)):
         for i in range(rooms[a].roomWidth):
             for j in range(rooms[a].roomHeight):
-                roomLocations.append([rooms[a].center[0]-round(rooms[a].roomHeight/2) + j, rooms[a].center[1]-round(rooms[a].roomWidth/2) + i])
+                roomLocations.append([rooms[a].center[0]-math.floor(rooms[a].roomHeight/2) + j, rooms[a].center[1]-math.floor(rooms[a].roomWidth/2) + i])
 
+    intersections = [o for n, o in enumerate(intersections) if o not in intersections[:n]]
+    print("DEBUG roomLocations:", roomLocations)
+    print("DEBUG intersections:", intersections)
+    for i in hallways:
+        print("DEBUG hallway start:", i.start)
+        print("DEBUG hallway corner:", i.corner)
+        print("DEBUG hallway end:", i.end)
     # Remove intersections that are in rooms
-    for a in range(len(intersections)-1, 0, -1):
+    for a in range(len(intersections)-1, -1, -1):
+        print("DEBUG: checking", intersections[a])
         if intersections[a] in roomLocations:
+            print("DEBUG: popping", intersections[a])
             intersections.pop(a)
     
     global hallwaySegments
@@ -377,6 +396,7 @@ def fillHallways(hallwayList):
     hallwaySegments = [i for n, i in enumerate(hallwaySegments) if i not in hallwaySegments[:n]]
 
     interpretSegments(hallwaySegments)
+    return intersections
 
 # Convert hallway segments to interpritable data
 def interpretSegments(hallwaySegments):
@@ -427,10 +447,10 @@ def generate(grid, N, roomNumber, roomWidthMin, roomWidthMax, roomHeightMin, roo
             else:
                 roomHeight = random.randrange(roomHeightMin, roomHeightMax+1)
             room = Room(roomWidth, roomHeight) # Generate room of random size
-            randX = random.randrange(2, round((N-roomWidthMax-2))) # Generate random top-left corner coordinate for room
-            randY = random.randrange(2, round((N-roomHeightMax-2))) # Generate random top-left corner coordinate for room
+            randX = random.randrange(2, math.floor((N-roomWidthMax-2))) # Generate random top-left corner coordinate for room
+            randY = random.randrange(2, math.floor((N-roomHeightMax-2))) # Generate random top-left corner coordinate for room
             randY += 1
-            room.center = [randX + round(room.roomHeight / 2), randY + round(room.roomWidth / 2)] # Calculate the approximate center of each room
+            room.center = [randX + math.floor(room.roomHeight / 2), randY + math.floor(room.roomWidth / 2)] # Calculate the approximate center of each room
             
             # Begin placement test
             for j in range(len(rooms)):
@@ -532,7 +552,7 @@ global ran
 ran = False
 theme = "Basic"
 
-def main(ran, N=40, roomNumber=4, roomWidthMin=7, roomWidthMax=9, roomHeightMin=7, roomHeightMax=9, hallwayWidth=1, theme="Basic"):
+def main(ran, N=40, roomNumber=4, roomWidthMin=2, roomWidthMax=9, roomHeightMin=2, roomHeightMax=9, hallwayWidth=1, theme="Basic"):
     random.seed()
 
     if theme != "Basic" and theme != "IP" and theme != "MC":
@@ -644,20 +664,12 @@ def main(ran, N=40, roomNumber=4, roomWidthMin=7, roomWidthMax=9, roomHeightMin=
         if roomNum != 0:
             if (i.roomWidth % 2 == 1):
                 if (i.roomHeight % 2 == 1):
-                    room = [i.center[1] - 0.5-adjustment, i.center[0] - 0.5-adjustment, i.roomWidth, i.roomHeight]
-                    if (i.roomWidth % 4 == 1):
-                        room[0] += 1
-                        if (i.roomHeight % 4 == 1):
-                            room[1] += 1
+                    room = [i.center[1], i.center[0], i.roomWidth, i.roomHeight]
                 else:
-                    room = [i.center[1] - 0.5-adjustment, i.center[0]-adjustment, i.roomWidth, i.roomHeight]
-                    if (i.roomWidth % 4 == 1):
-                        room[0] += 1
+                    room = [i.center[1], i.center[0]-adjustment, i.roomWidth, i.roomHeight]
             else:
                 if (i.roomHeight % 2 == 1):
-                    room = [i.center[1]-adjustment, i.center[0] - 0.5-adjustment, i.roomWidth, i.roomHeight]
-                    if (i.roomHeight % 4 == 1):
-                        room[1] += 1
+                    room = [i.center[1]-adjustment, i.center[0], i.roomWidth, i.roomHeight]
                 else:
                     room = [i.center[1]-adjustment, i.center[0]-adjustment, i.roomWidth, i.roomHeight]
             roomData.append(room)
@@ -668,14 +680,15 @@ def main(ran, N=40, roomNumber=4, roomWidthMin=7, roomWidthMax=9, roomHeightMin=
         write = csv.writer(f)
         write.writerows(roomData)
 
-    findIntersections(hallways)
+    intersections = findIntersections(hallways)
 
-    fillHallways(hallways)
+    intersections = fillHallways(hallways, intersections)
     # Output hallway segments
     with open("output/hallwaySegments.csv", "w", newline='') as f:
         write = csv.writer(f)
         write.writerows(segmentsFinal)
 
+    print("DEBUG intersections:", intersections)
     intersect = [i for n, i in enumerate(intersections) if i not in intersections[:n]]
     for i in range(len(intersect)):
         temp = intersect[i][0]
@@ -686,6 +699,9 @@ def main(ran, N=40, roomNumber=4, roomWidthMin=7, roomWidthMax=9, roomHeightMin=
         write = csv.writer(f)
         write.writerows(intersect)
 
+    print("DEBUG intersections count:", len(intersections))
+    print("DEBUG hallwaySegments count:", len(hallwaySegments))
+
     fig, ax = plt.subplots()
     alphas = ((grid/255) + 1) % 2
     
@@ -694,7 +710,7 @@ def main(ran, N=40, roomNumber=4, roomWidthMin=7, roomWidthMax=9, roomHeightMin=
     
     plt.axis('off') # Remove grid axes
 
-    # Place floor tiles depending on theme
+    # Place math.floor tiles depending on theme
     if theme == "Basic":
         for i in range(N):
             for j in range(N):
