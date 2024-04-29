@@ -51,13 +51,12 @@
                     </form>
                 </div>
             </div>
-            <div></div>
+            <div><h3 style="text-align: center;">Save to Profile</h3></div>
             <div class="generator-container">
                 {% if session['loggedin'] %}
-                    <h3>Save to Profile</h3>
                         <div class="form-container">
                             <form action="/save" method="POST">
-                                <label>Name</label>
+                                <label>Dungeon Name:</label>
                                 <input type="text" id="name" name="name" />
                                 <input type="submit" value="Save" />
 

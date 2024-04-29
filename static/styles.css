@@ -54,6 +54,10 @@ nav a:hover {
     justify-content: center;
 }
 
+.form-container {
+    background-color: whitesmoke;
+}
+
 .login, .register {
     max-width: 25%;
     margin: 0 auto;
@@ -61,6 +65,11 @@ nav a:hover {
 
 .form-container {
     margin-left: 20px;
+    outline: auto;
+    outline-color: gray;
+    outline-style: outset;
+    outline-width: 5px;
+    padding: 20px;
 }
 
 .form-container form select {
@@ -106,6 +115,7 @@ th, td {
 
 .login, .register {
     background-color: #f9f9f9;
+    outline-style: outset;
     padding: 20px;
     border-radius: 5px;
     margin-top: 20px;
@@ -118,27 +128,6 @@ form {
 
 label {
     margin-top: 10px;
-}
-
-input[type="text"], input[type="password"], input[type="email"] {
-    padding: 10px;
-    margin-top: 5px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-}
-
-input[type="submit"] {
-    margin-top: 20px;
-    padding: 10px;
-    border-radius: 5px;
-    border: none;
-    color: white;
-    background-color: #007BFF;
-    cursor: pointer;
-}
-
-input[type="submit"]:hover {
-    background-color: #0056b3;
 }
 
 .links {
@@ -171,11 +160,42 @@ img {
 button {
     margin-top: 20px;
     padding: 10px;
-    border-radius: 5px;
+    border-radius: 10px;
     border: none;
     color: white;
-    background-color: #007BFF;
+    background-color: gray;
     cursor: pointer;
     margin:auto;
     display:block;
-  }
+    
+}
+
+button:hover {
+    background-color: black;
+}
+
+
+input[type="text"], input[type="password"], input[type="email"] {
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 5px;
+    border: 1px solid gray;
+}
+
+input[type="submit"] {
+    background-color: gray;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-top: 5px;
+}
+
+.profile-section {
+    max-width: 50%;
+    padding: 20px;
+    outline-style: outset;
+    margin: 0 auto;
+    background-color: #f9f9f9;
+}
