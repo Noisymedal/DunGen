@@ -100,7 +100,7 @@ def login():
             loginBytes = loginPass.encode('utf-8')
 
             passMatch = bcrypt.checkpw(loginBytes, dbBytes)
-            print(passMatch)
+            #print(passMatch)
 
             if passMatch:
                 # If user and password match, log user in
@@ -271,7 +271,7 @@ def delete():
             # remove all associated dungeon images from imgur gallery
             cursor.execute('SELECT imgId FROM dungeon WHERE iduser = %s', (session['id'],))
             imgIdList = cursor.fetchall()
-            print(imgIdList)
+            #print(imgIdList)
             for id in imgIdList:
                 response = imgur_client.image_delete(id['imgId'])
 
@@ -337,14 +337,14 @@ def downloadSave():
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT dgnSave FROM dungeon WHERE imgId = %s', [imgId])
         save = cursor.fetchone()
-        print(save)
+        #print(save)
         file1 = open('output/save.json', 'w')
         file1.write(str(save['dgnSave']))
         file1.close()
 
         return send_file('output/save.json', download_name=saveName,as_attachment=True)
     else:
-        print("false")
+        #print("false")
         return redirect(url_for('profile'))
 
 
