@@ -40,8 +40,16 @@
 							<tr>
 								<td>{{ dungeon['dgnName'] }}</td>
 								<td><img src= "https://i.imgur.com/{{dungeon['imgId']}}.png" /> </td>
-								<td><button>Download Save</button></td>
-								<td><button>Download Image</button></td>
+
+								<td><form action="/downloadsave" class="profform" method="post">
+									<input type="hidden" id = "imgId" name = "imgId" value = "{{ dungeon['imgId'] }}"/>
+									<input type="hidden" id = "dgnName" name = "dgnName" value = "{{ dungeon['dgnName'] }}"/>
+									<input type="submit" value="Download Save" formtarget="_blank"/>
+								</form></td>
+
+								<td><form action="https://imgur.com/{{dungeon['imgId']}}.png" class="profform" method="post">
+									<input type="submit" value="Download Image" formtarget="_blank"/>
+								</form></td>
 							</tr>
 							{%endfor%}
 						</table>

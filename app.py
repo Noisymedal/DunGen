@@ -9,12 +9,14 @@
 ##      python app.py
 ## 4) the web app should then run on http://localhost:5000 (also displayed in vscode terminal)
 
-import MySQLdb.cursors, bcrypt, generator
-from flask import Flask, render_template, redirect, url_for, request, session, jsonify, send_from_directory
+import MySQLdb.cursors, bcrypt, generator, jsonGenerator, json
+from flask import Flask, render_template, redirect, url_for, request, session, jsonify, send_from_directory, send_file
 # from flask_login import login_required, LoginManager
 from flask_mysqldb import MySQL
 from imgur_python import Imgur
 from os import path
+from io import BytesIO
+
 
 app = Flask(__name__)
 
@@ -310,10 +312,14 @@ def save():
             response = imgur_client.image_upload(file, title, description, album, disable_audio)
             id = response['response']['data']['id']
 
+            # create Tabetop Sim save
+            save = jsonGenerator.generateJson(id, name)
+
             # create new dungeon entry in database
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('INSERT INTO dungeon VALUES (NULL, %s, %s, %s, NULL)', (session['id'], id, name))
+            cursor.execute('INSERT INTO dungeon VALUES (NULL, %s, %s, %s, NULL, %s)', (session['id'], id, name, save))
             mysql.connection.commit()
+
             msg = 'Dungeon saved successfully!'
         else: 
             msg = 'Please fill out the form'
@@ -321,5 +327,26 @@ def save():
         msg = 'Please log in to save a dungeon'
     return redirect(url_for('profile'))
 
+@app.route('/downloadsave', methods=['Get', 'POST'])
+def downloadSave():
+
+    if request.method == 'POST' and 'imgId' in request.form and 'dgnName' in request.form:
+        
+        imgId = request.form['imgId']
+        saveName = request.form['dgnName'] + ".json"
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT dgnSave FROM dungeon WHERE imgId = %s', [imgId])
+        save = cursor.fetchone()
+        print(save)
+        file1 = open('output/save.json', 'w')
+        file1.write(str(save['dgnSave']))
+        file1.close()
+
+        return send_file('output/save.json', download_name=saveName,as_attachment=True)
+    else:
+        print("false")
+        return redirect(url_for('profile'))
+
+
 if __name__ == "__main__":
-    app.run()
+    app.run('0.0.0.0', debug=True)
