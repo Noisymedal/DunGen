@@ -177,6 +177,7 @@ def profile():
     # Check if the user is logged in
     if 'loggedin' in session:
         # Get account info from database
+        print(imgur_client)
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM user WHERE iduser = %s', (session['id'],))
         account = cursor.fetchone()
