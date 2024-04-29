@@ -32,6 +32,8 @@ mysql = MySQL(app)
 
 # Imgur API connection
 imgur_client = Imgur({
+    "client_id":"afe66f42ae38075",
+    "client_secret":"6e048e2f025ad3e84112451e9809d97171fe174c",
     "access_token": "5b49aa23222bc7d472a3ffdca6bd53c7b7fbbddd",
     "expires_in": 315360000,
     "token_type": "bearer",
