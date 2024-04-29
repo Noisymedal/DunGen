@@ -225,12 +225,13 @@ def update():
         if 'loggedin' in session and request.form['userverify'] == account['username'] and passMatch:
 
             # change username if username form is filled out
-            if request.method == 'POST' and 'newuser' in request.form:
+            if request.method == 'POST' and request.form['newuser'] != '':
                 cursor.execute('UPDATE user SET username = %s WHERE iduser = %s', [request.form['newuser'], session['id']])
                 mysql.connection.commit()
+                msg='Changes saved'
             
             # change password if password form is filled out
-            if request.method == 'POST' and 'newpass' in request.form:
+            if request.method == 'POST' and request.form['newpass'] != '':
                 newpass = request.form['newpass']
                 # Encrypt the new password
                 passBytes = newpass.encode('utf-8')
@@ -239,7 +240,8 @@ def update():
                 # add to db
                 cursor.execute('UPDATE user SET password = %s WHERE iduser = %s', [newPassEncrypt, session['id']])
                 mysql.connection.commit()
-                msg='Changes saved'
+                if msg == '':
+                    msg='Changes saved'
 
     # return if changes were saved or not
     return render_template('settings.html', msg=msg)
