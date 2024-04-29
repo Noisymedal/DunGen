@@ -9,7 +9,7 @@
 ##      python app.py
 ## 4) the web app should then run on http://localhost:5000 (also displayed in vscode terminal)
 
-import MySQLdb.cursors, bcrypt, generator, jsonGenerator, json
+import MySQLdb.cursors, bcrypt, generator, jsonGenerator, requests
 from flask import Flask, render_template, redirect, url_for, request, session, jsonify, send_from_directory, send_file
 # from flask_login import login_required, LoginManager
 from flask_mysqldb import MySQL
@@ -179,7 +179,6 @@ def profile():
     # Check if the user is logged in
     if 'loggedin' in session:
         # Get account info from database
-        print(imgur_client.authorize())
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM user WHERE iduser = %s', (session['id'],))
         account = cursor.fetchone()
@@ -307,13 +306,25 @@ def save():
             name = request.form['name']
 
             # store dungeon image via imgur API
-            file = path.realpath('static/dungeon.png')
-            title = name
-            description = ''
-            album = None
-            disable_audio = 0
-            response = imgur_client.image_upload(file, title, description, album, disable_audio)
-            id = response['response']['data']['id']
+
+            # requests method
+            clientID = 'afe66f42ae38075'
+            headers = {'Authorization': 'Client-ID ' + clientID}
+            url = 'https://api.imgur.com/3/upload'
+            with open(path.realpath('static/dungeon.png'), 'rb') as img:
+                payload = {'image': img}
+                response = requests.post(url, headers=headers, files=payload)
+                id = response.json()['data']['id']
+
+
+            # imgur_python method
+            #file = path.realpath('static/dungeon.png')
+            #title = name
+            #description = ''
+            #album = None
+            #disable_audio = 0
+            #response = imgur_client.image_upload(file, title, description, album, disable_audio)
+            #id = response['response']['data']['id']
 
             # create Tabetop Sim save
             save = jsonGenerator.generateJson(id, name)
