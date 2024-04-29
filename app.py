@@ -308,24 +308,24 @@ def save():
             # store dungeon image via imgur API
 
             # requests method
-            clientID = 'afe66f42ae38075'
-            headers = {'Authorization': 'Client-ID ' + clientID}
-            url = 'https://api.imgur.com/3/upload'
-            with open(path.realpath('static/dungeon.png'), 'rb') as img:
-                payload = {'image': img}
-                response = requests.post(url, headers=headers, files=payload)
-                print(response.json())
-                id = response.json()['data']['id']
+            #clientID = 'afe66f42ae38075'
+            #headers = {'Authorization': 'Client-ID ' + clientID}
+            #url = 'https://api.imgur.com/3/upload'
+            #with open(path.realpath('static/dungeon.png'), 'rb') as img:
+            #    payload = {'image': img}
+            #    response = requests.post(url, headers=headers, files=payload)
+            #    print(response.json())
+            #    id = response.json()['data']['id']
 
 
             # imgur_python method
-            #file = path.realpath('static/dungeon.png')
-            #title = name
-            #description = ''
-            #album = None
-            #disable_audio = 0
-            #response = imgur_client.image_upload(file, title, description, album, disable_audio)
-            #id = response['response']['data']['id']
+            file = path.realpath('static/dungeon.png')
+            title = name
+            description = ''
+            album = None
+            disable_audio = 0
+            response = imgur_client.image_upload(file, title, description, album, disable_audio)
+            id = response['response']['data']['id']
 
             # create Tabetop Sim save
             save = jsonGenerator.generateJson(id, name)
