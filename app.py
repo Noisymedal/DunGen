@@ -314,8 +314,8 @@ def save():
             with open(path.realpath('static/dungeon.png'), 'rb') as img:
                 payload = {'image': img}
                 response = requests.post(url, headers=headers, files=payload)
-                id = response.json()['data']['id']
                 print(response.json())
+                id = response.json()['data']['id']
 
 
             # imgur_python method
