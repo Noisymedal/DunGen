@@ -300,7 +300,7 @@ def findIntersections(hallwayList):
                 for c in range(len(intersections)-1, 0, -1):
                     for d in hallways:
                         if intersections[c] == (d.start or d.end):
-                            print("DEBUG: popping", intersections[c])
+                            #print("DEBUG: popping", intersections[c])
                             intersections.pop(c)
     return intersections
             
@@ -314,17 +314,17 @@ def fillHallways(hallwayList, intersections):
                 roomLocations.append([rooms[a].center[0]-math.floor(rooms[a].roomHeight/2) + j, rooms[a].center[1]-math.floor(rooms[a].roomWidth/2) + i])
 
     intersections = [o for n, o in enumerate(intersections) if o not in intersections[:n]]
-    print("DEBUG roomLocations:", roomLocations)
-    print("DEBUG intersections:", intersections)
-    for i in hallways:
-        print("DEBUG hallway start:", i.start)
-        print("DEBUG hallway corner:", i.corner)
-        print("DEBUG hallway end:", i.end)
+    #print("DEBUG roomLocations:", roomLocations)
+    #print("DEBUG intersections:", intersections)
+    #for i in hallways:
+        #print("DEBUG hallway start:", i.start)
+        #print("DEBUG hallway corner:", i.corner)
+        #print("DEBUG hallway end:", i.end)
     # Remove intersections that are in rooms
     for a in range(len(intersections)-1, -1, -1):
-        print("DEBUG: checking", intersections[a])
+        #print("DEBUG: checking", intersections[a])
         if intersections[a] in roomLocations:
-            print("DEBUG: popping", intersections[a])
+            #print("DEBUG: popping", intersections[a])
             intersections.pop(a)
     
     global hallwaySegments
@@ -569,23 +569,23 @@ def main(ran, N=40, roomNumber=4, roomWidthMin=2, roomWidthMax=9, roomHeightMin=
 
     ran = True
 
-    print("DEBUG roomNumber:", roomNumber)
-    print("DEBUG roomWidthMin:", roomWidthMin)
+    #print("DEBUG roomNumber:", roomNumber)
+    #print("DEBUG roomWidthMin:", roomWidthMin)
     if roomWidthMax < roomWidthMin:
         roomWidthMax = roomWidthMin
-    print("DEBUG roomWidthMax:", roomWidthMax)
-    print("DEBUG roomHeightMin:", roomHeightMin)
+    #print("DEBUG roomWidthMax:", roomWidthMax)
+    #print("DEBUG roomHeightMin:", roomHeightMin)
     if roomHeightMax < roomHeightMin:
         roomHeightMax = roomHeightMin
-    print("DEBUG roomHeightMax:", roomHeightMax)
-    print("DEBUG hallwayWidth:", hallwayWidth)
+    #print("DEBUG roomHeightMax:", roomHeightMax)
+    #print("DEBUG hallwayWidth:", hallwayWidth)
 
     updateInterval = 10
 
     grid = np.array([]) # Create grid
     grid = np.zeros(N*N).reshape(N, N)
 
-    print("DEBUG: Start generation")
+    #print("DEBUG: Start generation")
     generate(grid, N, roomNumber, roomWidthMin, roomWidthMax, roomHeightMin, roomHeightMax, hallwayWidth)
 
     # Find wall locations
@@ -688,7 +688,7 @@ def main(ran, N=40, roomNumber=4, roomWidthMin=2, roomWidthMax=9, roomHeightMin=
         write = csv.writer(f)
         write.writerows(segmentsFinal)
 
-    print("DEBUG intersections:", intersections)
+    #print("DEBUG intersections:", intersections)
     intersect = [i for n, i in enumerate(intersections) if i not in intersections[:n]]
     for i in range(len(intersect)):
         temp = intersect[i][0]
@@ -699,8 +699,8 @@ def main(ran, N=40, roomNumber=4, roomWidthMin=2, roomWidthMax=9, roomHeightMin=
         write = csv.writer(f)
         write.writerows(intersect)
 
-    print("DEBUG intersections count:", len(intersections))
-    print("DEBUG hallwaySegments count:", len(hallwaySegments))
+    #print("DEBUG intersections count:", len(intersections))
+    #print("DEBUG hallwaySegments count:", len(hallwaySegments))
 
     fig, ax = plt.subplots()
     alphas = ((grid/255) + 1) % 2
