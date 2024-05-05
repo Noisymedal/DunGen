@@ -689,7 +689,7 @@ def generateHandtrigger():
             output+=",\n"
     return output
 
-def generateBoard(imgid):
+def generateBoard(imglink):
     output=""
     output+="\n\t{"
     output+="\n\t\t\"GUID\": \"0\","
@@ -733,8 +733,8 @@ def generateBoard(imgid):
     output+="\n\t\t\"HideWhenFaceDown\": false,"
     output+="\n\t\t\"Hands\": false,"
     output+="\n\t\t\"CustomImage\": {"
-    output+="\n\t\t\t\"ImageURL\": \"https://imgur.com/" + imgid + ".png\","
-    output+="\n\t\t\t\"ImageSecondaryURL\": \"https://imgur.com/" + imgid + ".png\","
+    output+="\n\t\t\t\"ImageURL\": \"" + imglink + "\","
+    output+="\n\t\t\t\"ImageSecondaryURL\": \"" + imglink + "\","
     output+="\n\t\t\t\"ImageScalar\": 1.0,"
     output+="\n\t\t\t\"WidthScale\": 0.0,"
     output+="\n\t\t\t\"CustomTile\": {"

@@ -196,7 +196,7 @@ def profile():
 
         # get image link from image ids
         for dungeon in dungeons:
-            dungeon['imgId'] = (cloudinary_url(dungeon['imgId'], format="png")[0])
+            dungeon['imgLink'] = (cloudinary_url(dungeon['imgId'], format="png")[0])
 
         print(dungeons)
 
@@ -324,35 +324,13 @@ def save():
             # get name from request form & image from static folder
             name = request.form['name']
 
-            # store dungeon image via imgur API
-
-            # requests method
-            #clientID = 'afe66f42ae38075'
-            #headers = {'Authorization': 'Client-ID ' + clientID}
-            #url = 'https://api.imgur.com/3/upload'
-            #with open(path.realpath('static/dungeon.png'), 'rb') as img:
-            #    print(img)
-            #    payload = {'image': img}
-            #    response = requests.post(url, headers=headers, files=payload)
-            #    print(response.json())
-            #    id = response.json()['data']['id']
-
-
-            # imgur_python method
-            #file = path.realpath('static/dungeon.png')
-            #title = name
-            #description = ''
-            #album = None
-            #disable_audio = 0
-            #response = imgur_client.image_upload(file, title, description, album, disable_audio)
-            #id = response['response']['data']['id']
-
-            # cloudinary method
+            # Store dungeon image via cloudinary api
             upload_result = cloudinary.uploader.upload("static/dungeon.png")
             id = upload_result['public_id']
+            link = (cloudinary_url(id, format="png")[0])
 
             # create Tabetop Sim save
-            save = jsonGenerator.generateJson(id, name)
+            save = jsonGenerator.generateJson(link, name)
 
             # create new dungeon entry in database
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
