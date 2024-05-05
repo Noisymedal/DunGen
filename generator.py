@@ -298,6 +298,8 @@ def findIntersections(hallwayList):
 
             if len(intersections) > 0:
                 for c in range(len(intersections)-1, 0, -1):
+                    if c < 0:
+                        break
                     for d in hallways:
                         if intersections[c] == (d.start or d.end):
                             print("DEBUG: popping", intersections[c])
