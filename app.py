@@ -9,7 +9,7 @@
 ##      python app.py
 ## 4) the web app should then run on http://localhost:5000 (also displayed in vscode terminal)
 
-import MySQLdb.cursors, bcrypt, generator, jsonGenerator, json
+import MySQLdb.cursors, bcrypt, generator, jsonGenerator, requests
 from flask import Flask, render_template, redirect, url_for, request, session, jsonify, send_from_directory, send_file
 # from flask_login import login_required, LoginManager
 from flask_mysqldb import MySQL
@@ -32,6 +32,8 @@ mysql = MySQL(app)
 
 # Imgur API connection
 imgur_client = Imgur({
+    "client_id":"afe66f42ae38075",
+    "client_secret":"6e048e2f025ad3e84112451e9809d97171fe174c",
     "access_token": "5b49aa23222bc7d472a3ffdca6bd53c7b7fbbddd",
     "expires_in": 315360000,
     "token_type": "bearer",
@@ -100,7 +102,7 @@ def login():
             loginBytes = loginPass.encode('utf-8')
 
             passMatch = bcrypt.checkpw(loginBytes, dbBytes)
-            print(passMatch)
+            #print(passMatch)
 
             if passMatch:
                 # If user and password match, log user in
@@ -223,12 +225,13 @@ def update():
         if 'loggedin' in session and request.form['userverify'] == account['username'] and passMatch:
 
             # change username if username form is filled out
-            if request.method == 'POST' and 'newuser' in request.form:
+            if request.method == 'POST' and request.form['newuser'] != '':
                 cursor.execute('UPDATE user SET username = %s WHERE iduser = %s', [request.form['newuser'], session['id']])
                 mysql.connection.commit()
+                msg='Changes saved'
             
             # change password if password form is filled out
-            if request.method == 'POST' and 'newpass' in request.form:
+            if request.method == 'POST' and request.form['newpass'] != '':
                 newpass = request.form['newpass']
                 # Encrypt the new password
                 passBytes = newpass.encode('utf-8')
@@ -237,7 +240,8 @@ def update():
                 # add to db
                 cursor.execute('UPDATE user SET password = %s WHERE iduser = %s', [newPassEncrypt, session['id']])
                 mysql.connection.commit()
-                msg='Changes saved'
+                if msg == '':
+                    msg='Changes saved'
 
     # return if changes were saved or not
     return render_template('settings.html', msg=msg)
@@ -292,7 +296,7 @@ def delete():
         else:
             msg='Invalid username or password'
 
-    return redirect(url_for('settings'), msg=msg)
+    return redirect(url_for('settings'))
 
 @app.route('/save', methods=['POST'])
 # @login_required
@@ -304,6 +308,20 @@ def save():
             name = request.form['name']
 
             # store dungeon image via imgur API
+
+            # requests method
+            #clientID = 'afe66f42ae38075'
+            #headers = {'Authorization': 'Client-ID ' + clientID}
+            #url = 'https://api.imgur.com/3/upload'
+            #with open(path.realpath('static/dungeon.png'), 'rb') as img:
+            #    print(img)
+            #    payload = {'image': img}
+            #    response = requests.post(url, headers=headers, files=payload)
+            #    print(response.json())
+            #    id = response.json()['data']['id']
+
+
+            # imgur_python method
             file = path.realpath('static/dungeon.png')
             title = name
             description = ''
@@ -337,14 +355,14 @@ def downloadSave():
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT dgnSave FROM dungeon WHERE imgId = %s', [imgId])
         save = cursor.fetchone()
-        print(save)
+        #print(save)
         file1 = open('output/save.json', 'w')
         file1.write(str(save['dgnSave']))
         file1.close()
 
         return send_file('output/save.json', download_name=saveName,as_attachment=True)
     else:
-        print("false")
+        #print("false")
         return redirect(url_for('profile'))
 
 
