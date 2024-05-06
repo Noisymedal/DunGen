@@ -300,7 +300,13 @@ def findIntersections(hallwayList):
                 for c in range(len(intersections)-1, 0, -1):
                     if c < 0:
                         break
+                    if c > len(intersections):
+                        print("ERROR: Object intersections changed irrationally during runtime")
+                        break
                     for d in hallways:
+                        if d not in hallways:
+                            print("ERROR: hallways changed irrationally during runtime")
+                            break
                         if intersections[c] == (d.start or d.end):
                             #print("DEBUG: popping", intersections[c])
                             intersections.pop(c)
