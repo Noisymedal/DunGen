@@ -28,7 +28,7 @@ def csvGen():
 #THEME, 0 is basic, 1 is minecraft, 2 is Ice Palace
 theme=0
 
-def generateJson(imgid, name):
+def generateJson(imglink, name):
     output=""
     output+="{"
     output+="\n\"SaveName\": \"" + name + "\","
@@ -120,7 +120,7 @@ def generateJson(imgid, name):
     output+="\n\"XmlUI\": \"<!-- Xml UI. See documentation: https://api.tabletopsimulator.com/ui/introUI/ -->\","
     output+="\n\"ObjectStates\": ["
     output+=gen0.generateHandtrigger()
-    output+=gen0.generateBoard(imgid)
+    output+=gen0.generateBoard(imglink)
 
     dataArr = csvGen()
 

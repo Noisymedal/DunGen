@@ -9,14 +9,13 @@
 ##      python app.py
 ## 4) the web app should then run on http://localhost:5000 (also displayed in vscode terminal)
 
-import MySQLdb.cursors, bcrypt, generator, jsonGenerator, requests
+import MySQLdb.cursors, bcrypt, generator, jsonGenerator, cloudinary, cloudinary.uploader, cloudinary.api
 from flask import Flask, render_template, redirect, url_for, request, session, jsonify, send_from_directory, send_file
 # from flask_login import login_required, LoginManager
 from flask_mysqldb import MySQL
 from imgur_python import Imgur
 from os import path
-from io import BytesIO
-
+from cloudinary.utils import cloudinary_url
 
 app = Flask(__name__)
 
@@ -29,6 +28,14 @@ app.config['MYSQL_USER'] = 'dgnadmin'
 app.config['MYSQL_PASSWORD'] = 'vsyjAheSRR9N8TjVtEbKJd'
 app.config['MYSQL_DB'] = 'dgn'
 mysql = MySQL(app)
+
+# cloudinary config
+cloudinary.config( 
+  cloud_name = "dt3frxdbm", 
+  api_key = "814494358337694", 
+  api_secret = "k9Mo6EBC_hTDE3KTP_bF9GF4aLI" 
+)
+
 
 # Imgur API connection
 imgur_client = Imgur({
@@ -187,6 +194,12 @@ def profile():
         cursor.execute('SELECT * FROM dungeon WHERE iduser = %s', (session['id'],))
         dungeons = cursor.fetchall()
 
+        # get image link from image ids
+        for dungeon in dungeons:
+            dungeon['imgLink'] = (cloudinary_url(dungeon['imgId'], format="png")[0])
+
+        print(dungeons)
+
         # Show the profile page with account info
         return render_template('profile.html', account = account, dungeons = dungeons)
     # Redirect to login page if not logged in
@@ -273,11 +286,15 @@ def delete():
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
             # remove all associated dungeon images from imgur gallery
+            list = []
             cursor.execute('SELECT imgId FROM dungeon WHERE iduser = %s', (session['id'],))
             imgIdList = cursor.fetchall()
             print(imgIdList)
             for id in imgIdList:
-                response = imgur_client.image_delete(id['imgId'])
+                # do it for cloudinary instead
+                list.append(id['imgId'])
+                #response = imgur_client.image_delete(id['imgId'])
+            response = cloudinary.api.delete_resources(list)
 
             # remove user from the database
             cursor.execute('DELETE FROM user WHERE iduser = %s', (session['id'],))
@@ -307,31 +324,13 @@ def save():
             # get name from request form & image from static folder
             name = request.form['name']
 
-            # store dungeon image via imgur API
-
-            # requests method
-            #clientID = 'afe66f42ae38075'
-            #headers = {'Authorization': 'Client-ID ' + clientID}
-            #url = 'https://api.imgur.com/3/upload'
-            #with open(path.realpath('static/dungeon.png'), 'rb') as img:
-            #    print(img)
-            #    payload = {'image': img}
-            #    response = requests.post(url, headers=headers, files=payload)
-            #    print(response.json())
-            #    id = response.json()['data']['id']
-
-
-            # imgur_python method
-            file = path.realpath('static/dungeon.png')
-            title = name
-            description = ''
-            album = None
-            disable_audio = 0
-            response = imgur_client.image_upload(file, title, description, album, disable_audio)
-            id = response['response']['data']['id']
+            # Store dungeon image via cloudinary api
+            upload_result = cloudinary.uploader.upload("static/dungeon.png")
+            id = upload_result['public_id']
+            link = (cloudinary_url(id, format="png")[0])
 
             # create Tabetop Sim save
-            save = jsonGenerator.generateJson(id, name)
+            save = jsonGenerator.generateJson(link, name)
 
             # create new dungeon entry in database
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
