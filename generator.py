@@ -297,7 +297,9 @@ def findIntersections(hallwayList):
                 intersections.append([hallway2.corner[0], hallway2.corner[1]])
 
             if len(intersections) > 0:
+                #print("length-1: ", len(intersections)-1)
                 for c in range(len(intersections)-1, 0, -1):
+                    #print("intersections[",c,"]: ", intersections[c])
                     if c < 0:
                         break
                     if c > len(intersections):
@@ -307,9 +309,20 @@ def findIntersections(hallwayList):
                         if d not in hallways:
                             print("ERROR: hallways changed irrationally during runtime")
                             break
-                        if intersections[c] == (d.start or d.end):
-                            #print("DEBUG: popping", intersections[c])
-                            intersections.pop(c)
+                        #print("d.start: ", d.start, "d.end", d.end)
+                        #print("check if ", intersections[c], " is ", d.start, " or ", d.end)
+                        #print("d.end: ", d.end)
+                        try:
+                            if intersections[c] == (d.start or d.end):
+                                print("DEBUG: popping", intersections[c], " at index ", c)
+                                intersections.pop(c)
+                        except IndexError:
+                            print("--------------------------------")
+                            print("indexError on index ", c)
+                            print("---------------------------------")
+                            c = len(intersections) - 1
+
+
     return intersections
             
 # Determine locations occupied by segemnts of hallways
