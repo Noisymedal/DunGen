@@ -299,10 +299,11 @@ def findIntersections(hallwayList):
             if len(intersections) > 0:
                 #print("length-1: ", len(intersections)-1)
                 for c in range(len(intersections)-1, 0, -1):
+                    
                     #print("intersections[",c,"]: ", intersections[c])
                     if c < 0:
                         break
-                    if c > len(intersections):
+                    if c >= len(intersections):
                         print("ERROR: Object intersections changed irrationally during runtime")
                         break
                     for d in hallways:
@@ -314,8 +315,12 @@ def findIntersections(hallwayList):
                         #print("d.end: ", d.end)
                         try:
                             if intersections[c] == (d.start or d.end):
+                                print(c, len(intersections))
                                 print("DEBUG: popping", intersections[c], " at index ", c)
-                                intersections.pop(c)
+                                if c != len(intersections) - 1:
+                                    intersections.pop(c)
+                                else:
+                                    intersections.pop()
                         except IndexError:
                             print("--------------------------------")
                             print("indexError on index ", c)
@@ -573,7 +578,7 @@ global ran
 ran = False
 theme = "Basic"
 
-def main(ran, N=40, roomNumber=4, roomWidthMin=2, roomWidthMax=9, roomHeightMin=2, roomHeightMax=9, hallwayWidth=1, theme="Basic"):
+def main(ran, N=40, roomNumber=5, roomWidthMin=2, roomWidthMax=5, roomHeightMin=2, roomHeightMax=5, hallwayWidth=1, theme="Basic"):
     random.seed()
 
     if theme != "Basic" and theme != "IP" and theme != "MC":
