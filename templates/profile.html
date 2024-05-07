@@ -36,7 +36,7 @@
 							<table class="savedlist">
 								<tr>
 									<th>Dungeon Name</th>
-									<th colspan="3">Image</th>
+									<th colspan="4">Image</th>
 								</tr>
 								{%for dungeon in dungeons%}
 								<tr>
@@ -49,11 +49,18 @@
 											<input type="hidden" id = "dgnName" name = "dgnName" value = "{{ dungeon['dgnName'] }}"/>
 											<input type="submit" value="Download Save" formtarget="_blank"/>
 										</form>
-									</td>
-									
-									<td>
+										<br>
 										<form action="{{dungeon['imgLink']}}" class="profform">
 											<input type="submit" value="Download Image" formtarget="_blank">
+										</form>
+									</td>
+									
+
+									<td>
+										<form action="/deletedungeon" class="profform" method="post">
+											<input type="hidden" id = "dgnId" name = "dgnId" value = "{{ dungeon['idDungeon'] }}"/>
+											<input type="hidden" id = "imgId" name = "imgId" value = "{{ dungeon['imgId'] }}"/>
+											<input type="submit" value="Delete Dungeon" onclick="return confirm('Do you want to delete {{dungeon['dgnName']}}?')"/>
 										</form>
 									</td>
 								</tr>

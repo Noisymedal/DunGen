@@ -152,27 +152,32 @@ def register():
         password = request.form['password']
         email = request.form['email']
 
-        # Check if account exists using MySQL
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM user WHERE username = %s', (username,))
-        account = cursor.fetchone()
-
-        # If account exists show error and validation checks
-        if account:
-            msg = 'Account already exists!'
-        
-        elif not username or not password or not email:
-            msg = 'Please fill out the form!'
+        # check if password is long enough
+        if len(password) < 8:
+            msg = 'Password must be at least 8 characters long'
         else:
-            # Encrypt the password
-            passBytes = password.encode('utf-8')
-            salt = bcrypt.gensalt()
-            passNew = bcrypt.hashpw(passBytes, salt)
+        
+            # Check if account exists using MySQL
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('SELECT * FROM user WHERE username = %s', (username,))
+            account = cursor.fetchone()
 
-            # Insert the new account into the accounts table
-            cursor.execute('INSERT INTO user VALUES (NULL, %s, %s, %s)', (username, passNew, email,))
-            mysql.connection.commit()
-            return render_template('login.html', msg = 'You have successfully registered!')
+            # If account exists show error and validation checks
+            if account:
+                msg = 'Account already exists!'
+            
+            elif not username or not password or not email:
+                msg = 'Please fill out the form!'
+            else:
+                # Encrypt the password
+                passBytes = password.encode('utf-8')
+                salt = bcrypt.gensalt()
+                passNew = bcrypt.hashpw(passBytes, salt)
+
+                # Insert the new account into the accounts table
+                cursor.execute('INSERT INTO user VALUES (NULL, %s, %s, %s)', (username, passNew, email,))
+                mysql.connection.commit()
+                return render_template('login.html', msg = 'You have successfully registered!')
     elif request.method == 'POST':
         # Form is empty... (no POST data)
         msg = 'Please fill out the form!'
@@ -363,6 +368,19 @@ def downloadSave():
     else:
         #print("false")
         return redirect(url_for('profile'))
+    
+@app.route('/deletedungeon', methods=['POST'])
+def deletedungeon():
+    if request.method == 'POST' and 'dgnId' in request.form and 'imgId' in request.form:
+
+        dgnId = request.form['dgnId']
+        imgId = request.form['imgId']
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('DELETE FROM dungeon WHERE idDungeon = %s', [dgnId])
+        mysql.connection.commit()
+        cloudinary.uploader.destroy(public_id=imgId)
+
+    return redirect(url_for('profile'))
 
 
 if __name__ == "__main__":
